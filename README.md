@@ -1,6 +1,23 @@
-# Getting Started with Create React App
+# Medio
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Local Development Setup
+
+For containerized local development with Docker, please see [LOCAL_SETUP.md](./LOCAL_SETUP.md).
+
+### Quick Start with Docker
+
+```bash
+# Start development server
+make dev
+
+# Run tests
+make test
+
+# Build for production
+make prod
+```
 
 ## Available Scripts
 
