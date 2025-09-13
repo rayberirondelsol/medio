@@ -1,0 +1,43 @@
+{
+  "environments": {
+    "development": {
+      "appName": "your-app-dev",
+      "resourceGroup": "your-rg-dev",
+      "location": "eastus",
+      "sku": "F1",
+      "basicAuth": {
+        "enabled": true,
+        "username": "dev-admin"
+      }
+    },
+    "staging": {
+      "appName": "your-app-staging",
+      "resourceGroup": "your-rg-staging",
+      "location": "eastus",
+      "sku": "B1",
+      "basicAuth": {
+        "enabled": true,
+        "username": "staging-admin"
+      }
+    },
+    "production": {
+      "appName": "your-app-prod",
+      "resourceGroup": "your-rg-prod",
+      "location": "eastus",
+      "sku": "S1",
+      "basicAuth": {
+        "enabled": false,
+        "username": ""
+      }
+    }
+  },
+  "defaultEnvironment": "development",
+  "deploymentSettings": {
+    "nodeVersion": "18.x",
+    "buildCommand": "npm run build",
+    "testCommand": "npm test -- --ci --coverage --watchAll=false",
+    "deploymentPath": "./build",
+    "httpsOnly": true,
+    "minTlsVersion": "1.2"
+  }
+}

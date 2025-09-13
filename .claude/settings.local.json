@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(claude mcp add:*)",
+      "Bash(chmod:*)",
+      "Bash(az account:*)",
+      "Bash(az login:*)",
+      "Bash(npm install:*)",
+      "Bash(npx playwright:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,77 @@
+name: Deploy to Azure App Service
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}    # Set from GitHub secret
+  AZURE_WEBAPP_PACKAGE_PATH: '.'        # Set this to the path to your web app project, defaults to the repository root
+  NODE_VERSION: '18.x'                  # Set this to the node version to use
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests
+      run: npm test -- --coverage --ci --testResultsProcessor=jest-junit --watchAll=false
+
+    - name: Build application
+      run: npm run build
+
+    - name: Create deployment artifact
+      run: |
+        mkdir deployment
+        cp -r build/* deployment/
+        cp web.config deployment/
+        cd deployment && zip -r ../deployment.zip .
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        package: deployment.zip
+
+    - name: Configure Basic Authentication
+      run: |
+        az webapp config appsettings set \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --name ${{ env.AZURE_WEBAPP_NAME }} \
+          --settings BASIC_AUTH_USERNAME=${{ secrets.BASIC_AUTH_USERNAME }} BASIC_AUTH_PASSWORD=${{ secrets.BASIC_AUTH_PASSWORD }}
+
+    - name: Get publish profile
+      run: |
+        az webapp deployment list-publishing-profiles \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --name ${{ env.AZURE_WEBAPP_NAME }} \
+          --xml > publish-profile.xml
+
+    - name: Upload publish profile as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: publish-profile
+        path: publish-profile.xml
+
+    - name: Logout from Azure
+      run: az logout
