@@ -93,6 +93,248 @@ The `.htaccess` file handles:
 - Verify Apache mod_rewrite is enabled
 - Check that the RewriteBase is set correctly
 
+## Basic Authentication Setup
+
+### Enabling Password Protection
+
+For development and staging environments, you can enable basic authentication:
+
+1. **Generate .htpasswd file**:
+   ```bash
+   # Install htpasswd if not available
+   # On Ubuntu/Debian: apt-get install apache2-utils
+   # On macOS: Already included
+   
+   # Create password for a user
+   htpasswd -c .htpasswd username
+   ```
+
+2. **Configure in ionos.config.json**:
+   ```json
+   "staging": {
+     "basicAuth": {
+       "enabled": true,
+       "username": "staging-admin"
+     }
+   }
+   ```
+
+3. **Add to .htaccess** (automatically handled by deployment script):
+   ```apache
+   # Basic Authentication
+   AuthType Basic
+   AuthName "Restricted Access"
+   AuthUserFile /path/to/.htpasswd
+   Require valid-user
+   ```
+
+4. **Deploy .htpasswd**:
+   - Place .htpasswd in project root
+   - Deployment script will upload it automatically when basicAuth is enabled
+
+### Security Notes
+- Never commit .htpasswd to version control
+- Add `.htpasswd` to `.gitignore`
+- Use strong passwords
+- Rotate credentials regularly
+
+## Rollback Mechanism
+
+### Automatic Backup
+
+The deployment script creates automatic backups before each deployment:
+
+1. **Backup Location**: `backup/` directory on the server
+2. **Previous Backup**: Saved as `backup.old/`
+
+### Manual Rollback Process
+
+If you need to rollback to the previous deployment:
+
+1. **Connect to IONOS via SSH**:
+   ```bash
+   ssh -p 22 -i ~/.ssh/ionos_key username@access.ionos.com
+   ```
+
+2. **Navigate to your web directory**:
+   ```bash
+   cd /public_html  # or your configured remote path
+   ```
+
+3. **Restore from backup**:
+   ```bash
+   # Remove current deployment
+   rm -rf !(backup|backup.old)
+   
+   # Restore from backup
+   cp -r backup/* .
+   
+   # Or restore from older backup
+   cp -r backup.old/* .
+   ```
+
+### Rollback Script
+
+Create `rollback-ionos.sh` for automated rollback:
+
+```bash
+#!/bin/bash
+
+# Rollback to previous deployment
+ENV=${1:-production}
+source .env.ionos
+
+ssh -p 22 -i "$IONOS_SSH_KEY_PATH" "$IONOS_SFTP_USERNAME@$IONOS_SFTP_HOST" <<EOF
+cd $REMOTE_PATH
+if [ -d "backup" ]; then
+    rm -rf current_failed
+    mv !(backup|backup.old) current_failed
+    cp -r backup/* .
+    echo "Rollback completed successfully"
+else
+    echo "No backup available for rollback"
+    exit 1
+fi
+EOF
+```
+
+## Monitoring Setup
+
+### Uptime Monitoring
+
+1. **IONOS Monitoring** (if available in your package):
+   - Log into IONOS Control Panel
+   - Navigate to Hosting > Monitoring
+   - Enable website monitoring
+   - Set check interval and alert preferences
+
+2. **External Monitoring Services**:
+
+   **UptimeRobot** (Free tier available):
+   ```bash
+   # Add monitor via API
+   curl -X POST https://api.uptimerobot.com/v2/newMonitor \
+     -d "api_key=YOUR_API_KEY" \
+     -d "friendly_name=IONOS Production" \
+     -d "url=https://your-domain.com" \
+     -d "type=1"
+   ```
+
+   **Better Uptime**:
+   - Add your domain
+   - Configure check frequency
+   - Set up alerts (email, SMS, Slack)
+
+3. **GitHub Actions Status Check**:
+   
+   Add to your workflow:
+   ```yaml
+   - name: Health Check After Deployment
+     run: |
+       for i in {1..5}; do
+         if curl -f https://${{ secrets.IONOS_DOMAIN }}; then
+           echo "Site is up!"
+           exit 0
+         fi
+         echo "Attempt $i failed, waiting..."
+         sleep 10
+       done
+       exit 1
+   ```
+
+### Performance Monitoring
+
+1. **Google Lighthouse CI**:
+   ```yaml
+   - name: Run Lighthouse CI
+     uses: treosh/lighthouse-ci-action@v9
+     with:
+       urls: https://${{ secrets.IONOS_DOMAIN }}
+       uploadArtifacts: true
+   ```
+
+2. **Custom Health Endpoint**:
+   
+   Create `public/health.json`:
+   ```json
+   {
+     "status": "healthy",
+     "version": "1.0.0",
+     "timestamp": "BUILD_TIMESTAMP"
+   }
+   ```
+
+   Monitor with:
+   ```bash
+   curl https://your-domain.com/health.json
+   ```
+
+### Log Monitoring
+
+1. **Access IONOS Logs**:
+   ```bash
+   ssh -p 22 -i ~/.ssh/ionos_key username@access.ionos.com
+   cd /logs
+   tail -f access.log
+   tail -f error.log
+   ```
+
+2. **Download Logs for Analysis**:
+   ```bash
+   sftp -P 22 -i ~/.ssh/ionos_key username@access.ionos.com <<EOF
+   cd /logs
+   get access.log
+   get error.log
+   bye
+   EOF
+   ```
+
+3. **Automated Log Alerts**:
+   
+   Create `check-errors.sh`:
+   ```bash
+   #!/bin/bash
+   ERROR_COUNT=$(ssh ... "grep -c 'ERROR' /logs/error.log")
+   if [ $ERROR_COUNT -gt 0 ]; then
+     # Send alert
+     curl -X POST https://hooks.slack.com/... \
+       -d '{"text":"Errors detected in IONOS logs!"}'
+   fi
+   ```
+
+### Deployment Notifications
+
+Add to deployment script:
+```bash
+# Slack notification
+curl -X POST https://hooks.slack.com/services/YOUR/WEBHOOK/URL \
+  -H 'Content-Type: application/json' \
+  -d "{\"text\":\"Deployment to $ENV completed successfully!\"}"
+```
+
+## Testing
+
+Run deployment tests:
+
+```bash
+# Run all tests
+./tests/run-deployment-tests.sh
+
+# Run tests for specific environment
+./tests/run-deployment-tests.sh staging
+
+# Include live deployment checks
+./tests/run-deployment-tests.sh production --live
+```
+
+Test coverage includes:
+- Configuration validation
+- IONOS connectivity
+- Post-deployment health checks
+- React Router functionality
+- SSL/HTTPS redirect validation
+- Basic authentication (if enabled)
+
 ## Support
 
 For IONOS-specific issues:
@@ -103,3 +345,4 @@ For deployment workflow issues:
 - Check GitHub Actions logs
 - Review repository secrets configuration
 - Ensure all required secrets are set
+- Run deployment tests locally

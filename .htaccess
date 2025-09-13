@@ -3,6 +3,15 @@
 # Enable rewrite engine
 RewriteEngine On
 
+# Basic Authentication (conditional - only if .htpasswd exists)
+# The deployment script will handle enabling this based on environment
+# <IfFile .htpasswd>
+#     AuthType Basic
+#     AuthName "Restricted Access"
+#     AuthUserFile %{DOCUMENT_ROOT}/.htpasswd
+#     Require valid-user
+# </IfFile>
+
 # Security headers
 Header set X-Content-Type-Options "nosniff"
 Header set X-Frame-Options "SAMEORIGIN"
