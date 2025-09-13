@@ -1,0 +1,158 @@
+.nfc-scanner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.scanner-card {
+  background: white;
+  border-radius: 24px;
+  padding: 48px;
+  width: 320px;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.2);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.scanner-card.scanning {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.scanner-icon {
+  font-size: 64px;
+  color: var(--primary-color);
+  margin-bottom: 24px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.scan-waves {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.wave {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  opacity: 0;
+  animation: wave-animation 2s ease-out infinite;
+}
+
+.wave-2 {
+  animation-delay: 0.5s;
+}
+
+.wave-3 {
+  animation-delay: 1s;
+}
+
+@keyframes wave-animation {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+.scanner-content h2 {
+  font-size: 24px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.scanner-content p {
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+.simulation-mode {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.simulation-mode p {
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.simulation-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.simulation-controls input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 14px;
+}
+
+.simulation-controls button {
+  padding: 8px 16px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.simulation-controls button:hover:not(:disabled) {
+  background: #5558e3;
+}
+
+.simulation-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.test-chips {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.test-chips button {
+  padding: 6px 12px;
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.test-chips button:hover {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
