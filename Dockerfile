@@ -34,8 +34,8 @@ RUN touch /var/run/nginx.pid \
 # Switch to non-root nginx user
 USER nginx
 
-# Expose port 80
-EXPOSE 80
+# Expose port 8080 for Fly.io
+EXPOSE 8080
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
