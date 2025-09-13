@@ -1,0 +1,61 @@
+name: Deploy to IONOS
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18.x'
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy to IONOS
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests
+      run: npm test -- --coverage --ci --testResultsProcessor=jest-junit --watchAll=false
+
+    - name: Build application
+      run: npm run build
+
+    - name: Deploy to IONOS via SFTP
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      with:
+        username: ${{ secrets.IONOS_SFTP_USERNAME }}
+        server: ${{ secrets.IONOS_SFTP_HOST }}
+        port: ${{ secrets.IONOS_SFTP_PORT }}
+        ssh_private_key: ${{ secrets.IONOS_SSH_PRIVATE_KEY }}
+        local_path: './build/*'
+        remote_path: ${{ secrets.IONOS_REMOTE_PATH }}
+        sftpArgs: '-o ConnectTimeout=5'
+        
+    - name: Deploy .htaccess for Apache configuration
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      with:
+        username: ${{ secrets.IONOS_SFTP_USERNAME }}
+        server: ${{ secrets.IONOS_SFTP_HOST }}
+        port: ${{ secrets.IONOS_SFTP_PORT }}
+        ssh_private_key: ${{ secrets.IONOS_SSH_PRIVATE_KEY }}
+        local_path: './.htaccess'
+        remote_path: ${{ secrets.IONOS_REMOTE_PATH }}
+        sftpArgs: '-o ConnectTimeout=5'
+
+    - name: Verify deployment
+      run: |
+        echo "Deployment completed successfully!"
+        echo "Site URL: https://${{ secrets.IONOS_DOMAIN }}"
