@@ -1,0 +1,49 @@
+{
+  "environments": {
+    "development": {
+      "domain": "dev.your-domain.com",
+      "remotePath": "/public_html/dev",
+      "sftpHost": "access.ionos.com",
+      "sftpPort": 22,
+      "basicAuth": {
+        "enabled": true,
+        "username": "dev-admin"
+      }
+    },
+    "staging": {
+      "domain": "staging.your-domain.com",
+      "remotePath": "/public_html/staging",
+      "sftpHost": "access.ionos.com",
+      "sftpPort": 22,
+      "basicAuth": {
+        "enabled": true,
+        "username": "staging-admin"
+      }
+    },
+    "production": {
+      "domain": "your-domain.com",
+      "remotePath": "/public_html",
+      "sftpHost": "access.ionos.com",
+      "sftpPort": 22,
+      "basicAuth": {
+        "enabled": false,
+        "username": ""
+      }
+    }
+  },
+  "defaultEnvironment": "production",
+  "deploymentSettings": {
+    "nodeVersion": "18.x",
+    "buildCommand": "npm run build",
+    "testCommand": "npm test -- --ci --coverage --watchAll=false",
+    "deploymentPath": "./build",
+    "httpsOnly": true,
+    "phpVersion": "8.2",
+    "apacheModules": [
+      "mod_rewrite",
+      "mod_headers",
+      "mod_expires",
+      "mod_deflate"
+    ]
+  }
+}

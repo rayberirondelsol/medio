@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# IONOS deployment
+.htpasswd
+.env.ionos
+deploy.tar.gz
+*.backup
