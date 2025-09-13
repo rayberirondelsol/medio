@@ -1,0 +1,29 @@
+# Development Dockerfile for React application
+FROM node:18-alpine
+
+# Install dependencies for better development experience
+RUN apk add --no-cache git
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files with correct ownership
+COPY --chown=nodejs:nodejs package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy application source with correct ownership
+COPY --chown=nodejs:nodejs . .
+
+# Switch to non-root user
+USER nodejs
+
+# Expose the development server port
+EXPOSE 3000
+
+# Start development server
+CMD ["npm", "start"]
