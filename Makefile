@@ -37,3 +37,21 @@ build-local: ## Build production bundle locally (without Docker)
 
 test-local: ## Run tests locally (without Docker)
 	npm test
+
+lint: ## Run linting in Docker container
+	docker-compose run --rm dev npm run lint
+
+lint-local: ## Run linting locally (without Docker)
+	npm run lint
+
+typecheck: ## Run type checking in Docker container
+	docker-compose run --rm dev npm run typecheck
+
+typecheck-local: ## Run type checking locally (without Docker)
+	npm run typecheck
+
+test-watch: ## Run tests in watch mode for TDD
+	docker-compose run --rm dev npm test -- --watchAll
+
+test-coverage: ## Run tests with coverage report
+	docker-compose run --rm dev npm test -- --coverage --watchAll=false

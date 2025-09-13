@@ -21,11 +21,18 @@ RUN npm run build
 # Stage 2: Production image with nginx
 FROM nginx:alpine
 
-# Copy built application from builder stage
-COPY --from=builder /app/build /usr/share/nginx/html
+# Copy built application from builder stage with nginx ownership
+COPY --from=builder --chown=nginx:nginx /app/build /usr/share/nginx/html
 
-# Copy nginx configuration if needed
-COPY nginx.conf /etc/nginx/conf.d/default.conf 2>/dev/null || true
+# Copy nginx configuration
+COPY --chown=nginx:nginx nginx.conf /etc/nginx/conf.d/default.conf
+
+# Create necessary directories and set permissions for non-root operation
+RUN touch /var/run/nginx.pid \
+    && chown -R nginx:nginx /var/cache/nginx /var/log/nginx /var/run/nginx.pid /etc/nginx/conf.d
+
+# Switch to non-root nginx user
+USER nginx
 
 # Expose port 80
 EXPOSE 80

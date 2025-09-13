@@ -19,6 +19,12 @@ services:
       - CHOKIDAR_USEPOLLING=true  # For file watching in Docker
     stdin_open: true  # Keep stdin open for React dev server
     tty: true
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # Production build service
   prod:
@@ -29,6 +35,12 @@ services:
       - "8080:80"
     profiles:
       - production
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   # Test service
   test:
@@ -38,9 +50,10 @@ services:
     volumes:
       - ./src:/app/src
       - ./public:/app/public
+      - ./coverage:/app/coverage  # Mount for test coverage results
       - /app/node_modules
     environment:
       - CI=true
-    command: npm test
+    command: npm test -- --coverage --watchAll=false
     profiles:
       - test
