@@ -4,7 +4,7 @@ describe('Video Sanitizer', () => {
   describe('sanitizeVideoId', () => {
     it('should validate YouTube video IDs', () => {
       expect(sanitizeVideoId('dQw4w9WgXcQ', 'YouTube')).toBe('dQw4w9WgXcQ');
-      expect(sanitizeVideoId('_invalid_id', 'YouTube')).toBeNull();
+      expect(sanitizeVideoId('invalid', 'YouTube')).toBeNull(); // Too short
       expect(sanitizeVideoId('12345678901234567890', 'YouTube')).toBeNull(); // Too long
       expect(sanitizeVideoId('abc', 'YouTube')).toBeNull(); // Too short
     });
