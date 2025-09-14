@@ -58,5 +58,11 @@
   "devDependencies": {
     "@playwright/test": "^1.55.0",
     "dotenv": "^17.2.2"
+  },
+  "overrides": {
+    "framer-motion": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
   }
 }

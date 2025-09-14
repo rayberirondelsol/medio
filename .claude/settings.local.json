@@ -11,7 +11,19 @@
       "Bash(npx playwright:*)",
       "mcp__playwright__browser_navigate",
       "Bash(git checkout:*)",
-      "mcp__playwright__browser_click"
+      "mcp__playwright__browser_click",
+      "Bash(npm test:*)",
+      "Bash(npm run build:*)",
+      "Bash(fly auth:*)",
+      "Bash(export PATH=\"$PATH:/c/Users/benja/.fly/bin\")",
+      "Bash(flyctl:*)",
+      "Bash(/c/Users/benja/.fly/bin/flyctl.exe --version)",
+      "Bash(/c/Users/benja/.fly/bin/flyctl.exe version)",
+      "Bash(/c/Users/benja/.fly/bin/flyctl.exe auth login)",
+      "Bash(/c/Users/benja/.fly/bin/flyctl.exe launch --no-deploy --name \"medio-react-app\" --region \"iad\")",
+      "Bash(/c/Users/benja/.fly/bin/flyctl.exe launch --no-deploy --copy-config)",
+      "Bash(/c/Users/benja/.fly/bin/flyctl.exe tokens create deploy -x 999999h)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
