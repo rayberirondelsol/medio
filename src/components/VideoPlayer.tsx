@@ -15,23 +15,37 @@ interface VideoPlayerProps {
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, onEnd, maxWatchTime }) => {
   const [timeRemaining, setTimeRemaining] = useState(maxWatchTime ? maxWatchTime * 60 : null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
+    // Track component mounted state
+    isMountedRef.current = true;
+
     if (maxWatchTime) {
       timerRef.current = setInterval(() => {
-        setTimeRemaining((prev) => {
-          if (prev && prev <= 1) {
-            onEnd();
-            return 0;
-          }
-          return prev ? prev - 1 : null;
-        });
+        // Only update state if component is still mounted
+        if (isMountedRef.current) {
+          setTimeRemaining((prev) => {
+            if (prev && prev <= 1) {
+              // Only call onEnd if component is still mounted
+              if (isMountedRef.current) {
+                onEnd();
+              }
+              return 0;
+            }
+            return prev ? prev - 1 : null;
+          });
+        }
       }, 1000);
     }
 
     return () => {
+      // Mark component as unmounted
+      isMountedRef.current = false;
+      
       if (timerRef.current) {
         clearInterval(timerRef.current);
+        timerRef.current = null;
       }
     };
   }, [maxWatchTime, onEnd]);

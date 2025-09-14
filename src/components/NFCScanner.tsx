@@ -16,7 +16,7 @@ const NFCScanner: React.FC<NFCScannerProps> = ({ onScan }) => {
     if ('NDEFReader' in window) {
       initializeNFC();
     }
-  }, []);
+  }, [onScan]); // Include onScan in dependencies
 
   const initializeNFC = async () => {
     // Real NFC implementation would go here
@@ -29,10 +29,25 @@ const NFCScanner: React.FC<NFCScannerProps> = ({ onScan }) => {
       await ndef.scan();
 
       ndef.addEventListener("reading", (event: NDEFReadingEvent) => {
-        onScan(event.serialNumber);
+        // Safely handle the event with proper null checks
+        if (event && event.serialNumber) {
+          // Validate serial number format before passing to onScan
+          const serialNumber = String(event.serialNumber);
+          if (serialNumber && serialNumber.length > 0) {
+            onScan(serialNumber);
+          } else {
+            console.warn('Invalid NFC serial number received');
+          }
+        } else {
+          console.warn('NFC event missing serial number');
+        }
+      });
+
+      ndef.addEventListener("readingerror", () => {
+        console.error('NFC reading error occurred');
       });
     } catch (error) {
-      console.log('Web NFC not available, using simulation mode');
+      console.log('Web NFC not available, using simulation mode:', error);
     }
   };
 

@@ -29,7 +29,15 @@ router.get('/:id/stream', authenticateToken, async (req, res) => {
     }
 
     // For local files, implement range request streaming
-    const videoPath = path.resolve(video.file_path || video.url);
+    // Secure path handling to prevent path traversal
+    const uploadDir = path.resolve(process.env.UPLOAD_DIR || 'uploads');
+    const fileName = path.basename(video.file_path || video.url);
+    const videoPath = path.join(uploadDir, 'videos', fileName);
+    
+    // Validate that the resolved path is within the upload directory
+    if (!videoPath.startsWith(uploadDir)) {
+      return res.status(400).json({ message: 'Invalid file path' });
+    }
     
     // Check if file exists
     if (!fs.existsSync(videoPath)) {
@@ -114,7 +122,15 @@ router.get('/:id/thumbnail', async (req, res) => {
       res.redirect(thumbnailUrl);
     } else if (thumbnailUrl) {
       // Serve local thumbnail with caching
-      const thumbnailPath = path.resolve(thumbnailUrl);
+      // Secure path handling to prevent path traversal
+      const uploadDir = path.resolve(process.env.UPLOAD_DIR || 'uploads');
+      const fileName = path.basename(thumbnailUrl);
+      const thumbnailPath = path.join(uploadDir, 'thumbnails', fileName);
+      
+      // Validate that the resolved path is within the upload directory
+      if (!thumbnailPath.startsWith(uploadDir)) {
+        return res.status(400).json({ message: 'Invalid thumbnail path' });
+      }
       
       if (fs.existsSync(thumbnailPath)) {
         res.set({
