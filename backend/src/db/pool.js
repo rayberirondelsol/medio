@@ -1,13 +1,21 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
+// Validate required database environment variables
+if (!process.env.DATABASE_URL) {
+  if (!process.env.DB_HOST || !process.env.DB_NAME || !process.env.DB_USER || !process.env.DB_PASSWORD) {
+    console.error('ERROR: Database configuration missing. Please set either DATABASE_URL or DB_HOST, DB_NAME, DB_USER, and DB_PASSWORD environment variables.');
+    process.exit(1);
+  }
+}
+
 // Build connection configuration with optimized pooling
 const poolConfig = {
-  host: process.env.DB_HOST || 'postgres',
+  host: process.env.DB_HOST,
   port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'medio',
-  user: process.env.DB_USER || 'medio',
-  password: process.env.DB_PASSWORD || 'medio_password',
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
   // Connection pool optimization
   min: parseInt(process.env.DB_POOL_MIN || '2', 10),  // Minimum pool size
   max: parseInt(process.env.DB_POOL_MAX || '10', 10),  // Maximum pool size (reduced from 20 for better resource management)

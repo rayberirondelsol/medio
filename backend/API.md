@@ -22,8 +22,32 @@ Register a new user account.
 ```json
 {
   "email": "user@example.com",
-  "password": "SecurePass123!",
+  "password": "SecurePass123!@#",
   "name": "User Name"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": 1,
+  "email": "user@example.com",
+  "name": "User Name",
+  "created_at": "2024-01-14T12:00:00Z"
+}
+```
+
+**Error Response (400 Bad Request):**
+```json
+{
+  "errors": [
+    {
+      "type": "field",
+      "msg": "Password must be at least 8 characters long",
+      "path": "password",
+      "location": "body"
+    }
+  ]
 }
 ```
 
@@ -53,29 +77,64 @@ Login to an existing account.
 ```json
 {
   "email": "user@example.com",
-  "password": "SecurePass123!"
+  "password": "SecurePass123!@#"
 }
 ```
 
-**Response:** `200 OK`
+**Response (200 OK):**
 ```json
 {
   "user": {
-    "id": "uuid",
+    "id": 1,
     "email": "user@example.com",
-    "name": "User Name"
-  },
-  "token": "jwt-token"
+    "name": "User Name",
+    "created_at": "2024-01-14T12:00:00Z"
+  }
+}
+```
+
+**Error Response (401 Unauthorized):**
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+**Error Response (429 Too Many Requests):**
+```json
+{
+  "message": "Too many login attempts. Please try again later.",
+  "retryAfter": 900
 }
 ```
 
 #### POST `/auth/logout`
 Logout and clear session.
 
-**Response:** `200 OK`
+**Response (200 OK):**
 ```json
 {
   "message": "Logged out successfully"
+}
+```
+
+#### GET `/auth/me`
+Get current authenticated user.
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "email": "user@example.com",
+  "name": "User Name",
+  "created_at": "2024-01-14T12:00:00Z"
+}
+```
+
+**Error Response (401 Unauthorized):**
+```json
+{
+  "message": "Access token required"
 }
 ```
 
@@ -107,7 +166,35 @@ Register a new NFC chip. **Requires authentication.**
 }
 ```
 
-**Response:** `201 Created`
+**Response (201 Created):**
+```json
+{
+  "id": 1,
+  "chip_uid": "04:E1:5C:32:B9:65:80",
+  "label": "Blue Chip",
+  "user_id": 1,
+  "created_at": "2024-01-14T12:00:00Z"
+}
+```
+
+**Error Response (400 Bad Request):**
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid NFC UID format",
+      "path": "chip_uid"
+    }
+  ]
+}
+```
+
+**Error Response (409 Conflict):**
+```json
+{
+  "message": "NFC chip already registered"
+}
+```
 
 #### POST `/nfc/scan/public`
 Scan NFC chip (public endpoint for kids mode). **No authentication required.**
