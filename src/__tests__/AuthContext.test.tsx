@@ -11,14 +11,32 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 // Test component to access auth context
 const TestComponent = () => {
   const { user, isAuthenticated, login, logout, register } = useAuth();
+  const [error, setError] = React.useState<string | null>(null);
+  
+  const handleLogin = async () => {
+    try {
+      await login('test@example.com', 'password');
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+  
+  const handleRegister = async () => {
+    try {
+      await register('test@example.com', 'password', 'Test User');
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
   
   return (
     <div>
       <div data-testid="auth-status">{isAuthenticated ? 'Authenticated' : 'Not Authenticated'}</div>
       <div data-testid="user-name">{user?.name || 'No User'}</div>
-      <button onClick={() => login('test@example.com', 'password')}>Login</button>
+      {error && <div data-testid="error">{error}</div>}
+      <button onClick={handleLogin}>Login</button>
       <button onClick={() => logout()}>Logout</button>
-      <button onClick={() => register('test@example.com', 'password', 'Test User')}>Register</button>
+      <button onClick={handleRegister}>Register</button>
     </div>
   );
 };
@@ -114,6 +132,7 @@ describe('AuthContext', () => {
     });
 
     await waitFor(() => {
+      expect(screen.getByTestId('error')).toHaveTextContent('Invalid credentials');
       expect(screen.getByTestId('auth-status')).toHaveTextContent('Not Authenticated');
       expect(screen.getByTestId('user-name')).toHaveTextContent('No User');
     });
@@ -212,6 +231,7 @@ describe('AuthContext', () => {
     });
 
     await waitFor(() => {
+      expect(screen.getByTestId('error')).toHaveTextContent('Login failed');
       expect(screen.getByTestId('auth-status')).toHaveTextContent('Not Authenticated');
     });
   });
