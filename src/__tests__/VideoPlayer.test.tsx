@@ -4,14 +4,12 @@ import '@testing-library/jest-dom';
 import VideoPlayer from '../components/VideoPlayer';
 
 // Mock the videoSanitizer utils
+const mockSanitizeVideo = jest.fn();
+const mockGetSecureEmbedUrl = jest.fn();
+
 jest.mock('../utils/videoSanitizer', () => ({
-  sanitizeVideo: jest.fn((video) => video),
-  getSecureEmbedUrl: jest.fn((video) => {
-    if (video.platform_name === 'youtube') {
-      return `https://www.youtube.com/embed/${video.platform_video_id}`;
-    }
-    return null;
-  })
+  sanitizeVideo: mockSanitizeVideo,
+  getSecureEmbedUrl: mockGetSecureEmbedUrl
 }));
 
 describe('VideoPlayer Component', () => {
@@ -27,6 +25,15 @@ describe('VideoPlayer Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
+    
+    // Setup default mock behavior
+    mockSanitizeVideo.mockImplementation((video) => video);
+    mockGetSecureEmbedUrl.mockImplementation((video) => {
+      if (video.platform_name === 'youtube') {
+        return `https://www.youtube.com/embed/${video.platform_video_id}`;
+      }
+      return null;
+    });
   });
 
   afterEach(() => {
@@ -122,8 +129,7 @@ describe('VideoPlayer Component', () => {
     };
 
     // Mock sanitizeVideo to return null for invalid video
-    const { sanitizeVideo } = require('../utils/videoSanitizer');
-    sanitizeVideo.mockReturnValueOnce(null);
+    mockSanitizeVideo.mockReturnValueOnce(null);
 
     render(
       <VideoPlayer video={invalidVideo} onEnd={mockOnEnd} />

@@ -84,21 +84,24 @@ describe('PageErrorBoundary', () => {
   });
 
   it('should reset error state when Try Again is clicked', () => {
+    let shouldThrow = true;
+    
     const { rerender } = render(
       <PageErrorBoundary>
-        <ThrowError shouldThrow={true} />
+        <ThrowError shouldThrow={shouldThrow} />
       </PageErrorBoundary>
     );
 
     expect(screen.getByText('Oops! Something went wrong')).toBeInTheDocument();
 
-    // Click Try Again
+    // Update the flag and click Try Again
+    shouldThrow = false;
     fireEvent.click(screen.getByText('Try Again'));
 
-    // Rerender with non-throwing component
+    // The error boundary should now show the child content
     rerender(
       <PageErrorBoundary>
-        <ThrowError shouldThrow={false} />
+        <ThrowError shouldThrow={shouldThrow} />
       </PageErrorBoundary>
     );
 
