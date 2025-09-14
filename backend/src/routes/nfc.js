@@ -19,11 +19,37 @@ router.get('/chips', authenticateToken, async (req, res) => {
   }
 });
 
+// NFC UID validation helper
+const validateNFCUID = (uid) => {
+  // NFC UIDs are typically hex strings (e.g., "04:E1:5C:32:B9:65:80")
+  // Can be with or without colons/spaces
+  const cleanUID = uid.replace(/[\s:-]/g, '');
+  const hexPattern = /^[0-9A-Fa-f]+$/;
+  
+  if (!hexPattern.test(cleanUID)) {
+    throw new Error('NFC UID must be a valid hexadecimal string');
+  }
+  
+  // Most NFC chips have UIDs between 4-10 bytes (8-20 hex characters)
+  if (cleanUID.length < 8 || cleanUID.length > 20) {
+    throw new Error('NFC UID must be between 4-10 bytes (8-20 hex characters)');
+  }
+  
+  return true;
+};
+
+// Normalize NFC UID to consistent format (uppercase, with colons)
+const normalizeNFCUID = (uid) => {
+  const cleanUID = uid.replace(/[\s:-]/g, '').toUpperCase();
+  // Format as XX:XX:XX:XX... (pairs of hex digits separated by colons)
+  return cleanUID.match(/.{1,2}/g).join(':');
+};
+
 // Register a new NFC chip
 router.post('/chips',
   authenticateToken,
   [
-    body('chip_uid').notEmpty().trim().escape(),
+    body('chip_uid').notEmpty().trim().escape().custom(validateNFCUID),
     body('label').notEmpty().trim().escape()
   ],
   async (req, res) => {
@@ -33,13 +59,14 @@ router.post('/chips',
     }
 
     const { chip_uid, label } = req.body;
+    const normalizedUID = normalizeNFCUID(chip_uid);
 
     try {
       const result = await pool.query(`
         INSERT INTO nfc_chips (user_id, chip_uid, label)
         VALUES ($1, $2, $3)
         RETURNING *
-      `, [req.user.id, chip_uid, label]);
+      `, [req.user.id, normalizedUID, label]);
 
       res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -98,7 +125,7 @@ router.post('/map',
 router.post('/scan',
   authenticateToken,
   [
-    body('chip_uid').notEmpty().trim().escape(),
+    body('chip_uid').notEmpty().trim().escape().custom(validateNFCUID),
     body('profile_id').optional().isUUID()
   ],
   async (req, res) => {
@@ -108,6 +135,7 @@ router.post('/scan',
     }
 
     const { chip_uid, profile_id } = req.body;
+    const normalizedUID = normalizeNFCUID(chip_uid);
 
     try {
       // Get active video mapping for this chip
@@ -121,7 +149,7 @@ router.post('/scan',
           AND vnm.is_active = true
           AND (vnm.profile_id = $2 OR vnm.profile_id IS NULL)
         LIMIT 1
-      `, [chip_uid, profile_id]);
+      `, [normalizedUID, profile_id]);
 
       if (result.rows.length === 0) {
         return res.status(404).json({ message: 'No video assigned to this chip' });

@@ -116,7 +116,52 @@ const createTables = async () => {
       ON CONFLICT DO NOTHING
     `);
 
-    console.log('Database tables created successfully');
+    // Create indexes for performance
+    console.log('Creating indexes...');
+    
+    // Index for watch_sessions.profile_id
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_watch_sessions_profile_id 
+      ON watch_sessions(profile_id);
+    `);
+    
+    // Composite index for daily_watch_time
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_daily_watch_time_profile_date 
+      ON daily_watch_time(profile_id, date);
+    `);
+    
+    // Index for video_nfc_mappings.nfc_chip_id
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_video_nfc_mappings_chip_id 
+      ON video_nfc_mappings(nfc_chip_id);
+    `);
+    
+    // Index for profiles.user_id
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_profiles_user_id 
+      ON profiles(user_id);
+    `);
+    
+    // Index for videos.user_id
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_videos_user_id 
+      ON videos(user_id);
+    `);
+    
+    // Index for nfc_chips.chip_uid
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_nfc_chips_uid 
+      ON nfc_chips(chip_uid);
+    `);
+    
+    // Index for watch_sessions date queries
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_watch_sessions_started_at 
+      ON watch_sessions(started_at);
+    `);
+
+    console.log('Database tables and indexes created successfully');
   } catch (error) {
     console.error('Error creating tables:', error);
     throw error;
