@@ -29,16 +29,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Configure axios to include credentials for cookies
     axios.defaults.withCredentials = true;
     
-    // Try to get token from localStorage for backward compatibility
-    // New sessions will use httpOnly cookies instead
-    const storedToken = localStorage.getItem('token');
+    // Try to restore user from localStorage (not token - using httpOnly cookies)
     const storedUser = localStorage.getItem('user');
     
-    if (storedToken && storedUser) {
-      setToken(storedToken);
+    if (storedUser) {
       setUser(JSON.parse(storedUser));
-      // Still set header for backward compatibility
-      axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
     }
     
     setIsLoading(false);
@@ -55,14 +50,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(user);
       setToken(token);
       
-      // Store user info only (not the token - it's in httpOnly cookie now)
+      // Store user info only (token is in httpOnly cookie)
       localStorage.setItem('user', JSON.stringify(user));
-      
-      // For backward compatibility, still support Authorization header if token is provided
-      if (token) {
-        localStorage.setItem('token', token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Login failed');
     }
@@ -79,14 +68,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(user);
       setToken(token);
       
-      // Store user info only (not the token - it's in httpOnly cookie now)
+      // Store user info only (token is in httpOnly cookie)
       localStorage.setItem('user', JSON.stringify(user));
-      
-      // For backward compatibility, still support Authorization header if token is provided
-      if (token) {
-        localStorage.setItem('token', token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Registration failed');
     }
@@ -102,9 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     setUser(null);
     setToken(null);
-    localStorage.removeItem('token');
     localStorage.removeItem('user');
-    delete axios.defaults.headers.common['Authorization'];
   };
 
   return (

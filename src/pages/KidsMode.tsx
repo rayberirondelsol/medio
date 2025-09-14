@@ -62,7 +62,7 @@ const KidsMode: React.FC = () => {
   const handleNFCScan = async (chipUID: string) => {
     try {
       setError('');
-      const response = await axios.post(`${API_URL}/nfc/scan`, {
+      const response = await axios.post(`${API_URL}/nfc/scan/public`, {
         chip_uid: chipUID,
         profile_id: null // Could be selected from a profile selector
       });
@@ -86,7 +86,7 @@ const KidsMode: React.FC = () => {
 
   const startSession = async (videoId: string) => {
     try {
-      const response = await axios.post(`${API_URL}/sessions/start`, {
+      const response = await axios.post(`${API_URL}/sessions/start/public`, {
         video_id: videoId,
         profile_id: null // Could be from selected profile
       });
@@ -108,7 +108,7 @@ const KidsMode: React.FC = () => {
 
   const checkSessionStatus = async (sessionId: string) => {
     try {
-      const response = await axios.post(`${API_URL}/sessions/heartbeat`, {
+      const response = await axios.post(`${API_URL}/sessions/heartbeat/public`, {
         session_id: sessionId
       });
 
@@ -126,7 +126,7 @@ const KidsMode: React.FC = () => {
     if (!currentSession) return;
 
     try {
-      await axios.post(`${API_URL}/sessions/end`, {
+      await axios.post(`${API_URL}/sessions/end/public`, {
         session_id: currentSession.session_id,
         stopped_reason: reason
       });
