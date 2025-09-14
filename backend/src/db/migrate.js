@@ -2,19 +2,21 @@ const pool = require('./pool');
 
 const createTables = async () => {
   try {
-    // Create users table (parents)
+    // Create users table (parents) with soft delete support
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         email VARCHAR(255) UNIQUE NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
         name VARCHAR(255) NOT NULL,
+        deleted_at TIMESTAMP,
+        deleted_by UUID REFERENCES users(id),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
-    // Create child profiles table
+    // Create child profiles table with soft delete support
     await pool.query(`
       CREATE TABLE IF NOT EXISTS profiles (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -22,6 +24,7 @@ const createTables = async () => {
         name VARCHAR(255) NOT NULL,
         avatar_url VARCHAR(500),
         daily_limit_minutes INTEGER DEFAULT 60,
+        deleted_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
@@ -94,14 +97,26 @@ const createTables = async () => {
       )
     `);
 
-    // Create daily watch time table
+    // Create daily watch time table with timezone support
     await pool.query(`
       CREATE TABLE IF NOT EXISTS daily_watch_time (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         profile_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
         date DATE NOT NULL,
         total_minutes INTEGER DEFAULT 0,
+        timezone VARCHAR(50) DEFAULT 'UTC',
         UNIQUE(profile_id, date)
+      )
+    `);
+
+    // Create token blacklist table for session invalidation
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS token_blacklist (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        token_jti VARCHAR(255) UNIQUE NOT NULL,
+        user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        revoked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        expires_at TIMESTAMP NOT NULL
       )
     `);
 
@@ -159,6 +174,12 @@ const createTables = async () => {
     await pool.query(`
       CREATE INDEX IF NOT EXISTS idx_watch_sessions_started_at 
       ON watch_sessions(started_at);
+    `);
+    
+    // Index for token blacklist cleanup
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_token_blacklist_expires_at 
+      ON token_blacklist(expires_at);
     `);
 
     console.log('Database tables and indexes created successfully');

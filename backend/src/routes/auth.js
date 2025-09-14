@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const pool = require('../db/pool');
 const { generateToken } = require('../middleware/auth');
+const logger = require('../utils/logger');
 
 const router = express.Router();
 
@@ -104,7 +105,7 @@ router.post('/register',
         token
       });
     } catch (error) {
-      console.error('Registration error:', error);
+      logger.error('Registration error:', error);
       res.status(500).json({ message: 'Registration failed' });
     }
   }
@@ -158,16 +159,46 @@ router.post('/login',
         token
       });
     } catch (error) {
-      console.error('Login error:', error);
+      logger.error('Login error:', error);
       res.status(500).json({ message: 'Login failed' });
     }
   }
 );
 
-// Logout endpoint
-router.post('/logout', (req, res) => {
-  res.clearCookie('authToken');
-  res.json({ message: 'Logged out successfully' });
+// Logout endpoint with token invalidation
+router.post('/logout', async (req, res) => {
+  try {
+    // Get token from cookie or header
+    let token = req.cookies?.authToken;
+    if (!token) {
+      const authHeader = req.headers['authorization'];
+      token = authHeader && authHeader.split(' ')[1];
+    }
+    
+    if (token) {
+      // Decode token to get JTI and expiry
+      const jwt = require('jsonwebtoken');
+      const decoded = jwt.decode(token);
+      
+      if (decoded && decoded.jti) {
+        // Add token to blacklist
+        const expiresAt = new Date(decoded.exp * 1000);
+        await pool.query(
+          'INSERT INTO token_blacklist (token_jti, user_id, expires_at) VALUES ($1, $2, $3) ON CONFLICT (token_jti) DO NOTHING',
+          [decoded.jti, decoded.id, expiresAt]
+        );
+      }
+    }
+    
+    // Clear the cookie
+    res.clearCookie('authToken');
+    res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    // Log error but still clear cookie and return success
+    logger.error('Logout error:', error);
+    res.clearCookie('authToken');
+    res.json({ message: 'Logged out successfully' });
+  }
 });
 
 module.exports = router;

@@ -24,17 +24,23 @@ initSentry(app);
 
 // Validate required environment variables
 if (!process.env.COOKIE_SECRET) {
-  console.error('ERROR: COOKIE_SECRET environment variable is required for secure session management');
-  console.error('Generate a secure secret using: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  logger.error('ERROR: COOKIE_SECRET environment variable is required for secure session management');
+  logger.error('Generate a secure secret using: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
   process.exit(1);
 }
 
 // Validate COOKIE_SECRET meets security requirements
 if (!validateCookieSecret(process.env.COOKIE_SECRET)) {
-  console.error('ERROR: COOKIE_SECRET does not meet security requirements');
-  console.error('Generate a secure secret using: node backend/src/scripts/generate-secrets.js');
+  logger.error('ERROR: COOKIE_SECRET does not meet security requirements');
+  logger.error('Generate a secure secret using: node backend/src/scripts/generate-secrets.js');
   process.exit(1);
 }
+
+// Generate nonce for CSP
+app.use((req, res, next) => {
+  res.locals.nonce = require('crypto').randomBytes(16).toString('base64');
+  next();
+});
 
 // HTTP request logging
 app.use(morgan('combined', { stream: logger.stream }));
@@ -44,8 +50,8 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`],
+      scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`],
       imgSrc: ["'self'", "data:", "https:"],
       connectSrc: ["'self'"],
       fontSrc: ["'self'"],
@@ -125,7 +131,12 @@ const csrfExcludePaths = [
   '/api/sessions/end/public',
   '/api/sessions/heartbeat/public',
   '/api/nfc/scan/public',
-  '/api/health'
+  '/api/health',
+  '/api/v1/sessions/start/public',
+  '/api/v1/sessions/end/public',
+  '/api/v1/sessions/heartbeat/public',
+  '/api/v1/nfc/scan/public',
+  '/api/v1/health'
 ];
 
 // Conditional CSRF middleware
@@ -138,7 +149,17 @@ app.use((req, res, next) => {
   csrfProtection(req, res, next);
 });
 
-// Routes
+// API versioning - v1 routes
+const API_VERSION = process.env.API_VERSION || 'v1';
+const apiPrefix = `/api/${API_VERSION}`;
+
+app.use(`${apiPrefix}/auth`, authRoutes);
+app.use(`${apiPrefix}/videos`, videoRoutes);
+app.use(`${apiPrefix}/nfc`, nfcRoutes);
+app.use(`${apiPrefix}/profiles`, profileRoutes);
+app.use(`${apiPrefix}/sessions`, sessionRoutes);
+
+// Legacy routes for backward compatibility
 app.use('/api/auth', authRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/nfc', nfcRoutes);
@@ -146,7 +167,7 @@ app.use('/api/profiles', profileRoutes);
 app.use('/api/sessions', sessionRoutes);
 
 // Health check endpoint with detailed status
-app.get('/api/health', async (req, res) => {
+const healthCheck = async (req, res) => {
   const pool = require('./db/pool');
   let dbHealthy = false;
   
@@ -170,7 +191,11 @@ app.get('/api/health', async (req, res) => {
   };
   
   res.status(dbHealthy ? 200 : 503).json(health);
-});
+};
+
+// Register health check for both versioned and legacy routes
+app.get('/api/health', healthCheck);
+app.get(`/api/${API_VERSION}/health`, healthCheck);
 
 // Add Sentry error handler (must be before other error middleware)
 addSentryErrorHandler(app);

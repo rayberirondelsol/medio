@@ -1,10 +1,11 @@
 const { Pool } = require('pg');
 require('dotenv').config();
+const logger = require('../utils/logger');
 
 // Validate required database environment variables
 if (!process.env.DATABASE_URL) {
   if (!process.env.DB_HOST || !process.env.DB_NAME || !process.env.DB_USER || !process.env.DB_PASSWORD) {
-    console.error('ERROR: Database configuration missing. Please set either DATABASE_URL or DB_HOST, DB_NAME, DB_USER, and DB_PASSWORD environment variables.');
+    logger.error('ERROR: Database configuration missing. Please set either DATABASE_URL or DB_HOST, DB_NAME, DB_USER, and DB_PASSWORD environment variables.');
     process.exit(1);
   }
 }
@@ -64,22 +65,58 @@ if (process.env.DATABASE_URL) {
 
 // Add error handling for pool
 pool.on('error', (err, client) => {
-  console.error('Unexpected error on idle database client', err);
+  logger.error('Unexpected error on idle database client', err);
 });
 
 // Add connection monitoring in development
 if (process.env.NODE_ENV === 'development') {
   pool.on('connect', () => {
-    console.log('Database pool: new client connected');
+    logger.debug('Database pool: new client connected');
   });
   
   pool.on('remove', () => {
-    console.log('Database pool: client removed');
+    logger.debug('Database pool: client removed');
   });
 }
 
+// Retry logic for database queries
+const retryQuery = async (query, params, maxRetries = 3, retryDelay = 1000) => {
+  let lastError;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await pool.query(query, params);
+    } catch (error) {
+      lastError = error;
+      
+      // Log retry attempt
+      logger.warn(`Database query failed (attempt ${attempt}/${maxRetries}): ${error.message}`);
+      
+      // Don't retry on certain errors
+      if (error.code === '23505' || // unique violation
+          error.code === '23503' || // foreign key violation
+          error.code === '23502' || // not null violation
+          error.code === '42P01' || // undefined table
+          error.code === '42703') { // undefined column
+        throw error;
+      }
+      
+      // Wait before retrying (exponential backoff)
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, retryDelay * attempt));
+      }
+    }
+  }
+  
+  logger.error(`Database query failed after ${maxRetries} attempts`, lastError);
+  throw lastError;
+};
+
 // Export pool with monitoring methods
 module.exports = pool;
+
+// Export retry wrapper
+module.exports.queryWithRetry = retryQuery;
 
 // Export pool stats for monitoring
 module.exports.getPoolStats = () => ({
