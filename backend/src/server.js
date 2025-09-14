@@ -10,6 +10,7 @@ const videoRoutes = require('./routes/videos');
 const nfcRoutes = require('./routes/nfc');
 const profileRoutes = require('./routes/profiles');
 const sessionRoutes = require('./routes/sessions');
+const { validateCookieSecret } = require('./utils/crypto');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +19,13 @@ const PORT = process.env.PORT || 5000;
 if (!process.env.COOKIE_SECRET) {
   console.error('ERROR: COOKIE_SECRET environment variable is required for secure session management');
   console.error('Generate a secure secret using: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  process.exit(1);
+}
+
+// Validate COOKIE_SECRET meets security requirements
+if (!validateCookieSecret(process.env.COOKIE_SECRET)) {
+  console.error('ERROR: COOKIE_SECRET does not meet security requirements');
+  console.error('Generate a secure secret using: node backend/src/scripts/generate-secrets.js');
   process.exit(1);
 }
 

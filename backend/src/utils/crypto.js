@@ -38,7 +38,37 @@ function validateJWTSecret(secret) {
   return true;
 }
 
+/**
+ * Validate Cookie secret meets security requirements
+ * @param {string} secret - The secret to validate
+ * @returns {boolean} True if secret meets requirements
+ */
+function validateCookieSecret(secret) {
+  // Minimum 256 bits (32 bytes) for secure cookies
+  if (!secret || secret.length < 64) { // 64 hex chars = 32 bytes
+    console.error('COOKIE_SECRET must be at least 64 characters (32 bytes) for proper security');
+    return false;
+  }
+  
+  // Check for obvious weak patterns
+  const weakPatterns = [
+    'secret', 'password', '12345', 'admin', 'test', 
+    'your-secret-key', 'change-me', 'default', 'cookie'
+  ];
+  
+  const lowerSecret = secret.toLowerCase();
+  for (const pattern of weakPatterns) {
+    if (lowerSecret.includes(pattern)) {
+      console.error(`COOKIE_SECRET contains weak pattern: ${pattern}`);
+      return false;
+    }
+  }
+  
+  return true;
+}
+
 module.exports = {
   generateSecureSecret,
-  validateJWTSecret
+  validateJWTSecret,
+  validateCookieSecret
 };
