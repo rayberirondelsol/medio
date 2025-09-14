@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { VideoPlayer } from '../components/VideoPlayer';
-import { AuthContext } from '../contexts/AuthContext';
+
+// Create a mock AuthContext for testing
+const AuthContext = createContext<any>(undefined);
 
 // Mock the video element
 HTMLMediaElement.prototype.play = jest.fn(() => Promise.resolve());
