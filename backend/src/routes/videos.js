@@ -27,9 +27,13 @@ router.get('/', authenticateToken, async (req, res) => {
 router.post('/',
   authenticateToken,
   [
-    body('title').notEmpty().trim(),
+    body('title').notEmpty().trim().escape(),
+    body('description').optional().trim().escape(),
+    body('thumbnail_url').optional().isURL(),
     body('platform_id').isUUID(),
-    body('platform_video_id').notEmpty()
+    body('platform_video_id').notEmpty().trim().escape(),
+    body('duration_seconds').optional().isInt({ min: 1 }),
+    body('age_rating').optional().isIn(['G', 'PG', 'PG-13', 'R'])
   ],
   async (req, res) => {
     const errors = validationResult(req);

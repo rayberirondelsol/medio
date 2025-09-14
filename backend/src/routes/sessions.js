@@ -1,11 +1,13 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const pool = require('../db/pool');
+const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Start a watch session (public endpoint for kids)
+// Start a watch session
 router.post('/start',
+  authenticateToken,
   [
     body('profile_id').optional().isUUID(),
     body('video_id').isUUID()
@@ -17,6 +19,18 @@ router.post('/start',
     }
 
     const { profile_id, video_id } = req.body;
+    
+    // Verify that the profile belongs to the authenticated user if provided
+    if (profile_id) {
+      const profileCheck = await pool.query(
+        'SELECT id FROM profiles WHERE id = $1 AND user_id = $2',
+        [profile_id, req.user.id]
+      );
+      
+      if (profileCheck.rows.length === 0) {
+        return res.status(403).json({ message: 'Profile not found or access denied' });
+      }
+    }
 
     try {
       // Create watch session
@@ -58,6 +72,7 @@ router.post('/start',
 
 // End a watch session
 router.post('/end',
+  authenticateToken,
   [
     body('session_id').isUUID(),
     body('stopped_reason').optional().isIn(['manual', 'time_limit', 'daily_limit', 'error'])
@@ -71,6 +86,18 @@ router.post('/end',
     const { session_id, stopped_reason } = req.body;
 
     try {
+      // Verify session ownership through profile
+      const ownershipCheck = await pool.query(`
+        SELECT ws.id 
+        FROM watch_sessions ws
+        LEFT JOIN profiles p ON ws.profile_id = p.id
+        WHERE ws.id = $1 AND (p.user_id = $2 OR ws.profile_id IS NULL)
+      `, [session_id, req.user.id]);
+      
+      if (ownershipCheck.rows.length === 0) {
+        return res.status(403).json({ message: 'Session not found or access denied' });
+      }
+
       // End the session
       const sessionResult = await pool.query(`
         UPDATE watch_sessions
@@ -113,6 +140,7 @@ router.post('/end',
 
 // Update session progress (heartbeat)
 router.post('/heartbeat',
+  authenticateToken,
   [
     body('session_id').isUUID()
   ],

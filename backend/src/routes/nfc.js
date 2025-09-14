@@ -23,8 +23,8 @@ router.get('/chips', authenticateToken, async (req, res) => {
 router.post('/chips',
   authenticateToken,
   [
-    body('chip_uid').notEmpty().trim(),
-    body('label').notEmpty().trim()
+    body('chip_uid').notEmpty().trim().escape(),
+    body('label').notEmpty().trim().escape()
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -94,10 +94,12 @@ router.post('/map',
   }
 );
 
-// Scan NFC chip (public endpoint for kids)
+// Scan NFC chip (requires authentication now for security)
 router.post('/scan',
+  authenticateToken,
   [
-    body('chip_uid').notEmpty().trim()
+    body('chip_uid').notEmpty().trim().escape(),
+    body('profile_id').optional().isUUID()
   ],
   async (req, res) => {
     const errors = validationResult(req);

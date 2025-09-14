@@ -35,9 +35,26 @@ const KidsMode: React.FC = () => {
     return () => {
       if (heartbeatInterval.current) {
         clearInterval(heartbeatInterval.current);
+        heartbeatInterval.current = null;
       }
+    };
+  }, []);
+
+  // Separate effect for session cleanup to avoid dependency issues
+  useEffect(() => {
+    return () => {
+      // Use a ref to track if we should end session on unmount
       if (currentSession) {
-        endSession('manual');
+        // Using a synchronous cleanup for session end
+        const sessionId = currentSession.session_id;
+        // Send beacon for cleanup (works even when page is closing)
+        if (navigator.sendBeacon) {
+          const data = JSON.stringify({
+            session_id: sessionId,
+            stopped_reason: 'manual'
+          });
+          navigator.sendBeacon(`${API_URL}/sessions/end`, data);
+        }
       }
     };
   }, [currentSession]);
@@ -78,6 +95,9 @@ const KidsMode: React.FC = () => {
       setWatchTime(0);
 
       // Start heartbeat to track session
+      if (heartbeatInterval.current) {
+        clearInterval(heartbeatInterval.current);
+      }
       heartbeatInterval.current = setInterval(() => {
         checkSessionStatus(response.data.session_id);
       }, 30000); // Every 30 seconds
@@ -116,6 +136,7 @@ const KidsMode: React.FC = () => {
 
     if (heartbeatInterval.current) {
       clearInterval(heartbeatInterval.current);
+      heartbeatInterval.current = null;
     }
 
     setCurrentSession(null);

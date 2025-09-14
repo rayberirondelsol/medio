@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiCreditCard } from 'react-icons/fi';
 import './NFCScanner.css';
+import '../types/web-nfc';
 
 interface NFCScannerProps {
   onScan: (chipUID: string) => void;
@@ -21,12 +22,14 @@ const NFCScanner: React.FC<NFCScannerProps> = ({ onScan }) => {
     // Real NFC implementation would go here
     // This requires HTTPS and compatible browser/device
     try {
-      // @ts-ignore
+      if (!window.NDEFReader) {
+        throw new Error('NDEFReader not available');
+      }
       const ndef = new NDEFReader();
       await ndef.scan();
 
-      ndef.addEventListener("reading", ({ message, serialNumber }: any) => {
-        onScan(serialNumber);
+      ndef.addEventListener("reading", (event: NDEFReadingEvent) => {
+        onScan(event.serialNumber);
       });
     } catch (error) {
       console.log('Web NFC not available, using simulation mode');

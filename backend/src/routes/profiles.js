@@ -23,7 +23,8 @@ router.get('/', authenticateToken, async (req, res) => {
 router.post('/',
   authenticateToken,
   [
-    body('name').notEmpty().trim(),
+    body('name').notEmpty().trim().escape(),
+    body('avatar_url').optional().isURL(),
     body('daily_limit_minutes').optional().isInt({ min: 1, max: 1440 })
   ],
   async (req, res) => {

@@ -6,12 +6,59 @@ const { generateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Helper function to set secure cookie
+const setAuthCookie = (res, token) => {
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  res.cookie('authToken', token, {
+    httpOnly: true,
+    secure: isProduction, // HTTPS only in production
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    path: '/'
+  });
+};
+
+// Password validation helper
+const validatePasswordStrength = (password) => {
+  const minLength = 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumbers = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  
+  const errors = [];
+  if (password.length < minLength) {
+    errors.push(`Password must be at least ${minLength} characters long`);
+  }
+  if (!hasUpperCase) {
+    errors.push('Password must contain at least one uppercase letter');
+  }
+  if (!hasLowerCase) {
+    errors.push('Password must contain at least one lowercase letter');
+  }
+  if (!hasNumbers) {
+    errors.push('Password must contain at least one number');
+  }
+  if (!hasSpecialChar) {
+    errors.push('Password must contain at least one special character');
+  }
+  
+  return errors;
+};
+
 // Register endpoint
 router.post('/register',
   [
     body('email').isEmail().normalizeEmail(),
-    body('password').isLength({ min: 6 }),
-    body('name').notEmpty().trim()
+    body('password').custom((value) => {
+      const errors = validatePasswordStrength(value);
+      if (errors.length > 0) {
+        throw new Error(errors.join(', '));
+      }
+      return true;
+    }),
+    body('name').notEmpty().trim().escape()
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -44,12 +91,16 @@ router.post('/register',
       const user = result.rows[0];
       const token = generateToken(user);
 
+      // Set secure httpOnly cookie
+      setAuthCookie(res, token);
+
       res.status(201).json({
         user: {
           id: user.id,
           email: user.email,
           name: user.name
         },
+        // Still send token for backward compatibility, but prefer cookie
         token
       });
     } catch (error) {
@@ -63,7 +114,7 @@ router.post('/register',
 router.post('/login',
   [
     body('email').isEmail().normalizeEmail(),
-    body('password').notEmpty()
+    body('password').notEmpty().escape()
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -94,12 +145,16 @@ router.post('/login',
 
       const token = generateToken(user);
 
+      // Set secure httpOnly cookie
+      setAuthCookie(res, token);
+
       res.json({
         user: {
           id: user.id,
           email: user.email,
           name: user.name
         },
+        // Still send token for backward compatibility, but prefer cookie
         token
       });
     } catch (error) {
@@ -108,5 +163,11 @@ router.post('/login',
     }
   }
 );
+
+// Logout endpoint
+router.post('/logout', (req, res) => {
+  res.clearCookie('authToken');
+  res.json({ message: 'Logged out successfully' });
+});
 
 module.exports = router;
