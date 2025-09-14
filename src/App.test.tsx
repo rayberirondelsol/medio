@@ -2,8 +2,9 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders App component with loading state', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  // The app should initially show the loading spinner for lazy-loaded components
+  const loadingElement = screen.getByText(/loading/i);
+  expect(loadingElement).toBeInTheDocument();
 });
