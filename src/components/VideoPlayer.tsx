@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { sanitizeVideo, getSecureEmbedUrl } from '../utils/videoSanitizer';
 import './VideoPlayer.css';
 
 interface VideoPlayerProps {
@@ -57,28 +58,42 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, onEnd, maxWatchTime })
   };
 
   const getVideoEmbed = () => {
-    if (video.platform_name === 'YouTube') {
+    // Sanitize the video data for security
+    const sanitizedVideo = sanitizeVideo(video);
+    
+    if (!sanitizedVideo) {
+      return (
+        <div className="video-error">
+          <h3>Error: Invalid video data</h3>
+          <p>This video cannot be played due to invalid information.</p>
+        </div>
+      );
+    }
+
+    const embedUrl = getSecureEmbedUrl(sanitizedVideo);
+    
+    if (embedUrl) {
       return (
         <iframe
           className="video-iframe"
-          src={`https://www.youtube.com/embed/${video.platform_video_id}?autoplay=1&modestbranding=1&rel=0`}
-          title={video.title}
+          src={embedUrl}
+          title={sanitizedVideo.title}
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
+          sandbox="allow-scripts allow-same-origin allow-presentation"
         />
       );
     }
 
-    // For other platforms, we'd need their specific embed formats
-    // For now, show a placeholder
+    // For unsupported platforms, show a placeholder
     return (
       <div className="video-placeholder">
-        <h2>{video.title}</h2>
-        <p>Platform: {video.platform_name}</p>
-        <p>Video ID: {video.platform_video_id}</p>
+        <h2>{sanitizedVideo.title}</h2>
+        <p>Platform: {sanitizedVideo.platform_name}</p>
+        <p>Video ID: {sanitizedVideo.platform_video_id}</p>
         <p className="placeholder-note">
-          Video playback for {video.platform_name} would be integrated here
+          Video playback for {sanitizedVideo.platform_name} would be integrated here
         </p>
       </div>
     );
