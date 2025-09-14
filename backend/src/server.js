@@ -14,9 +14,13 @@ const profileRoutes = require('./routes/profiles');
 const sessionRoutes = require('./routes/sessions');
 const { validateCookieSecret } = require('./utils/crypto');
 const logger = require('./utils/logger');
+const { initSentry, addSentryErrorHandler } = require('./utils/sentry');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Initialize Sentry error tracking (must be early in the app)
+initSentry(app);
 
 // Validate required environment variables
 if (!process.env.COOKIE_SECRET) {
@@ -141,10 +145,35 @@ app.use('/api/nfc', nfcRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/sessions', sessionRoutes);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
+// Health check endpoint with detailed status
+app.get('/api/health', async (req, res) => {
+  const pool = require('./db/pool');
+  let dbHealthy = false;
+  
+  try {
+    // Check database connectivity
+    const result = await pool.query('SELECT 1');
+    dbHealthy = !!result.rows;
+  } catch (error) {
+    logger.error('Health check database error:', error);
+  }
+  
+  const health = {
+    status: dbHealthy ? 'healthy' : 'degraded',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV,
+    services: {
+      database: dbHealthy ? 'healthy' : 'unhealthy',
+      sentry: process.env.SENTRY_DSN ? 'configured' : 'not configured'
+    }
+  };
+  
+  res.status(dbHealthy ? 200 : 503).json(health);
 });
+
+// Add Sentry error handler (must be before other error middleware)
+addSentryErrorHandler(app);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

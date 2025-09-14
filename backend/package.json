@@ -14,6 +14,8 @@
     "lint:fix": "eslint src/ --fix"
   },
   "dependencies": {
+    "@sentry/integrations": "^7.114.0",
+    "@sentry/node": "^10.11.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
