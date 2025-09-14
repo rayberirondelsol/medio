@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { VideoPlayer } from '../components/VideoPlayer';
+import VideoPlayer from '../components/VideoPlayer';
 import { AuthContext } from '../contexts/AuthContext';
 
 // Mock the video element
