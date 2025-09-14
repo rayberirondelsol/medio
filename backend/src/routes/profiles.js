@@ -5,14 +5,39 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Get all profiles for a user
+// Get all profiles for a user with pagination
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT * FROM profiles WHERE user_id = $1 ORDER BY created_at DESC',
+    // Parse pagination parameters
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 20, 100); // Max 100 items per page
+    const offset = (page - 1) * limit;
+    
+    // Get total count for pagination metadata
+    const countResult = await pool.query(
+      'SELECT COUNT(*) FROM profiles WHERE user_id = $1',
       [req.user.id]
     );
-    res.json(result.rows);
+    const totalCount = parseInt(countResult.rows[0].count);
+    const totalPages = Math.ceil(totalCount / limit);
+    
+    // Get paginated results
+    const result = await pool.query(
+      'SELECT * FROM profiles WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3',
+      [req.user.id, limit, offset]
+    );
+    
+    res.json({
+      data: result.rows,
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1
+      }
+    });
   } catch (error) {
     console.error('Error fetching profiles:', error);
     res.status(500).json({ message: 'Failed to fetch profiles' });
