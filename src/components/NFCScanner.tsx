@@ -15,7 +15,7 @@ const NFCScanner: React.FC<NFCScannerProps> = ({ onScan }) => {
     if ('NDEFReader' in window) {
       initializeNFC();
     }
-  }, [onScan]); // Include onScan in dependencies
+  }, [onScan, initializeNFC]); // Include onScan in dependencies
 
   const initializeNFC = async () => {
     // Real NFC implementation would go here
@@ -61,11 +61,13 @@ const NFCScanner: React.FC<NFCScannerProps> = ({ onScan }) => {
     }
   };
 
+  const CreditCardIcon = FiCreditCard as React.ElementType;
+
   return (
     <div className="nfc-scanner">
       <div className={`scanner-card ${isScanning ? 'scanning' : ''}`}>
         <div className="scanner-icon">
-          <FiCreditCard />
+          <CreditCardIcon />
           {isScanning && (
             <div className="scan-waves">
               <div className="wave wave-1"></div>

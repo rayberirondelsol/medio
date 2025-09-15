@@ -5,7 +5,7 @@ import { useLoading } from '../contexts/LoadingContext';
 import { createRateLimiterUtils } from '../utils/rateLimiter';
 import { RATE_LIMITS } from '../constants/rateLimits';
 import { FiPlus, FiEdit2, FiTrash2, FiLink, FiYoutube } from 'react-icons/fi';
-import { SiNetflix, SiPrime, SiDisney } from 'react-icons/si';
+import { SiNetflix, SiPrime } from 'react-icons/si';
 import axios from 'axios';
 import './Videos.css';
 
@@ -21,6 +21,11 @@ interface Video {
   duration_seconds?: number;
   age_rating?: string;
 }
+
+const PlusIcon = FiPlus as React.ElementType;
+const Edit2Icon = FiEdit2 as React.ElementType;
+const Trash2Icon = FiTrash2 as React.ElementType;
+const LinkIcon = FiLink as React.ElementType;
 
 const Videos: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -43,7 +48,7 @@ const Videos: React.FC = () => {
     { id: '1', name: 'YouTube', icon: FiYoutube },
     { id: '2', name: 'Netflix', icon: SiNetflix },
     { id: '3', name: 'Prime Video', icon: SiPrime },
-    { id: '4', name: 'Disney+', icon: SiDisney },
+    { id: '4', name: 'Disney+', icon: FiLink },
   ];
 
   useEffect(() => {
@@ -116,10 +121,10 @@ const Videos: React.FC = () => {
   const getPlatformIcon = (platformName: string) => {
     const platform = platforms.find(p => p.name === platformName);
     if (platform) {
-      const Icon = platform.icon;
+      const Icon = platform.icon as React.ElementType;
       return <Icon />;
     }
-    return <FiLink />;
+    return <LinkIcon />;
   };
 
   return (
@@ -128,7 +133,7 @@ const Videos: React.FC = () => {
         <div className="page-header">
           <h1>Video Library</h1>
           <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-            <FiPlus /> Add Video
+            <PlusIcon /> Add Video
           </button>
         </div>
 
@@ -139,7 +144,7 @@ const Videos: React.FC = () => {
             <h2>No videos yet</h2>
             <p>Add your first video to get started</p>
             <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-              <FiPlus /> Add Video
+              <PlusIcon /> Add Video
             </button>
           </div>
         ) : (
@@ -170,14 +175,14 @@ const Videos: React.FC = () => {
                 </div>
                 <div className="video-actions">
                   <button className="btn-icon" title="Edit">
-                    <FiEdit2 />
+                    <Edit2Icon />
                   </button>
                   <button 
                     className="btn-icon delete" 
                     title="Delete"
                     onClick={() => handleDeleteVideo(video.id)}
                   >
-                    <FiTrash2 />
+                    <Trash2Icon />
                   </button>
                 </div>
               </div>
@@ -273,5 +278,4 @@ const Videos: React.FC = () => {
     </Layout>
   );
 };
-
 export default Videos;

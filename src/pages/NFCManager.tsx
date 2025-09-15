@@ -19,6 +19,11 @@ interface Video {
   title: string;
 }
 
+const PlusIcon = FiPlus as React.ElementType;
+const CreditCardIcon = FiCreditCard as React.ElementType;
+const Link2Icon = FiLink2 as React.ElementType;
+const Trash2Icon = FiTrash2 as React.ElementType;
+
 const NFCManager: React.FC = () => {
   const [chips, setChips] = useState<NFCChip[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
@@ -125,7 +130,7 @@ const NFCManager: React.FC = () => {
         <div className="page-header">
           <h1>NFC Chip Manager</h1>
           <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-            <FiPlus /> Register Chip
+            <PlusIcon /> Register Chip
           </button>
         </div>
 
@@ -133,11 +138,11 @@ const NFCManager: React.FC = () => {
           <div className="loading">Loading NFC chips...</div>
         ) : chips.length === 0 ? (
           <div className="empty-state">
-            <FiCreditCard className="empty-icon" />
+            <CreditCardIcon className="empty-icon" />
             <h2>No NFC chips registered</h2>
             <p>Register NFC chips to link them with videos</p>
             <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-              <FiPlus /> Register First Chip
+              <PlusIcon /> Register First Chip
             </button>
           </div>
         ) : (
@@ -145,7 +150,7 @@ const NFCManager: React.FC = () => {
             {chips.map((chip) => (
               <div key={chip.id} className="chip-card">
                 <div className="chip-icon">
-                  <FiCreditCard />
+                  <CreditCardIcon />
                 </div>
                 <div className="chip-info">
                   <h3>{chip.label}</h3>
@@ -160,14 +165,14 @@ const NFCManager: React.FC = () => {
                     title="Link Video"
                     onClick={() => openLinkModal(chip)}
                   >
-                    <FiLink2 />
+                    <Link2Icon />
                   </button>
                   <button 
                     className="btn-icon delete" 
                     title="Delete"
                     onClick={() => handleDeleteChip(chip.id)}
                   >
-                    <FiTrash2 />
+                    <Trash2Icon />
                   </button>
                 </div>
               </div>

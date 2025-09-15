@@ -50,13 +50,20 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const PlayIcon = FiPlay as React.ElementType;
+const VideoIcon = FiVideo as React.ElementType;
+const UsersIcon = FiUsers as React.ElementType;
+const CreditCardIcon = FiCreditCard as React.ElementType;
+const ClockIcon = FiClock as React.ElementType;
+const PlusIcon = FiPlus as React.ElementType;
+
   return (
     <Layout>
       <div className="dashboard">
         <div className="page-header">
           <h1>Dashboard</h1>
           <Link to="/kids" className="btn btn-secondary">
-            <FiPlay /> Kids Mode
+            <PlayIcon /> Kids Mode
           </Link>
         </div>
 
@@ -67,7 +74,7 @@ const Dashboard: React.FC = () => {
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-icon videos">
-                  <FiVideo />
+                  <VideoIcon />
                 </div>
                 <div className="stat-content">
                   <h3>Videos</h3>
@@ -78,7 +85,7 @@ const Dashboard: React.FC = () => {
 
               <div className="stat-card">
                 <div className="stat-icon profiles">
-                  <FiUsers />
+                  <UsersIcon />
                 </div>
                 <div className="stat-content">
                   <h3>Child Profiles</h3>
@@ -89,7 +96,7 @@ const Dashboard: React.FC = () => {
 
               <div className="stat-card">
                 <div className="stat-icon nfc">
-                  <FiCreditCard />
+                  <CreditCardIcon />
                 </div>
                 <div className="stat-content">
                   <h3>NFC Chips</h3>
@@ -100,7 +107,7 @@ const Dashboard: React.FC = () => {
 
               <div className="stat-card">
                 <div className="stat-icon time">
-                  <FiClock />
+                  <ClockIcon />
                 </div>
                 <div className="stat-content">
                   <h3>Watch Time Today</h3>
@@ -115,15 +122,15 @@ const Dashboard: React.FC = () => {
                 <h2>Quick Actions</h2>
                 <div className="action-buttons">
                   <Link to="/videos" className="action-btn">
-                    <FiPlus />
+                    <PlusIcon />
                     <span>Add Video</span>
                   </Link>
                   <Link to="/profiles" className="action-btn">
-                    <FiPlus />
+                    <PlusIcon />
                     <span>Add Profile</span>
                   </Link>
                   <Link to="/nfc" className="action-btn">
-                    <FiPlus />
+                    <PlusIcon />
                     <span>Register NFC</span>
                   </Link>
                 </div>

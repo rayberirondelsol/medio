@@ -95,7 +95,7 @@ export const initSentry = () => {
         // Remove sensitive data from request information
         if (event.request) {
           if (event.request.cookies) {
-            event.request.cookies = '[REDACTED]';
+            event.request.cookies = { cookie: '[REDACTED]' };
           }
           if (event.request.headers) {
             const headers = event.request.headers as Record<string, string>;

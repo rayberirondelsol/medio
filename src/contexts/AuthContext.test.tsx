@@ -8,7 +8,6 @@ jest.mock('../utils/axiosConfig', () => ({
   __esModule: true,
   default: {
     post: jest.fn(),
-    isAxiosError: jest.fn(),
     defaults: { withCredentials: false, headers: { common: {} }, timeout: 10000 },
     interceptors: {
       request: { use: jest.fn(), handlers: [] },
@@ -66,7 +65,6 @@ describe('AuthContext', () => {
 
     // Reset mocks completely
     mockedAxios.post.mockReset();
-    mockedAxios.isAxiosError.mockReset();
 
     // Setup axios defaults
     mockedAxios.defaults = {
@@ -74,8 +72,6 @@ describe('AuthContext', () => {
       headers: { common: {} }
     } as any;
 
-    // Setup isAxiosError mock to return false by default (successful requests)
-    mockedAxios.isAxiosError.mockReturnValue(false);
   });
 
   it('should provide authentication context', () => {
@@ -101,9 +97,6 @@ describe('AuthContext', () => {
         token: 'test-token'
       }
     });
-
-    // Ensure isAxiosError returns false for successful responses
-    mockedAxios.isAxiosError.mockReturnValue(false);
 
     render(
       <AuthProvider>
@@ -139,7 +132,6 @@ describe('AuthContext', () => {
     };
 
     mockedAxios.post.mockRejectedValueOnce(mockError);
-    mockedAxios.isAxiosError.mockImplementation((error) => error === mockError);
 
     const TestComponentWithError = () => {
       const { user, login, logout, isLoading } = useAuth();

@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import axios from 'axios';
 import axiosInstance, { RequestManager } from '../utils/axiosConfig';
 
 interface User {
@@ -64,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Store user info only (token is in httpOnly cookie)
       localStorage.setItem('user', JSON.stringify(user));
     } catch (error) {
-      if (axiosInstance.isAxiosError(error)) {
+      if (axios.isAxiosError(error)) {
         if (error.code === 'ERR_CANCELED') {
           throw new Error('Login request was cancelled');
         }
@@ -89,7 +90,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Store user info only (token is in httpOnly cookie)
       localStorage.setItem('user', JSON.stringify(user));
     } catch (error) {
-      if (axiosInstance.isAxiosError(error)) {
+      if (axios.isAxiosError(error)) {
         if (error.code === 'ERR_CANCELED') {
           throw new Error('Registration request was cancelled');
         }

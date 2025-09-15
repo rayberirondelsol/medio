@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FiCreditCard, FiX } from 'react-icons/fi';
+import axios from 'axios';
 import axiosInstance, { RequestManager } from '../utils/axiosConfig';
 import VideoPlayer from '../components/VideoPlayer';
 import NFCScanner from '../components/NFCScanner';
@@ -25,6 +26,9 @@ interface Session {
   session_id: string;
   max_watch_time_minutes: number | null;
 }
+
+const XIcon = FiX as React.ElementType;
+const CreditCardIcon = FiCreditCard as React.ElementType;
 
 const KidsMode: React.FC = () => {
   const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
@@ -91,7 +95,7 @@ const KidsMode: React.FC = () => {
       // Start a watch session
       startSession(video.id);
     } catch (error) {
-      if (axiosInstance.isAxiosError(error)) {
+      if (axios.isAxiosError(error)) {
         if (error.code === 'ERR_CANCELED') {
           setError('Scan was cancelled');
         } else {
@@ -250,7 +254,7 @@ const KidsMode: React.FC = () => {
       ) : currentVideo ? (
         <div className="player-view">
           <button className="exit-button" onClick={handleExit}>
-            <FiX />
+            <XIcon />
           </button>
 
           {currentVideo.remaining_minutes && (

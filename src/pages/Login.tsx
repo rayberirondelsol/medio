@@ -4,6 +4,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { FiMail, FiLock, FiPlay } from 'react-icons/fi';
 import './Auth.css';
 
+const PlayIcon = FiPlay as React.ElementType;
+const MailIcon = FiMail as React.ElementType;
+const LockIcon = FiLock as React.ElementType;
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,7 +41,7 @@ const Login: React.FC = () => {
       <div className="auth-card">
         <div className="auth-header">
           <div className="logo">
-            <FiPlay className="logo-icon" />
+            <PlayIcon className="logo-icon" />
             <h1>Medio</h1>
           </div>
           <p>Welcome back!</p>
@@ -48,7 +52,7 @@ const Login: React.FC = () => {
           
           <div className="form-group">
             <label htmlFor="email">
-              <FiMail />
+              <MailIcon />
               Email
             </label>
             <input
@@ -66,7 +70,7 @@ const Login: React.FC = () => {
 
           <div className="form-group">
             <label htmlFor="password">
-              <FiLock />
+              <LockIcon />
               Password
             </label>
             <input
@@ -98,7 +102,7 @@ const Login: React.FC = () => {
             Don't have an account? <Link to="/register">Sign up</Link>
           </p>
           <Link to="/kids" className="kids-mode-link">
-            <FiPlay /> Enter Kids Mode
+            <PlayIcon /> Enter Kids Mode
           </Link>
         </div>
       </div>

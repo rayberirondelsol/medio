@@ -14,6 +14,12 @@ interface Profile {
   created_at: string;
 }
 
+const PlusIcon = FiPlus as React.ElementType;
+const Edit2Icon = FiEdit2 as React.ElementType;
+const Trash2Icon = FiTrash2 as React.ElementType;
+const ClockIcon = FiClock as React.ElementType;
+const UserIcon = FiUser as React.ElementType;
+
 const Profiles: React.FC = () => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -80,7 +86,7 @@ const Profiles: React.FC = () => {
         <div className="page-header">
           <h1>Child Profiles</h1>
           <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-            <FiPlus /> Add Profile
+            <PlusIcon /> Add Profile
           </button>
         </div>
 
@@ -88,11 +94,11 @@ const Profiles: React.FC = () => {
           <div className="loading">Loading profiles...</div>
         ) : profiles.length === 0 ? (
           <div className="empty-state">
-            <FiUser className="empty-icon" />
+            <UserIcon className="empty-icon" />
             <h2>No profiles yet</h2>
             <p>Create profiles for your children to manage their watch time</p>
             <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-              <FiPlus /> Add Profile
+              <PlusIcon /> Add Profile
             </button>
           </div>
         ) : (
@@ -105,20 +111,20 @@ const Profiles: React.FC = () => {
                 <div className="profile-info">
                   <h3>{profile.name}</h3>
                   <div className="profile-limits">
-                    <FiClock />
+                    <ClockIcon />
                     <span>{profile.daily_limit_minutes} min/day</span>
                   </div>
                 </div>
                 <div className="profile-actions">
                   <button className="btn-icon" title="Edit">
-                    <FiEdit2 />
+                    <Edit2Icon />
                   </button>
                   <button 
                     className="btn-icon delete" 
                     title="Delete"
                     onClick={() => handleDeleteProfile(profile.id)}
                   >
-                    <FiTrash2 />
+                    <Trash2Icon />
                   </button>
                 </div>
               </div>

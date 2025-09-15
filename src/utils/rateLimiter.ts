@@ -238,7 +238,7 @@ export function throttle<T extends (...args: any[]) => any>(
   let timeout: NodeJS.Timeout | null = null;
   let lastArgs: Parameters<T> | null = null;
 
-  return function (...args: Parameters<T>) {
+  return function (this: any, ...args: Parameters<T>) {
     const now = Date.now();
     lastArgs = args; // Always store the most recent arguments
 
@@ -269,7 +269,7 @@ export function debounce<T extends (...args: any[]) => any>(
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
   
-  return function (...args: Parameters<T>) {
+  return function (this: any, ...args: Parameters<T>) {
     if (timeout) {
       clearTimeout(timeout);
     }

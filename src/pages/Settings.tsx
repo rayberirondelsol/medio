@@ -4,6 +4,11 @@ import { FiUser, FiLock, FiBell, FiShield } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
 import './Settings.css';
 
+const UserIcon = FiUser as React.ElementType;
+const LockIcon = FiLock as React.ElementType;
+const BellIcon = FiBell as React.ElementType;
+const ShieldIcon = FiShield as React.ElementType;
+
 const Settings: React.FC = () => {
   const { user } = useAuth();
 
@@ -16,7 +21,7 @@ const Settings: React.FC = () => {
 
         <div className="settings-sections">
           <section className="settings-section">
-            <h2><FiUser /> Account Information</h2>
+            <h2><UserIcon /> Account Information</h2>
             <div className="settings-content">
               <div className="setting-item">
                 <label>Name</label>
@@ -30,7 +35,7 @@ const Settings: React.FC = () => {
           </section>
 
           <section className="settings-section">
-            <h2><FiLock /> Security</h2>
+            <h2><LockIcon /> Security</h2>
             <div className="settings-content">
               <button className="btn btn-secondary">Change Password</button>
               <button className="btn btn-secondary">Enable Two-Factor Authentication</button>
@@ -38,7 +43,7 @@ const Settings: React.FC = () => {
           </section>
 
           <section className="settings-section">
-            <h2><FiBell /> Notifications</h2>
+            <h2><BellIcon /> Notifications</h2>
             <div className="settings-content">
               <label className="checkbox-label">
                 <input type="checkbox" defaultChecked />
@@ -52,7 +57,7 @@ const Settings: React.FC = () => {
           </section>
 
           <section className="settings-section">
-            <h2><FiShield /> Parental Controls</h2>
+            <h2><ShieldIcon /> Parental Controls</h2>
             <div className="settings-content">
               <label className="checkbox-label">
                 <input type="checkbox" defaultChecked />

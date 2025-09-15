@@ -38,19 +38,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { path: '/settings', label: 'Settings', icon: FiSettings },
   ];
 
+  const PlayIcon = FiPlay as React.ElementType;
+
+  const MoonIcon = FiMoon as React.ElementType;
+  const SunIcon = FiSun as React.ElementType;
+
+  const LogOutIcon = FiLogOut as React.ElementType;
+
   return (
     <div className="layout">
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="logo">
-            <FiPlay className="logo-icon" />
+            <PlayIcon className="logo-icon" />
             <span>Medio</span>
           </div>
         </div>
 
         <nav className="sidebar-nav">
           {navItems.map((item) => {
-            const Icon = item.icon;
+            const Icon = item.icon as React.ElementType;
             return (
               <Link
                 key={item.path}
@@ -66,7 +73,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         <div className="sidebar-footer">
           <button className="theme-toggle" onClick={toggleTheme}>
-            {theme === 'light' ? <FiMoon /> : <FiSun />}
+            {theme === 'light' ? <MoonIcon /> : <SunIcon />}
             <span>{theme === 'light' ? 'Dark' : 'Light'} Mode</span>
           </button>
           
@@ -76,7 +83,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <span className="user-email">{user?.email}</span>
             </div>
             <button className="logout-btn" onClick={handleLogout}>
-              <FiLogOut />
+              <LogOutIcon />
             </button>
           </div>
         </div>
