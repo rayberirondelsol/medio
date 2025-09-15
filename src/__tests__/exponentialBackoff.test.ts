@@ -15,14 +15,15 @@ jest.mock('../components/VideoPlayer', () => {
   };
 });
 
+// Store the onScan callback globally
+let globalOnScan: ((chipUID: string) => void) | null = null;
+
 jest.mock('../components/NFCScanner', () => {
   return function NFCScanner({ onScan }: { onScan: (chipUID: string) => void }) {
     const React = require('react');
 
-    React.useEffect(() => {
-      // Store the onScan callback globally for test access
-      (global as any).mockOnScan = onScan;
-    }, [onScan]);
+    // Store the callback immediately when component is rendered
+    globalOnScan = onScan;
 
     return React.createElement('div', { 'data-testid': 'nfc-scanner' }, 'NFCScanner');
   };
@@ -32,7 +33,10 @@ describe('Exponential Backoff in KidsMode', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    
+
+    // Reset global onScan callback
+    globalOnScan = null;
+
     // Setup default axios mocks
     mockedAxios.post = jest.fn();
     mockedAxios.isAxiosError = jest.fn().mockReturnValue(false);
@@ -49,7 +53,7 @@ describe('Exponential Backoff in KidsMode', () => {
       
       // Mock successful NFC scan and session start
       mockedAxios.post.mockImplementation((url) => {
-        if (url.includes('/nfc/scan')) {
+        if (url.includes('/nfc/scan/public')) {
           return Promise.resolve({
             data: { 
               id: 'video-1', 
@@ -59,7 +63,7 @@ describe('Exponential Backoff in KidsMode', () => {
             }
           });
         }
-        if (url.includes('/sessions/start')) {
+        if (url.includes('/sessions/start/public')) {
           return Promise.resolve({
             data: { 
               session_id: 'session-1',
@@ -67,7 +71,7 @@ describe('Exponential Backoff in KidsMode', () => {
             }
           });
         }
-        if (url.includes('/sessions/heartbeat')) {
+        if (url.includes('/sessions/heartbeat/public')) {
           return Promise.resolve({
             data: {
               should_stop: false,
@@ -78,17 +82,22 @@ describe('Exponential Backoff in KidsMode', () => {
         return Promise.reject(new Error('Unknown endpoint'));
       });
 
+      // Wait for the NFCScanner to render and store the callback
+      await waitFor(() => {
+        expect(globalOnScan).toBeTruthy();
+      });
+
       // Trigger NFC scan
       await act(async () => {
-        if ((global as any).mockOnScan) {
-          (global as any).mockOnScan('ABC123');
+        if (globalOnScan) {
+          globalOnScan('ABC123');
         }
       });
 
       // Wait for session to start
       await waitFor(() => {
         expect(mockedAxios.post).toHaveBeenCalledWith(
-          expect.stringContaining('/sessions/start'),
+          expect.stringContaining('/sessions/start/public'),
           expect.any(Object),
           expect.any(Object)
         );
@@ -101,7 +110,7 @@ describe('Exponential Backoff in KidsMode', () => {
 
       await waitFor(() => {
         expect(mockedAxios.post).toHaveBeenCalledWith(
-          expect.stringContaining('/sessions/heartbeat'),
+          expect.stringContaining('/sessions/heartbeat/public'),
           expect.any(Object),
           expect.any(Object)
         );
@@ -116,7 +125,7 @@ describe('Exponential Backoff in KidsMode', () => {
       let heartbeatCallCount = 0;
       
       mockedAxios.post.mockImplementation((url) => {
-        if (url.includes('/nfc/scan')) {
+        if (url.includes('/nfc/scan/public')) {
           return Promise.resolve({
             data: { 
               id: 'video-1', 
@@ -126,7 +135,7 @@ describe('Exponential Backoff in KidsMode', () => {
             }
           });
         }
-        if (url.includes('/sessions/start')) {
+        if (url.includes('/sessions/start/public')) {
           return Promise.resolve({
             data: { 
               session_id: 'session-1',
@@ -134,7 +143,7 @@ describe('Exponential Backoff in KidsMode', () => {
             }
           });
         }
-        if (url.includes('/sessions/heartbeat')) {
+        if (url.includes('/sessions/heartbeat/public')) {
           heartbeatCallCount++;
           // Fail first heartbeat
           if (heartbeatCallCount === 1) {
@@ -151,16 +160,21 @@ describe('Exponential Backoff in KidsMode', () => {
         return Promise.reject(new Error('Unknown endpoint'));
       });
 
+      // Wait for the NFCScanner to render and store the callback
+      await waitFor(() => {
+        expect(globalOnScan).toBeTruthy();
+      });
+
       // Start session
       await act(async () => {
-        if ((global as any).mockOnScan) {
-          (global as any).mockOnScan('ABC123');
+        if (globalOnScan) {
+          globalOnScan('ABC123');
         }
       });
 
       await waitFor(() => {
         expect(mockedAxios.post).toHaveBeenCalledWith(
-          expect.stringContaining('/sessions/start'),
+          expect.stringContaining('/sessions/start/public'),
           expect.any(Object),
           expect.any(Object)
         );
@@ -193,7 +207,7 @@ describe('Exponential Backoff in KidsMode', () => {
       let heartbeatCallCount = 0;
       
       mockedAxios.post.mockImplementation((url) => {
-        if (url.includes('/nfc/scan')) {
+        if (url.includes('/nfc/scan/public')) {
           return Promise.resolve({
             data: { 
               id: 'video-1', 
@@ -203,7 +217,7 @@ describe('Exponential Backoff in KidsMode', () => {
             }
           });
         }
-        if (url.includes('/sessions/start')) {
+        if (url.includes('/sessions/start/public')) {
           return Promise.resolve({
             data: { 
               session_id: 'session-1',
@@ -211,7 +225,7 @@ describe('Exponential Backoff in KidsMode', () => {
             }
           });
         }
-        if (url.includes('/sessions/heartbeat')) {
+        if (url.includes('/sessions/heartbeat/public')) {
           heartbeatCallCount++;
           // Always fail to test max backoff
           return Promise.reject(new Error('Network error'));
@@ -219,16 +233,21 @@ describe('Exponential Backoff in KidsMode', () => {
         return Promise.reject(new Error('Unknown endpoint'));
       });
 
+      // Wait for the NFCScanner to render and store the callback
+      await waitFor(() => {
+        expect(globalOnScan).toBeTruthy();
+      });
+
       // Start session
       await act(async () => {
-        if ((global as any).mockOnScan) {
-          (global as any).mockOnScan('ABC123');
+        if (globalOnScan) {
+          globalOnScan('ABC123');
         }
       });
 
       await waitFor(() => {
         expect(mockedAxios.post).toHaveBeenCalledWith(
-          expect.stringContaining('/sessions/start'),
+          expect.stringContaining('/sessions/start/public'),
           expect.any(Object),
           expect.any(Object)
         );
@@ -264,7 +283,7 @@ describe('Exponential Backoff in KidsMode', () => {
       let heartbeatCallCount = 0;
       
       mockedAxios.post.mockImplementation((url) => {
-        if (url.includes('/nfc/scan')) {
+        if (url.includes('/nfc/scan/public')) {
           return Promise.resolve({
             data: { 
               id: 'video-1', 
@@ -274,7 +293,7 @@ describe('Exponential Backoff in KidsMode', () => {
             }
           });
         }
-        if (url.includes('/sessions/start')) {
+        if (url.includes('/sessions/start/public')) {
           return Promise.resolve({
             data: { 
               session_id: 'session-1',
@@ -282,7 +301,7 @@ describe('Exponential Backoff in KidsMode', () => {
             }
           });
         }
-        if (url.includes('/sessions/heartbeat')) {
+        if (url.includes('/sessions/heartbeat/public')) {
           heartbeatCallCount++;
           // Fail first, succeed second, fail third
           if (heartbeatCallCount === 1 || heartbeatCallCount === 3) {
@@ -298,16 +317,21 @@ describe('Exponential Backoff in KidsMode', () => {
         return Promise.reject(new Error('Unknown endpoint'));
       });
 
+      // Wait for the NFCScanner to render and store the callback
+      await waitFor(() => {
+        expect(globalOnScan).toBeTruthy();
+      });
+
       // Start session
       await act(async () => {
-        if ((global as any).mockOnScan) {
-          (global as any).mockOnScan('ABC123');
+        if (globalOnScan) {
+          globalOnScan('ABC123');
         }
       });
 
       await waitFor(() => {
         expect(mockedAxios.post).toHaveBeenCalledWith(
-          expect.stringContaining('/sessions/start'),
+          expect.stringContaining('/sessions/start/public'),
           expect.any(Object),
           expect.any(Object)
         );
@@ -347,7 +371,7 @@ describe('Exponential Backoff in KidsMode', () => {
       const { unmount } = render(React.createElement(KidsMode));
       
       mockedAxios.post.mockImplementation((url) => {
-        if (url.includes('/nfc/scan')) {
+        if (url.includes('/nfc/scan/public')) {
           return Promise.resolve({
             data: { 
               id: 'video-1', 
@@ -357,7 +381,7 @@ describe('Exponential Backoff in KidsMode', () => {
             }
           });
         }
-        if (url.includes('/sessions/start')) {
+        if (url.includes('/sessions/start/public')) {
           return Promise.resolve({
             data: { 
               session_id: 'session-1',
@@ -365,7 +389,7 @@ describe('Exponential Backoff in KidsMode', () => {
             }
           });
         }
-        if (url.includes('/sessions/heartbeat')) {
+        if (url.includes('/sessions/heartbeat/public')) {
           return Promise.resolve({
             data: {
               should_stop: false,
@@ -376,23 +400,28 @@ describe('Exponential Backoff in KidsMode', () => {
         return Promise.reject(new Error('Unknown endpoint'));
       });
 
+      // Wait for the NFCScanner to render and store the callback
+      await waitFor(() => {
+        expect(globalOnScan).toBeTruthy();
+      });
+
       // Start session
       await act(async () => {
-        if ((global as any).mockOnScan) {
-          (global as any).mockOnScan('ABC123');
+        if (globalOnScan) {
+          globalOnScan('ABC123');
         }
       });
 
       await waitFor(() => {
         expect(mockedAxios.post).toHaveBeenCalledWith(
-          expect.stringContaining('/sessions/start'),
+          expect.stringContaining('/sessions/start/public'),
           expect.any(Object),
           expect.any(Object)
         );
       });
 
       const heartbeatCallsBefore = mockedAxios.post.mock.calls.filter(
-        call => call[0].includes('/sessions/heartbeat')
+        call => call[0].includes('/sessions/heartbeat/public')
       ).length;
 
       // Unmount component
@@ -405,7 +434,7 @@ describe('Exponential Backoff in KidsMode', () => {
 
       // No new heartbeat calls should have been made
       const heartbeatCallsAfter = mockedAxios.post.mock.calls.filter(
-        call => call[0].includes('/sessions/heartbeat')
+        call => call[0].includes('/sessions/heartbeat/public')
       ).length;
 
       expect(heartbeatCallsAfter).toBe(heartbeatCallsBefore);

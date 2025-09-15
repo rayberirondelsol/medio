@@ -1,41 +1,88 @@
 // Mock axios before importing apiClient
-const mockInterceptors = {
-  request: {
-    use: jest.fn(),
-    handlers: [] as any[]
-  },
-  response: {
-    use: jest.fn(),
-    handlers: [] as any[]
-  }
-};
-
-const mockAxiosInstance = {
-  defaults: {
-    timeout: 10000,
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'application/json'
+jest.mock('axios', () => {
+  const mockInterceptors = {
+    request: {
+      use: jest.fn(),
+      handlers: [] as any[]
+    },
+    response: {
+      use: jest.fn(),
+      handlers: [] as any[]
     }
-  },
-  interceptors: mockInterceptors
-};
+  };
 
-jest.mock('axios', () => ({
-  defaults: {
-    timeout: 10000,
-    withCredentials: true
-  },
-  create: jest.fn(() => mockAxiosInstance)
-}));
+  const mockAxiosInstance = {
+    defaults: {
+      timeout: 10000,
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    },
+    interceptors: mockInterceptors
+  };
+
+  const mockAxios = {
+    defaults: {
+      timeout: 10000,
+      withCredentials: true
+    },
+    create: jest.fn(() => mockAxiosInstance)
+  };
+
+  return mockAxios;
+});
 
 import axios from 'axios';
-import apiClient from '../api';
+
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe('API Configuration', () => {
+  let mockInterceptors: any;
+
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Create mock interceptors
+    const mockRequestUse = jest.fn();
+    const mockResponseUse = jest.fn();
+
+    // Reset the mock to return the instance properly
+    (mockAxios.create as jest.MockedFunction<typeof mockAxios.create>).mockReturnValue({
+      defaults: {
+        timeout: 10000,
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      },
+      interceptors: {
+        request: {
+          use: mockRequestUse,
+          handlers: [] as any[]
+        },
+        response: {
+          use: mockResponseUse,
+          handlers: [] as any[]
+        }
+      }
+    } as any);
+
+    // Set up mock interceptors for testing
+    mockInterceptors = {
+      request: {
+        use: mockRequestUse,
+        handlers: [] as any[]
+      },
+      response: {
+        use: mockResponseUse,
+        handlers: [] as any[]
+      }
+    };
+
+    // Import api module to trigger interceptor setup
+    jest.resetModules();
+    require('../api');
 
     // Reset handlers arrays
     mockInterceptors.request.handlers = [];
@@ -60,6 +107,7 @@ describe('API Configuration', () => {
   });
 
   it('should create apiClient with correct configuration', () => {
+    const { default: apiClient } = require('../api');
     expect(apiClient.defaults.timeout).toBe(10000);
     expect(apiClient.defaults.withCredentials).toBe(true);
     expect(apiClient.defaults.headers['Content-Type']).toBe('application/json');
