@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Layout from '../components/Layout';
 import LazyImage from '../components/LazyImage';
 import { useLoading } from '../contexts/LoadingContext';
@@ -51,11 +51,7 @@ const Videos: React.FC = () => {
     { id: '4', name: 'Disney+', icon: FiLink },
   ];
 
-  useEffect(() => {
-    fetchVideos();
-  }, []);
-
-  const fetchVideos = async () => {
+  const fetchVideos = useCallback(async () => {
     startLoading('videos');
     try {
       const response = await axios.get(`${API_URL}/videos`);
@@ -65,7 +61,11 @@ const Videos: React.FC = () => {
     } finally {
       stopLoading('videos');
     }
-  };
+  }, [setVideos, startLoading, stopLoading]);
+
+  useEffect(() => {
+    fetchVideos();
+  }, [fetchVideos]);
 
   const handleAddVideo = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FiCreditCard } from 'react-icons/fi';
 import './NFCScanner.css';
 
@@ -10,14 +10,7 @@ const NFCScanner: React.FC<NFCScannerProps> = ({ onScan }) => {
   const [isScanning, setIsScanning] = useState(false);
   const [simulatedUID, setSimulatedUID] = useState('');
 
-  useEffect(() => {
-    // Check if Web NFC is available
-    if ('NDEFReader' in window) {
-      initializeNFC();
-    }
-  }, [onScan, initializeNFC]); // Include onScan in dependencies
-
-  const initializeNFC = async () => {
+  const initializeNFC = useCallback(async () => {
     // Real NFC implementation would go here
     // This requires HTTPS and compatible browser/device
     try {
@@ -48,9 +41,16 @@ const NFCScanner: React.FC<NFCScannerProps> = ({ onScan }) => {
     } catch (error) {
       console.log('Web NFC not available, using simulation mode:', error);
     }
-  };
+  }, [onScan]); // Add onScan to the dependency array of useCallback
 
-  const handleSimulatedScan = () => {
+  useEffect(() => {
+    // Check if Web NFC is available
+    if ('NDEFReader' in window) {
+      initializeNFC();
+    }
+  }, [initializeNFC]); // Include onScan in dependencies
+
+  const handleSimulatedScan = useCallback(() => {
     if (simulatedUID) {
       setIsScanning(true);
       setTimeout(() => {
@@ -59,7 +59,7 @@ const NFCScanner: React.FC<NFCScannerProps> = ({ onScan }) => {
         setSimulatedUID('');
       }, 1500);
     }
-  };
+  }, [simulatedUID, onScan, setIsScanning]);
 
   const CreditCardIcon = FiCreditCard as React.ElementType;
 

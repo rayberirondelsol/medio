@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FiCreditCard, FiX } from 'react-icons/fi';
+import { FiX } from 'react-icons/fi';
 import axios from 'axios';
 import axiosInstance, { RequestManager } from '../utils/axiosConfig';
 import VideoPlayer from '../components/VideoPlayer';
@@ -28,8 +28,6 @@ interface Session {
 }
 
 const XIcon = FiX as React.ElementType;
-const CreditCardIcon = FiCreditCard as React.ElementType;
-
 const KidsMode: React.FC = () => {
   const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
@@ -260,6 +258,7 @@ const KidsMode: React.FC = () => {
           {currentVideo.remaining_minutes && (
             <div className="time-remaining">
               Time remaining today: {currentVideo.remaining_minutes} minutes
+              {watchTime > 0 && <span> (Watched: {watchTime} minutes)</span>}
             </div>
           )}
 

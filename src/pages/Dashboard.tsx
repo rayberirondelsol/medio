@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
     totalNFCChips: 0,
     watchTimeToday: 0
   });
-  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [recentActivity] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
