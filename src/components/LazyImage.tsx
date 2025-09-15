@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { IMAGE_PLACEHOLDERS, LAZY_LOAD_CONFIG, IMAGE_TRANSITION } from '../constants/images';
 
 interface LazyImageProps {
   src: string;
@@ -13,13 +14,12 @@ interface LazyImageProps {
 const LazyImage: React.FC<LazyImageProps> = ({
   src,
   alt,
-  placeholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2U5ZWNlZiIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjIwMCIgeT0iMTUwIiBzdHlsZT0iZmlsbDojYWRiNWJkO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjI0cHg7Zm9udC1mYW1pbHk6QXJpYWwsc2Fucy1zZXJpZiI+TG9hZGluZy4uLjwvdGV4dD48L3N2Zz4=',
+  placeholder = IMAGE_PLACEHOLDERS.LOADING,
   className,
   style,
   onLoad,
   onError
 }) => {
-  const errorPlaceholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2Y4ZDdkYSIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjIwMCIgeT0iMTUwIiBzdHlsZT0iZmlsbDojNzIxYzI0O2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjIwcHg7Zm9udC1mYW1pbHk6QXJpYWwsc2Fucy1zZXJpZiI+SW1hZ2UgZmFpbGVkIHRvIGxvYWQ8L3RleHQ+PC9zdmc+';
   
   const [imageSrc, setImageSrc] = useState<string>(placeholder);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -37,10 +37,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
           }
         });
       },
-      {
-        threshold: 0.1,
-        rootMargin: '50px'
-      }
+      LAZY_LOAD_CONFIG
     );
 
     if (imgRef.current) {
@@ -55,24 +52,38 @@ const LazyImage: React.FC<LazyImageProps> = ({
   useEffect(() => {
     if (isInView && src && !hasError) {
       const img = new Image();
+      let isCancelled = false;
       
       img.onload = () => {
-        setImageSrc(src);
-        setIsLoaded(true);
-        setHasError(false);
-        if (onLoad) onLoad();
+        if (!isCancelled) {
+          setImageSrc(src);
+          setIsLoaded(true);
+          setHasError(false);
+          if (onLoad) onLoad();
+        }
       };
       
       img.onerror = () => {
-        setImageSrc(errorPlaceholder);
-        setHasError(true);
-        setIsLoaded(false);
-        if (onError) onError();
+        if (!isCancelled) {
+          setImageSrc(IMAGE_PLACEHOLDERS.ERROR);
+          setHasError(true);
+          setIsLoaded(false);
+          if (onError) onError();
+        }
       };
       
       img.src = src;
+      
+      // Cleanup function to prevent memory leaks
+      return () => {
+        isCancelled = true;
+        // Clear the image src to cancel loading
+        img.src = '';
+        img.onload = null;
+        img.onerror = null;
+      };
     }
-  }, [isInView, src, hasError, onLoad, onError, errorPlaceholder]);
+  }, [isInView, src, hasError, onLoad, onError]);
 
   return (
     <img
@@ -82,7 +93,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
       className={className}
       style={{
         ...style,
-        transition: 'opacity 0.3s ease-in-out',
+        transition: `opacity ${IMAGE_TRANSITION.duration} ${IMAGE_TRANSITION.easing}`,
         opacity: isLoaded || hasError ? 1 : 0.7
       }}
       loading="lazy"

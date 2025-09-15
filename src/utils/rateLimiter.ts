@@ -24,6 +24,8 @@
  * NOT as a security measure.
  */
 
+import { RATE_LIMITER_CONFIG } from '../constants/rateLimits';
+
 interface RateLimiterOptions {
   maxRequests: number;
   windowMs: number;
@@ -38,7 +40,6 @@ interface RateLimiterState {
 class RateLimiter {
   private limits: Map<string, RateLimiterState> = new Map();
   private cleanupInterval: NodeJS.Timer | null = null;
-  private readonly CLEANUP_INTERVAL_MS = 60000; // Clean up every minute
   
   constructor() {
     this.startCleanupTimer();
@@ -54,7 +55,7 @@ class RateLimiter {
     
     this.cleanupInterval = setInterval(() => {
       this.cleanupExpired();
-    }, this.CLEANUP_INTERVAL_MS);
+    }, RATE_LIMITER_CONFIG.CLEANUP_INTERVAL_MS);
   }
   
   /**
@@ -189,9 +190,14 @@ export function rateLimit(options: RateLimiterOptions) {
 }
 
 /**
- * Hook for using rate limiter in React components
+ * Rate limiter utility functions for use in React components
+ * 
+ * NOTE: This is not a React hook despite the 'use' prefix.
+ * It returns utility functions that can be called anywhere.
+ * If you need React state integration, wrap these utilities
+ * in your own custom hook.
  */
-export function useRateLimiter(options: RateLimiterOptions) {
+export function createRateLimiterUtils(options: RateLimiterOptions) {
   const isAllowed = (): boolean => {
     return rateLimiter.isAllowed(options);
   };

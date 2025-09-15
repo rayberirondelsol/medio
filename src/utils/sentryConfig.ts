@@ -39,8 +39,21 @@ const validateDSN = (dsn: string): boolean => {
 
 export const initSentry = () => {
   // Only initialize in production
-  if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_SENTRY_DSN) {
+  if (process.env.NODE_ENV === 'production') {
     const dsn = process.env.REACT_APP_SENTRY_DSN;
+    
+    // SECURITY NOTE: The DSN will be exposed in the client bundle.
+    // This is acceptable as Sentry DSNs are designed to be public.
+    // However, for additional security:
+    // 1. Use Sentry's tunnel option to proxy through your backend
+    // 2. Implement rate limiting on your Sentry project
+    // 3. Configure allowed domains in Sentry project settings
+    // 4. Use Content Security Policy (CSP) headers
+    
+    if (!dsn) {
+      // Silently skip initialization if no DSN is provided
+      return;
+    }
     
     // Validate DSN before initializing
     if (!validateDSN(dsn)) {
@@ -50,6 +63,8 @@ export const initSentry = () => {
     
     Sentry.init({
       dsn,
+      // Use tunnel option for enhanced security (requires backend setup)
+      // tunnel: '/api/sentry-tunnel',
       integrations: [
         Sentry.browserTracingIntegration(),
       ],

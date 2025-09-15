@@ -1,6 +1,6 @@
 import rateLimiter, { 
   rateLimit, 
-  useRateLimiter, 
+  createRateLimiterUtils, 
   throttle, 
   debounce 
 } from '../rateLimiter';
@@ -222,23 +222,23 @@ describe('debounce', () => {
   });
 });
 
-describe('useRateLimiter hook', () => {
+describe('createRateLimiterUtils', () => {
   it('provides rate limiter interface', () => {
-    const hook = useRateLimiter({ maxRequests: 2, windowMs: 1000, key: 'hook-test' });
+    const utils = createRateLimiterUtils({ maxRequests: 2, windowMs: 1000, key: 'utils-test' });
     
-    expect(hook.isAllowed()).toBe(true);
-    expect(hook.getRemainingRequests()).toBe(1);
+    expect(utils.isAllowed()).toBe(true);
+    expect(utils.getRemainingRequests()).toBe(1);
     
-    expect(hook.isAllowed()).toBe(true);
-    expect(hook.getRemainingRequests()).toBe(0);
+    expect(utils.isAllowed()).toBe(true);
+    expect(utils.getRemainingRequests()).toBe(0);
     
-    expect(hook.isAllowed()).toBe(false);
+    expect(utils.isAllowed()).toBe(false);
     
-    const resetTime = hook.getResetTime();
+    const resetTime = utils.getResetTime();
     expect(resetTime).toBeGreaterThan(0);
     expect(resetTime).toBeLessThanOrEqual(1000);
     
-    hook.reset();
-    expect(hook.isAllowed()).toBe(true);
+    utils.reset();
+    expect(utils.isAllowed()).toBe(true);
   });
 });

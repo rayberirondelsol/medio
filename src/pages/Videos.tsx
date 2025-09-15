@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import LazyImage from '../components/LazyImage';
 import { useLoading } from '../contexts/LoadingContext';
-import { useRateLimiter } from '../utils/rateLimiter';
+import { createRateLimiterUtils } from '../utils/rateLimiter';
+import { RATE_LIMITS } from '../constants/rateLimits';
 import { FiPlus, FiEdit2, FiTrash2, FiLink, FiYoutube } from 'react-icons/fi';
 import { SiNetflix, SiPrime, SiDisney } from 'react-icons/si';
 import axios from 'axios';
@@ -25,9 +26,8 @@ const Videos: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const { startLoading, stopLoading, isLoading } = useLoading();
-  const deleteRateLimiter = useRateLimiter({ 
-    maxRequests: 5, 
-    windowMs: 60000, // 5 deletions per minute
+  const deleteRateLimiter = createRateLimiterUtils({ 
+    ...RATE_LIMITS.VIDEO_DELETE,
     key: 'video-delete' 
   });
   const [formData, setFormData] = useState({
