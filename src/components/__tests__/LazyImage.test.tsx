@@ -3,21 +3,31 @@ import { render, screen, waitFor } from '@testing-library/react';
 import LazyImage from '../LazyImage';
 
 // Mock IntersectionObserver
-const mockIntersectionObserver = jest.fn();
-mockIntersectionObserver.mockImplementation((callback) => ({
-  observe: jest.fn((element) => {
-    // Simulate immediate intersection
-    callback([{ isIntersecting: true }]);
-  }),
-  disconnect: jest.fn(),
-  unobserve: jest.fn(),
-}));
+const mockObserve = jest.fn();
+const mockDisconnect = jest.fn();
+const mockUnobserve = jest.fn();
 
-window.IntersectionObserver = mockIntersectionObserver as any;
+const mockIntersectionObserver = jest.fn().mockImplementation((callback) => {
+  // Simulate immediate intersection when observe is called
+  mockObserve.mockImplementation((element) => {
+    callback([{ isIntersecting: true }]);
+  });
+
+  return {
+    observe: mockObserve,
+    disconnect: mockDisconnect,
+    unobserve: mockUnobserve,
+  };
+});
+
+(global as any).IntersectionObserver = mockIntersectionObserver;
 
 describe('LazyImage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockObserve.mockClear();
+    mockDisconnect.mockClear();
+    mockUnobserve.mockClear();
   });
 
   it('renders with placeholder initially', () => {

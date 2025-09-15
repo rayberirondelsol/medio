@@ -1,50 +1,43 @@
 // Mock axios before importing apiClient
-jest.mock('axios', () => {
-  const mockInterceptors = {
-    request: {
-      use: jest.fn(),
-      handlers: [] as any[]
-    },
-    response: {
-      use: jest.fn(),
-      handlers: [] as any[]
-    }
-  };
+const mockInterceptors = {
+  request: {
+    use: jest.fn(),
+    handlers: [] as any[]
+  },
+  response: {
+    use: jest.fn(),
+    handlers: [] as any[]
+  }
+};
 
-  return {
-    defaults: {
-      timeout: 10000,
-      withCredentials: true
-    },
-    create: jest.fn(() => ({
-      defaults: {
-        timeout: 10000,
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      },
-      interceptors: mockInterceptors
-    }))
-  };
-});
+const mockAxiosInstance = {
+  defaults: {
+    timeout: 10000,
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  },
+  interceptors: mockInterceptors
+};
+
+jest.mock('axios', () => ({
+  defaults: {
+    timeout: 10000,
+    withCredentials: true
+  },
+  create: jest.fn(() => mockAxiosInstance)
+}));
 
 import axios from 'axios';
 import apiClient from '../api';
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe('API Configuration', () => {
-  let mockInterceptors: any;
-
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Get the interceptors from the mocked axios instance
-    const mockAxiosCreate = mockAxios.create as jest.MockedFunction<typeof mockAxios.create>;
-    const mockInstance = mockAxiosCreate();
-    mockInterceptors = mockInstance.interceptors;
-
-    // Setup mock handlers for interceptors
+    // Reset handlers arrays
     mockInterceptors.request.handlers = [];
     mockInterceptors.response.handlers = [];
 

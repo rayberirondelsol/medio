@@ -11,14 +11,20 @@ const mockedAxios = axiosInstance as jest.Mocked<typeof axiosInstance>;
 jest.mock('../components/VideoPlayer', () => {
   return function VideoPlayer() {
     const React = require('react');
-    return React.createElement('div', null, 'VideoPlayer');
+    return React.createElement('div', { 'data-testid': 'video-player' }, 'VideoPlayer');
   };
 });
 
 jest.mock('../components/NFCScanner', () => {
-  return function NFCScanner() {
+  return function NFCScanner({ onScan }: { onScan: (chipUID: string) => void }) {
     const React = require('react');
-    return React.createElement('div', null, 'NFCScanner');
+
+    React.useEffect(() => {
+      // Store the onScan callback globally for test access
+      (global as any).mockOnScan = onScan;
+    }, [onScan]);
+
+    return React.createElement('div', { 'data-testid': 'nfc-scanner' }, 'NFCScanner');
   };
 });
 
@@ -74,11 +80,8 @@ describe('Exponential Backoff in KidsMode', () => {
 
       // Trigger NFC scan
       await act(async () => {
-        const nfcScanner = document.querySelector('[data-testid="nfc-scanner"]');
-        if (nfcScanner) {
-          // Simulate NFC scan
-          const scanEvent = new CustomEvent('scan', { detail: { chipUID: 'ABC123' } });
-          nfcScanner.dispatchEvent(scanEvent);
+        if ((global as any).mockOnScan) {
+          (global as any).mockOnScan('ABC123');
         }
       });
 
@@ -150,10 +153,8 @@ describe('Exponential Backoff in KidsMode', () => {
 
       // Start session
       await act(async () => {
-        const nfcScanner = document.querySelector('[data-testid="nfc-scanner"]');
-        if (nfcScanner) {
-          const scanEvent = new CustomEvent('scan', { detail: { chipUID: 'ABC123' } });
-          nfcScanner.dispatchEvent(scanEvent);
+        if ((global as any).mockOnScan) {
+          (global as any).mockOnScan('ABC123');
         }
       });
 
@@ -220,10 +221,8 @@ describe('Exponential Backoff in KidsMode', () => {
 
       // Start session
       await act(async () => {
-        const nfcScanner = document.querySelector('[data-testid="nfc-scanner"]');
-        if (nfcScanner) {
-          const scanEvent = new CustomEvent('scan', { detail: { chipUID: 'ABC123' } });
-          nfcScanner.dispatchEvent(scanEvent);
+        if ((global as any).mockOnScan) {
+          (global as any).mockOnScan('ABC123');
         }
       });
 
@@ -301,10 +300,8 @@ describe('Exponential Backoff in KidsMode', () => {
 
       // Start session
       await act(async () => {
-        const nfcScanner = document.querySelector('[data-testid="nfc-scanner"]');
-        if (nfcScanner) {
-          const scanEvent = new CustomEvent('scan', { detail: { chipUID: 'ABC123' } });
-          nfcScanner.dispatchEvent(scanEvent);
+        if ((global as any).mockOnScan) {
+          (global as any).mockOnScan('ABC123');
         }
       });
 
@@ -381,10 +378,8 @@ describe('Exponential Backoff in KidsMode', () => {
 
       // Start session
       await act(async () => {
-        const nfcScanner = document.querySelector('[data-testid="nfc-scanner"]');
-        if (nfcScanner) {
-          const scanEvent = new CustomEvent('scan', { detail: { chipUID: 'ABC123' } });
-          nfcScanner.dispatchEvent(scanEvent);
+        if ((global as any).mockOnScan) {
+          (global as any).mockOnScan('ABC123');
         }
       });
 
