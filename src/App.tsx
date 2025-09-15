@@ -2,8 +2,10 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { LoadingProvider } from './contexts/LoadingContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import PrivateRoute from './components/PrivateRoute';
+import LoadingSpinner from './components/LoadingSpinner';
 import './App.css';
 
 // Lazy load pages for code splitting
@@ -16,29 +18,16 @@ const Profiles = lazy(() => import('./pages/Profiles'));
 const NFCManager = lazy(() => import('./pages/NFCManager'));
 const Settings = lazy(() => import('./pages/Settings'));
 
-// Loading component
-const LoadingSpinner = () => (
-  <div style={{ 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    height: '100vh',
-    fontSize: '1.5rem',
-    color: '#666'
-  }}>
-    Loading...
-  </div>
-);
-
 function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
         <AuthProvider>
-          <Router>
-            <div className="App">
-            <Suspense fallback={<LoadingSpinner />}>
-              <Routes>
+          <LoadingProvider>
+            <Router>
+              <div className="App">
+              <Suspense fallback={<LoadingSpinner size="large" overlay />}>
+                <Routes>
                 {/* Public routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
@@ -77,6 +66,7 @@ function App() {
             </Suspense>
           </div>
         </Router>
+      </LoadingProvider>
       </AuthProvider>
     </ThemeProvider>
     </ErrorBoundary>

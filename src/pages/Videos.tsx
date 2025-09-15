@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import LazyImage from '../components/LazyImage';
+import { useLoading } from '../contexts/LoadingContext';
+import { createRateLimiterUtils } from '../utils/rateLimiter';
+import { RATE_LIMITS } from '../constants/rateLimits';
 import { FiPlus, FiEdit2, FiTrash2, FiLink, FiYoutube } from 'react-icons/fi';
 import { SiNetflix, SiPrime, SiDisney } from 'react-icons/si';
 import axios from 'axios';
@@ -21,7 +25,11 @@ interface Video {
 const Videos: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { startLoading, stopLoading, isLoading } = useLoading();
+  const deleteRateLimiter = createRateLimiterUtils({ 
+    ...RATE_LIMITS.VIDEO_DELETE,
+    key: 'video-delete' 
+  });
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -43,18 +51,20 @@ const Videos: React.FC = () => {
   }, []);
 
   const fetchVideos = async () => {
+    startLoading('videos');
     try {
       const response = await axios.get(`${API_URL}/videos`);
       setVideos(response.data);
-      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching videos:', error);
-      setIsLoading(false);
+    } finally {
+      stopLoading('videos');
     }
   };
 
   const handleAddVideo = async (e: React.FormEvent) => {
     e.preventDefault();
+    startLoading('addVideo');
     try {
       const response = await axios.post(`${API_URL}/videos`, formData);
       setVideos([response.data, ...videos]);
@@ -62,16 +72,27 @@ const Videos: React.FC = () => {
       resetForm();
     } catch (error) {
       console.error('Error adding video:', error);
+    } finally {
+      stopLoading('addVideo');
     }
   };
 
   const handleDeleteVideo = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this video?')) {
+      if (!deleteRateLimiter.isAllowed()) {
+        const resetTime = deleteRateLimiter.getResetTime();
+        alert(`Too many deletions. Please try again in ${Math.ceil(resetTime / 1000)} seconds.`);
+        return;
+      }
+      
+      startLoading('deleteVideo');
       try {
         await axios.delete(`${API_URL}/videos/${id}`);
         setVideos(videos.filter(v => v.id !== id));
       } catch (error) {
         console.error('Error deleting video:', error);
+      } finally {
+        stopLoading('deleteVideo');
       }
     }
   };
@@ -111,7 +132,7 @@ const Videos: React.FC = () => {
           </button>
         </div>
 
-        {isLoading ? (
+        {isLoading('videos') ? (
           <div className="loading">Loading videos...</div>
         ) : videos.length === 0 ? (
           <div className="empty-state">
@@ -127,7 +148,7 @@ const Videos: React.FC = () => {
               <div key={video.id} className="video-card">
                 <div className="video-thumbnail">
                   {video.thumbnail_url ? (
-                    <img src={video.thumbnail_url} alt={video.title} />
+                    <LazyImage src={video.thumbnail_url} alt={video.title} />
                   ) : (
                     <div className="thumbnail-placeholder">
                       {getPlatformIcon(video.platform_name)}

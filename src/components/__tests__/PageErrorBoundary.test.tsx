@@ -84,21 +84,23 @@ describe('PageErrorBoundary', () => {
   });
 
   it('should reset error state when Try Again is clicked', () => {
-    render(
+    const TestComponent = ({ shouldThrow }: { shouldThrow: boolean }) => (
       <PageErrorBoundary>
-        <ThrowError shouldThrow={true} />
+        <ThrowError shouldThrow={shouldThrow} />
       </PageErrorBoundary>
     );
 
+    const { rerender } = render(<TestComponent shouldThrow={true} />);
+
     expect(screen.getByText('Oops! Something went wrong')).toBeInTheDocument();
 
-    // Click Try Again
+    // Click Try Again to reset the error boundary state
     fireEvent.click(screen.getByText('Try Again'));
 
-    // After clicking Try Again, the error boundary should reset
-    // but since the child still throws, it will show error again
-    // To properly test, we'd need to control the throwing behavior dynamically
-    expect(screen.getByText('Oops! Something went wrong')).toBeInTheDocument();
+    // Rerender with shouldThrow=false to show the non-error content
+    rerender(<TestComponent shouldThrow={false} />);
+
+    expect(screen.getByText('No error')).toBeInTheDocument();
   });
 
   it('should redirect to home when Go Home is clicked', () => {

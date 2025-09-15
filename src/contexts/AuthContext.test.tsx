@@ -95,6 +95,8 @@ describe('AuthContext', () => {
   });
 
   it('should handle login failure', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    
     mockedAxios.post.mockRejectedValueOnce({
       response: {
         data: {
@@ -103,24 +105,46 @@ describe('AuthContext', () => {
       }
     });
 
+    const TestComponentWithError = () => {
+      const { user, login, logout, isLoading } = useAuth();
+      const [error, setError] = React.useState<string | null>(null);
+      
+      const handleLogin = async () => {
+        try {
+          await login('test@example.com', 'password');
+        } catch (err: any) {
+          setError(err.message);
+        }
+      };
+      
+      return (
+        <div>
+          {error && <div>Error: {error}</div>}
+          {!user && (
+            <button onClick={handleLogin}>Login</button>
+          )}
+        </div>
+      );
+    };
+
     render(
       <AuthProvider>
-        <TestComponent />
+        <TestComponentWithError />
       </AuthProvider>
     );
 
     const loginButton = screen.getByText('Login');
     
     await act(async () => {
-      try {
-        await userEvent.click(loginButton);
-      } catch (error: any) {
-        expect(error.message).toBe('Invalid credentials');
-      }
+      await userEvent.click(loginButton);
     });
 
-    // User should still be logged out
-    expect(screen.getByText('Login')).toBeInTheDocument();
+    // Check that error was displayed
+    await waitFor(() => {
+      expect(screen.getByText('Error: Invalid credentials')).toBeInTheDocument();
+    });
+    
+    consoleErrorSpy.mockRestore();
   });
 
   it('should logout successfully', async () => {
