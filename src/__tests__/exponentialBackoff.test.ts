@@ -10,12 +10,14 @@ const mockedAxios = axiosInstance as jest.Mocked<typeof axiosInstance>;
 // Mock components
 jest.mock('../components/VideoPlayer', () => {
   return function VideoPlayer() {
+    const React = require('react');
     return React.createElement('div', null, 'VideoPlayer');
   };
 });
 
 jest.mock('../components/NFCScanner', () => {
   return function NFCScanner() {
+    const React = require('react');
     return React.createElement('div', null, 'NFCScanner');
   };
 });

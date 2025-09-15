@@ -6,10 +6,3 @@ import '@testing-library/jest-dom';
 
 // Set up environment variables for tests
 process.env.REACT_APP_API_URL = 'http://localhost:3001';
-
-// Mock IntersectionObserver
-global.IntersectionObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  disconnect: jest.fn(),
-  unobserve: jest.fn(),
-}));

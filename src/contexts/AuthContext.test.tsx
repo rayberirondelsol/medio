@@ -27,10 +27,21 @@ const mockedAxios = axiosInstance as jest.Mocked<typeof axiosInstance>;
 // Test component that uses the auth context
 const TestComponent = () => {
   const { user, login, logout, isLoading } = useAuth();
-  
+  const [error, setError] = React.useState<string | null>(null);
+
+  const handleLogin = async () => {
+    try {
+      setError(null);
+      await login('test@example.com', 'password');
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div>
       {isLoading && <div>Loading...</div>}
+      {error && <div>Error: {error}</div>}
       {user ? (
         <div>
           <span>Logged in as: {user.name}</span>
@@ -38,9 +49,7 @@ const TestComponent = () => {
         </div>
       ) : (
         <div>
-          <button 
-            onClick={() => login('test@example.com', 'password')}
-          >
+          <button onClick={handleLogin}>
             Login
           </button>
         </div>
@@ -54,12 +63,15 @@ describe('AuthContext', () => {
     // Clear localStorage before each test
     localStorage.clear();
     jest.clearAllMocks();
-    
+
     // Setup axios defaults
     mockedAxios.defaults = {
       withCredentials: false,
       headers: { common: {} }
     } as any;
+
+    // Setup isAxiosError mock
+    mockedAxios.isAxiosError.mockReturnValue(true);
   });
 
   it('should provide authentication context', () => {

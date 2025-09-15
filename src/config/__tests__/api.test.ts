@@ -1,50 +1,59 @@
 // Mock axios before importing apiClient
-const mockInterceptors = {
-  request: {
-    use: jest.fn(),
-    handlers: [] as any[]
-  },
-  response: {
-    use: jest.fn(),
-    handlers: [] as any[]
-  }
-};
+jest.mock('axios', () => {
+  const mockInterceptors = {
+    request: {
+      use: jest.fn(),
+      handlers: [] as any[]
+    },
+    response: {
+      use: jest.fn(),
+      handlers: [] as any[]
+    }
+  };
 
-jest.mock('axios', () => ({
-  defaults: {
-    timeout: 10000,
-    withCredentials: true
-  },
-  create: jest.fn(() => ({
+  return {
     defaults: {
       timeout: 10000,
-      withCredentials: true,
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      withCredentials: true
     },
-    interceptors: mockInterceptors
-  }))
-}));
+    create: jest.fn(() => ({
+      defaults: {
+        timeout: 10000,
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      },
+      interceptors: mockInterceptors
+    }))
+  };
+});
 
 import axios from 'axios';
 import apiClient from '../api';
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe('API Configuration', () => {
+  let mockInterceptors: any;
+
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
+    // Get the interceptors from the mocked axios instance
+    const mockAxiosCreate = mockAxios.create as jest.MockedFunction<typeof mockAxios.create>;
+    const mockInstance = mockAxiosCreate();
+    mockInterceptors = mockInstance.interceptors;
+
     // Setup mock handlers for interceptors
     mockInterceptors.request.handlers = [];
     mockInterceptors.response.handlers = [];
-    
+
     // Mock the use functions to store handlers
-    mockInterceptors.request.use.mockImplementation((fulfilled, rejected) => {
+    mockInterceptors.request.use.mockImplementation((fulfilled: any, rejected: any) => {
       mockInterceptors.request.handlers.push({ fulfilled, rejected });
     });
-    
-    mockInterceptors.response.use.mockImplementation((fulfilled, rejected) => {
+
+    mockInterceptors.response.use.mockImplementation((fulfilled: any, rejected: any) => {
       mockInterceptors.response.handlers.push({ fulfilled, rejected });
     });
   });
