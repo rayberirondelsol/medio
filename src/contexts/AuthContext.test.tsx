@@ -1,10 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-// Mock environment variable
-process.env.REACT_APP_API_URL = 'http://localhost:3001';
-
 import { AuthProvider, useAuth } from './AuthContext';
 
 // Mock axiosInstance

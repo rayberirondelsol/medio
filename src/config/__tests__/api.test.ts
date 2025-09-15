@@ -10,7 +10,7 @@ const mockInterceptors = {
   }
 };
 
-const mockAxios = {
+jest.mock('axios', () => ({
   defaults: {
     timeout: 10000,
     withCredentials: true
@@ -25,11 +25,11 @@ const mockAxios = {
     },
     interceptors: mockInterceptors
   }))
-};
+}));
 
-jest.mock('axios', () => mockAxios);
-
+import axios from 'axios';
 import apiClient from '../api';
+const mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe('API Configuration', () => {
   beforeEach(() => {

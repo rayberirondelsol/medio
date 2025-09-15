@@ -10,13 +10,13 @@ const mockedAxios = axiosInstance as jest.Mocked<typeof axiosInstance>;
 // Mock components
 jest.mock('../components/VideoPlayer', () => {
   return function VideoPlayer() {
-    return <div>VideoPlayer</div>;
+    return React.createElement('div', null, 'VideoPlayer');
   };
 });
 
 jest.mock('../components/NFCScanner', () => {
   return function NFCScanner() {
-    return <div>NFCScanner</div>;
+    return React.createElement('div', null, 'NFCScanner');
   };
 });
 
@@ -37,7 +37,7 @@ describe('Exponential Backoff in KidsMode', () => {
 
   describe('Heartbeat with exponential backoff', () => {
     it('should start with 30 second heartbeat interval', async () => {
-      const { unmount } = render(<KidsMode />);
+      const { unmount } = render(React.createElement(KidsMode));
       
       // Mock successful NFC scan and session start
       mockedAxios.post.mockImplementation((url) => {
@@ -106,7 +106,7 @@ describe('Exponential Backoff in KidsMode', () => {
     });
 
     it('should apply exponential backoff on heartbeat failure', async () => {
-      const { unmount } = render(<KidsMode />);
+      const { unmount } = render(React.createElement(KidsMode));
       
       let heartbeatCallCount = 0;
       
@@ -185,7 +185,7 @@ describe('Exponential Backoff in KidsMode', () => {
     });
 
     it('should cap backoff at maximum delay', async () => {
-      const { unmount } = render(<KidsMode />);
+      const { unmount } = render(React.createElement(KidsMode));
       
       let heartbeatCallCount = 0;
       
@@ -258,7 +258,7 @@ describe('Exponential Backoff in KidsMode', () => {
     });
 
     it('should reset backoff delay on successful heartbeat', async () => {
-      const { unmount } = render(<KidsMode />);
+      const { unmount } = render(React.createElement(KidsMode));
       
       let heartbeatCallCount = 0;
       
@@ -345,7 +345,7 @@ describe('Exponential Backoff in KidsMode', () => {
     });
 
     it('should clean up heartbeat on unmount', async () => {
-      const { unmount } = render(<KidsMode />);
+      const { unmount } = render(React.createElement(KidsMode));
       
       mockedAxios.post.mockImplementation((url) => {
         if (url.includes('/nfc/scan')) {
