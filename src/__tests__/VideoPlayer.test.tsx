@@ -1,16 +1,18 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import VideoPlayer from '../components/VideoPlayer';
 
-// Mock the videoSanitizer utils
+// Define mock functions before using them
 const mockSanitizeVideo = jest.fn();
 const mockGetSecureEmbedUrl = jest.fn();
 
 jest.mock('../utils/videoSanitizer', () => ({
-  sanitizeVideo: mockSanitizeVideo,
-  getSecureEmbedUrl: mockGetSecureEmbedUrl
+  sanitizeVideo: (...args: any[]) => mockSanitizeVideo(...args),
+  getSecureEmbedUrl: (...args: any[]) => mockGetSecureEmbedUrl(...args)
 }));
+
+// Import VideoPlayer after mock is set up
+import VideoPlayer from '../components/VideoPlayer';
 
 describe('VideoPlayer Component', () => {
   const mockVideo = {

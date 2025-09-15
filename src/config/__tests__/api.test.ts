@@ -23,13 +23,25 @@ const mockApiClient = {
   interceptors: mockInterceptors
 };
 
-jest.mock('axios', () => ({
-  defaults: {
-    timeout: 10000,
-    withCredentials: true
-  },
-  create: jest.fn(() => mockApiClient)
-}));
+jest.mock('axios', () => {
+  // Return the mock directly without referencing mockApiClient
+  return {
+    defaults: {
+      timeout: 10000,
+      withCredentials: true
+    },
+    create: jest.fn(() => ({
+      defaults: {
+        timeout: 10000,
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      },
+      interceptors: mockInterceptors
+    }))
+  };
+});
 
 // Import apiClient after mocking
 import apiClient from '../api';
