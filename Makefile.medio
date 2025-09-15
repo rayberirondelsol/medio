@@ -1,0 +1,76 @@
+# Medio Platform Development Makefile
+
+.PHONY: help install dev prod test clean setup db-migrate db-seed
+
+help:
+	@echo "Available commands:"
+	@echo "  make setup       - Initial project setup"
+	@echo "  make install     - Install all dependencies"
+	@echo "  make dev        - Start development environment"
+	@echo "  make prod       - Start production environment"
+	@echo "  make test       - Run all tests"
+	@echo "  make db-migrate - Run database migrations"
+	@echo "  make db-seed    - Seed database with test data"
+	@echo "  make clean      - Clean build artifacts and dependencies"
+
+# Initial setup
+setup:
+	@echo "Setting up Medio platform..."
+	npm install
+	cd backend && npm install
+	docker-compose -f docker-compose.full.yml up -d postgres
+	sleep 5
+	make db-migrate
+	@echo "Setup complete! Run 'make dev' to start development."
+
+# Install dependencies
+install:
+	npm install
+	cd backend && npm install
+
+# Development environment
+dev:
+	docker-compose -f docker-compose.full.yml up
+
+# Production environment
+prod:
+	docker-compose -f docker-compose.full.yml --profile production up
+
+# Run tests
+test:
+	npm test
+	cd backend && npm test
+
+# Database operations
+db-migrate:
+	cd backend && npm run migrate
+
+db-seed:
+	cd backend && npm run seed
+
+# Clean everything
+clean:
+	rm -rf node_modules
+	rm -rf backend/node_modules
+	rm -rf build
+	docker-compose -f docker-compose.full.yml down -v
+
+# Docker commands
+docker-build:
+	docker-compose -f docker-compose.full.yml build
+
+docker-down:
+	docker-compose -f docker-compose.full.yml down
+
+docker-logs:
+	docker-compose -f docker-compose.full.yml logs -f
+
+# Individual service commands
+frontend-dev:
+	npm start
+
+backend-dev:
+	cd backend && npm run dev
+
+postgres-only:
+	docker-compose -f docker-compose.full.yml up -d postgres
