@@ -2,13 +2,37 @@ import * as Sentry from '@sentry/react';
 
 // DSN validation to prevent potential security issues
 const validateDSN = (dsn: string): boolean => {
+  if (!dsn || typeof dsn !== 'string') {
+    return false;
+  }
+  
   try {
     const url = new URL(dsn);
-    // Ensure DSN is HTTPS and from sentry.io or a known self-hosted domain
-    return url.protocol === 'https:' && 
-           (url.hostname.endsWith('.sentry.io') || 
-            url.hostname.endsWith('.ingest.sentry.io'));
-  } catch {
+    
+    // Must be HTTPS
+    if (url.protocol !== 'https:') {
+      console.warn('Sentry DSN must use HTTPS protocol');
+      return false;
+    }
+    
+    // Must be from sentry.io or a known self-hosted domain
+    const validHosts = ['.sentry.io', '.ingest.sentry.io'];
+    const isValidHost = validHosts.some(host => url.hostname.endsWith(host));
+    
+    if (!isValidHost) {
+      console.warn('Sentry DSN must be from a valid Sentry domain');
+      return false;
+    }
+    
+    // DSN must have a path (project ID)
+    if (!url.pathname || url.pathname === '/') {
+      console.warn('Sentry DSN must include a project ID');
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.warn('Invalid Sentry DSN format:', error);
     return false;
   }
 };

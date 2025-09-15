@@ -19,8 +19,11 @@ const LazyImage: React.FC<LazyImageProps> = ({
   onLoad,
   onError
 }) => {
+  const errorPlaceholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2Y4ZDdkYSIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjIwMCIgeT0iMTUwIiBzdHlsZT0iZmlsbDojNzIxYzI0O2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjIwcHg7Zm9udC1mYW1pbHk6QXJpYWwsc2Fucy1zZXJpZiI+SW1hZ2UgZmFpbGVkIHRvIGxvYWQ8L3RleHQ+PC9zdmc+';
+  
   const [imageSrc, setImageSrc] = useState<string>(placeholder);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
 
@@ -50,35 +53,40 @@ const LazyImage: React.FC<LazyImageProps> = ({
   }, []);
 
   useEffect(() => {
-    if (isInView && src && src !== imageSrc) {
+    if (isInView && src && !hasError) {
       const img = new Image();
       
       img.onload = () => {
         setImageSrc(src);
         setIsLoaded(true);
+        setHasError(false);
         if (onLoad) onLoad();
       };
       
       img.onerror = () => {
+        setImageSrc(errorPlaceholder);
+        setHasError(true);
+        setIsLoaded(false);
         if (onError) onError();
       };
       
       img.src = src;
     }
-  }, [isInView, src, imageSrc, onLoad, onError]);
+  }, [isInView, src, hasError, onLoad, onError, errorPlaceholder]);
 
   return (
     <img
       ref={imgRef}
       src={imageSrc}
-      alt={alt}
+      alt={hasError ? `Failed to load: ${alt}` : alt}
       className={className}
       style={{
         ...style,
         transition: 'opacity 0.3s ease-in-out',
-        opacity: isLoaded ? 1 : 0.7
+        opacity: isLoaded || hasError ? 1 : 0.7
       }}
       loading="lazy"
+      aria-label={hasError ? `Image failed to load: ${alt}` : undefined}
     />
   );
 };

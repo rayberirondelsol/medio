@@ -5,6 +5,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { LoadingProvider } from './contexts/LoadingContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import PrivateRoute from './components/PrivateRoute';
+import LoadingSpinner from './components/LoadingSpinner';
 import './App.css';
 
 // Lazy load pages for code splitting
@@ -17,29 +18,15 @@ const Profiles = lazy(() => import('./pages/Profiles'));
 const NFCManager = lazy(() => import('./pages/NFCManager'));
 const Settings = lazy(() => import('./pages/Settings'));
 
-// Loading component
-const LoadingSpinner = () => (
-  <div style={{ 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    height: '100vh',
-    fontSize: '1.5rem',
-    color: '#666'
-  }}>
-    Loading...
-  </div>
-);
-
 function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <LoadingProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <LoadingProvider>
             <Router>
               <div className="App">
-              <Suspense fallback={<LoadingSpinner />}>
+              <Suspense fallback={<LoadingSpinner size="large" overlay />}>
                 <Routes>
                 {/* Public routes */}
                 <Route path="/login" element={<Login />} />
@@ -79,8 +66,8 @@ function App() {
             </Suspense>
           </div>
         </Router>
-      </AuthProvider>
       </LoadingProvider>
+      </AuthProvider>
     </ThemeProvider>
     </ErrorBoundary>
   );

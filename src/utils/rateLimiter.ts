@@ -1,3 +1,29 @@
+/**
+ * CLIENT-SIDE RATE LIMITER
+ * 
+ * This is a client-side rate limiter implementation that helps prevent
+ * excessive API calls from the frontend. However, it has limitations:
+ * 
+ * IMPORTANT: Server-side rate limiting is REQUIRED for production
+ * - Client-side rate limiting can be bypassed by refreshing the page
+ * - Users can clear localStorage/sessionStorage to reset limits
+ * - Malicious users can modify client-side JavaScript
+ * 
+ * RECOMMENDED SERVER-SIDE IMPLEMENTATION:
+ * 1. Use middleware like express-rate-limit for Node.js
+ * 2. Implement rate limiting at the API Gateway level (AWS API Gateway, Kong, etc.)
+ * 3. Use Redis or similar for distributed rate limiting across multiple servers
+ * 4. Consider implementing rate limiting by:
+ *    - IP address
+ *    - User authentication token
+ *    - API key
+ *    - Combination of factors
+ * 
+ * This client-side implementation should be used only as a UX enhancement
+ * to provide immediate feedback and reduce unnecessary server load,
+ * NOT as a security measure.
+ */
+
 interface RateLimiterOptions {
   maxRequests: number;
   windowMs: number;
@@ -11,6 +37,41 @@ interface RateLimiterState {
 
 class RateLimiter {
   private limits: Map<string, RateLimiterState> = new Map();
+  private cleanupInterval: NodeJS.Timer | null = null;
+  private readonly CLEANUP_INTERVAL_MS = 60000; // Clean up every minute
+  
+  constructor() {
+    this.startCleanupTimer();
+  }
+  
+  /**
+   * Start automatic cleanup timer to remove expired entries
+   */
+  private startCleanupTimer(): void {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+    }
+    
+    this.cleanupInterval = setInterval(() => {
+      this.cleanupExpired();
+    }, this.CLEANUP_INTERVAL_MS);
+  }
+  
+  /**
+   * Clean up expired rate limit entries to prevent memory leaks
+   */
+  private cleanupExpired(): void {
+    const now = Date.now();
+    const keysToDelete: string[] = [];
+    
+    this.limits.forEach((state, key) => {
+      if (now >= state.resetTime) {
+        keysToDelete.push(key);
+      }
+    });
+    
+    keysToDelete.forEach(key => this.limits.delete(key));
+  }
   
   /**
    * Check if a request is allowed under the rate limit
@@ -80,6 +141,17 @@ class RateLimiter {
    * Clear all rate limits
    */
   public clearAll(): void {
+    this.limits.clear();
+  }
+  
+  /**
+   * Destroy the rate limiter and stop cleanup timer
+   */
+  public destroy(): void {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = null;
+    }
     this.limits.clear();
   }
 }
