@@ -1,4 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import * as Sentry from '@sentry/react';
 
 interface Props {
   children: ReactNode;
@@ -23,13 +24,14 @@ class ErrorBoundary extends Component<Props, State> {
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
     
-    // Log error to monitoring service in production
+    // Log error to Sentry in production
     if (process.env.NODE_ENV === 'production') {
-      // This would be where you'd send to Sentry, LogRocket, etc.
-      console.error('Error logged to monitoring service:', {
-        error: error.toString(),
-        errorInfo: errorInfo.componentStack,
-        timestamp: new Date().toISOString()
+      Sentry.withScope((scope) => {
+        scope.setContext('errorBoundary', {
+          componentStack: errorInfo.componentStack
+        });
+        scope.setLevel('error');
+        Sentry.captureException(error);
       });
     }
   }
