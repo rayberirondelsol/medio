@@ -43,7 +43,7 @@ const KidsMode: React.FC = () => {
     return () => {
       isMountedRef.current = false;
       if (heartbeatInterval.current) {
-        clearInterval(heartbeatInterval.current);
+        clearTimeout(heartbeatInterval.current);
         heartbeatInterval.current = null;
       }
       RequestManager.cancelAllRequests();
@@ -125,7 +125,13 @@ const KidsMode: React.FC = () => {
       const maxDelay = 120000; // Max 2 minutes
       
       const scheduleHeartbeat = () => {
-        if (!isMountedRef.current) return;
+        if (!isMountedRef.current || !sessionRef.current) return;
+        
+        // Clear any existing timeout before scheduling new one
+        if (heartbeatInterval.current) {
+          clearTimeout(heartbeatInterval.current);
+          heartbeatInterval.current = null;
+        }
         
         heartbeatInterval.current = setTimeout(async () => {
           if (!isMountedRef.current || !sessionRef.current) return;
