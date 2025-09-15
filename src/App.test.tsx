@@ -1,11 +1,22 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import App from './App';
-import axios from 'axios';
 
 // Mock axios to prevent network calls during tests
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+jest.mock('axios', () => ({
+  defaults: { withCredentials: false, headers: { common: {} }, timeout: 10000 },
+  create: jest.fn(() => ({
+    defaults: { withCredentials: false, headers: { common: {} }, timeout: 10000 },
+    interceptors: {
+      request: { use: jest.fn(), handlers: [] },
+      response: { use: jest.fn(), handlers: [] }
+    }
+  })),
+  interceptors: {
+    request: { use: jest.fn(), handlers: [] },
+    response: { use: jest.fn(), handlers: [] }
+  }
+}));
 
 // Mock the Login page since unauthenticated users will be redirected there
 jest.mock('./pages/Login', () => {
@@ -18,28 +29,6 @@ jest.mock('./pages/Login', () => {
 beforeEach(() => {
   // Clear localStorage before each test
   localStorage.clear();
-  
-  // Setup axios defaults mock
-  mockedAxios.defaults = {
-    withCredentials: false,
-    headers: { common: {} },
-    timeout: 10000
-  } as any;
-  
-  // Setup axios.create mock
-  mockedAxios.create = jest.fn(() => mockedAxios as any);
-  
-  // Setup interceptors mock
-  mockedAxios.interceptors = {
-    request: {
-      use: jest.fn(),
-      handlers: [] as any[]
-    },
-    response: {
-      use: jest.fn(),
-      handlers: [] as any[]
-    }
-  } as any;
 });
 
 test('renders App component and redirects to login when not authenticated', async () => {

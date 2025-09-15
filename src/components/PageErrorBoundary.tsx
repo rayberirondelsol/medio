@@ -22,7 +22,7 @@ class PageErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error(`Error in ${this.props.pageName || 'page'}:`, error, errorInfo);
-    
+
     // You can also log the error to an error reporting service here
     if (typeof window !== 'undefined' && (window as any).Sentry) {
       (window as any).Sentry.captureException(error, {
@@ -33,6 +33,13 @@ class PageErrorBoundary extends Component<Props, State> {
           },
         },
       });
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    // Reset error state if children change
+    if (this.state.hasError && prevProps.children !== this.props.children) {
+      this.setState({ hasError: false, error: null });
     }
   }
 

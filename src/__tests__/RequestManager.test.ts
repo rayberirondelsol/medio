@@ -1,3 +1,19 @@
+// Mock axios before importing
+jest.mock('axios', () => ({
+  defaults: { withCredentials: false, headers: { common: {} }, timeout: 10000 },
+  create: jest.fn(() => ({
+    defaults: { withCredentials: false, headers: { common: {} }, timeout: 10000 },
+    interceptors: {
+      request: { use: jest.fn(), handlers: [] },
+      response: { use: jest.fn(), handlers: [] }
+    }
+  })),
+  interceptors: {
+    request: { use: jest.fn(), handlers: [] },
+    response: { use: jest.fn(), handlers: [] }
+  }
+}));
+
 import { RequestManager } from '../utils/axiosConfig';
 
 describe('RequestManager', () => {

@@ -1,32 +1,3 @@
-// Mock axios before any imports
-jest.mock('axios', () => ({
-  create: jest.fn(() => ({
-    defaults: {
-      timeout: 10000,
-      withCredentials: true,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
-    interceptors: {
-      request: {
-        use: jest.fn(),
-        handlers: [],
-      },
-      response: {
-        use: jest.fn(),
-        handlers: [],
-      },
-    },
-  })),
-  defaults: {
-    timeout: 10000,
-    withCredentials: true,
-  },
-}));
-
-import axios from 'axios';
-
 // Mock axios before importing apiClient
 const mockInterceptors = {
   request: {
@@ -39,38 +10,25 @@ const mockInterceptors = {
   }
 };
 
-const mockApiClient = {
+const mockAxios = {
   defaults: {
     timeout: 10000,
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    withCredentials: true
   },
-  interceptors: mockInterceptors
-};
-
-jest.mock('axios', () => {
-  // Return the mock directly without referencing mockApiClient
-  return {
+  create: jest.fn(() => ({
     defaults: {
       timeout: 10000,
-      withCredentials: true
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     },
-    create: jest.fn(() => ({
-      defaults: {
-        timeout: 10000,
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      },
-      interceptors: mockInterceptors
-    }))
-  };
-});
+    interceptors: mockInterceptors
+  }))
+};
 
-// Import apiClient after mocking
+jest.mock('axios', () => mockAxios);
+
 import apiClient from '../api';
 
 describe('API Configuration', () => {
@@ -92,11 +50,11 @@ describe('API Configuration', () => {
   });
 
   it('should set default timeout on axios', () => {
-    expect(axios.defaults.timeout).toBe(10000);
+    expect(mockAxios.defaults.timeout).toBe(10000);
   });
 
   it('should set withCredentials to true', () => {
-    expect(axios.defaults.withCredentials).toBe(true);
+    expect(mockAxios.defaults.withCredentials).toBe(true);
   });
 
   it('should create apiClient with correct configuration', () => {

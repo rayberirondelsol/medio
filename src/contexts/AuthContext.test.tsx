@@ -1,12 +1,32 @@
 import React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import axios from 'axios';
+
+// Mock environment variable
+process.env.REACT_APP_API_URL = 'http://localhost:3001';
+
 import { AuthProvider, useAuth } from './AuthContext';
 
-// Mock axios
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+// Mock axiosInstance
+jest.mock('../utils/axiosConfig', () => ({
+  __esModule: true,
+  default: {
+    post: jest.fn(),
+    isAxiosError: jest.fn(),
+    defaults: { withCredentials: false, headers: { common: {} }, timeout: 10000 },
+    interceptors: {
+      request: { use: jest.fn(), handlers: [] },
+      response: { use: jest.fn(), handlers: [] }
+    }
+  },
+  RequestManager: {
+    createController: jest.fn(() => ({ signal: {} })),
+    cancelAllRequests: jest.fn()
+  }
+}));
+
+import axiosInstance from '../utils/axiosConfig';
+const mockedAxios = axiosInstance as jest.Mocked<typeof axiosInstance>;
 
 // Test component that uses the auth context
 const TestComponent = () => {
