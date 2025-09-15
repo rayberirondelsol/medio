@@ -39,12 +39,8 @@ describe('LoadingContext', () => {
     console.error = jest.fn();
     
     const TestError = () => {
-      try {
-        const { isLoading } = useLoading();
-        return <div>{isLoading('test') ? 'Loading' : 'Not Loading'}</div>;
-      } catch (error) {
-        return <div>Error: {(error as Error).message}</div>;
-      }
+      const { isLoading } = useLoading();
+      return <div>{isLoading('test') ? 'Loading' : 'Not Loading'}</div>;
     };
     
     expect(() => render(<TestError />)).toThrow(

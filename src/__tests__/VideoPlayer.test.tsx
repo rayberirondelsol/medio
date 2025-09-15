@@ -70,7 +70,7 @@ describe('VideoPlayer Component', () => {
       <VideoPlayer video={unsupportedVideo} onEnd={mockOnEnd} />
     );
 
-    expect(screen.getByText('Test Video')).toBeInTheDocument();
+    expect(screen.getAllByText('Test Video')).toHaveLength(2);
     expect(screen.getByText('Platform: vimeo')).toBeInTheDocument();
     expect(screen.getByText('Video ID: abc123')).toBeInTheDocument();
   });

@@ -236,18 +236,23 @@ export function throttle<T extends (...args: any[]) => any>(
 ): (...args: Parameters<T>) => void {
   let lastCall = 0;
   let timeout: NodeJS.Timeout | null = null;
-  
+  let lastArgs: Parameters<T> | null = null;
+
   return function (...args: Parameters<T>) {
     const now = Date.now();
-    
+    lastArgs = args; // Always store the most recent arguments
+
     if (now - lastCall >= delay) {
       lastCall = now;
       func.apply(this, args);
     } else if (!timeout) {
       timeout = setTimeout(() => {
         lastCall = Date.now();
-        func.apply(this, args);
+        if (lastArgs) {
+          func.apply(this, lastArgs);
+        }
         timeout = null;
+        lastArgs = null;
       }, delay - (now - lastCall));
     }
   };
