@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FiCreditCard } from 'react-icons/fi';
 import './NFCScanner.css';
-import '../types/web-nfc';
 
 interface NFCScannerProps {
   onScan: (chipUID: string) => void;
