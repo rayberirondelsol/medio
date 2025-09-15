@@ -21,8 +21,12 @@ const Login: React.FC = () => {
     try {
       await login(email, password);
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Failed to login');
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message || 'Failed to login');
+      } else {
+        setError('Failed to login');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -39,8 +43,8 @@ const Login: React.FC = () => {
           <p>Welcome back!</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          {error && <div className="error-message">{error}</div>}
+        <form onSubmit={handleSubmit} className="auth-form" aria-label="Login form">
+          {error && <div className="error-message" role="alert" aria-live="polite">{error}</div>}
           
           <div className="form-group">
             <label htmlFor="email">
@@ -54,6 +58,9 @@ const Login: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="parent@example.com"
+              aria-label="Email address"
+              aria-required="true"
+              autoComplete="email"
             />
           </div>
 
@@ -69,10 +76,19 @@ const Login: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Enter your password"
+              aria-label="Password"
+              aria-required="true"
+              autoComplete="current-password"
             />
           </div>
 
-          <button type="submit" className="btn btn-primary" disabled={isLoading}>
+          <button 
+            type="submit" 
+            className="btn btn-primary" 
+            disabled={isLoading}
+            aria-busy={isLoading}
+            aria-label={isLoading ? 'Logging in' : 'Submit login form'}
+          >
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
