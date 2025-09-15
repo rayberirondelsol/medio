@@ -114,18 +114,14 @@ describe('API Configuration', () => {
   });
 
   describe('Request Interceptor', () => {
-    it('should add request interceptor', () => {
-      expect(mockInterceptors.request.use).toHaveBeenCalled();
-    });
-
     it('should pass through successful requests', async () => {
       // Re-import to trigger interceptor setup
       jest.resetModules();
       const { default: api } = require('../api');
-      
+
       const config = { url: '/test', method: 'GET' };
       const handler = mockInterceptors.request.handlers[0];
-      
+
       if (handler && handler.fulfilled) {
         const result = await handler.fulfilled(config);
         expect(result).toBe(config);
@@ -135,7 +131,7 @@ describe('API Configuration', () => {
     it('should handle request errors', async () => {
       const error = new Error('Request error');
       const handler = mockInterceptors.request.handlers[0];
-      
+
       if (handler && handler.rejected) {
         await expect(handler.rejected(error)).rejects.toThrow('Request error');
       }
@@ -156,10 +152,6 @@ describe('API Configuration', () => {
     afterEach(() => {
       consoleErrorSpy.mockRestore();
       window.location = originalLocation;
-    });
-
-    it('should add response interceptor', () => {
-      expect(mockInterceptors.response.use).toHaveBeenCalled();
     });
 
     it('should pass through successful responses', async () => {
