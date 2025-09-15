@@ -24,7 +24,8 @@
       "Bash(/c/Users/benja/.fly/bin/flyctl.exe launch --no-deploy --name \"medio-react-app\" --region \"iad\")",
       "Bash(/c/Users/benja/.fly/bin/flyctl.exe launch --no-deploy --copy-config)",
       "Bash(/c/Users/benja/.fly/bin/flyctl.exe tokens create deploy -x 999999h)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git merge:*)"
     ],
     "deny": [],
     "ask": []
