@@ -8,7 +8,8 @@
       "Bash(az account:*)",
       "Bash(az login:*)",
       "Bash(npm install:*)",
-      "Bash(npx playwright:*)"
+      "Bash(npx playwright:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []
