@@ -1,10 +1,31 @@
 import * as Sentry from '@sentry/react';
 
+// DSN validation to prevent potential security issues
+const validateDSN = (dsn: string): boolean => {
+  try {
+    const url = new URL(dsn);
+    // Ensure DSN is HTTPS and from sentry.io or a known self-hosted domain
+    return url.protocol === 'https:' && 
+           (url.hostname.endsWith('.sentry.io') || 
+            url.hostname.endsWith('.ingest.sentry.io'));
+  } catch {
+    return false;
+  }
+};
+
 export const initSentry = () => {
   // Only initialize in production
   if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_SENTRY_DSN) {
+    const dsn = process.env.REACT_APP_SENTRY_DSN;
+    
+    // Validate DSN before initializing
+    if (!validateDSN(dsn)) {
+      console.warn('Invalid Sentry DSN detected. Sentry will not be initialized.');
+      return;
+    }
+    
     Sentry.init({
-      dsn: process.env.REACT_APP_SENTRY_DSN,
+      dsn,
       integrations: [
         Sentry.browserTracingIntegration(),
       ],
@@ -18,7 +39,36 @@ export const initSentry = () => {
           if (error && error.toString().includes('401')) {
             return null;
           }
+          
+          // Sanitize sensitive information from error messages
+          if (event.exception.values) {
+            event.exception.values.forEach(exception => {
+              if (exception.value) {
+                // Remove potential API keys or tokens from error messages
+                exception.value = exception.value
+                  .replace(/([a-zA-Z0-9]{32,})/g, '[REDACTED]')
+                  .replace(/Bearer\s+[a-zA-Z0-9\-._~+/]+=*/g, 'Bearer [REDACTED]');
+              }
+            });
+          }
         }
+        
+        // Remove sensitive data from request information
+        if (event.request) {
+          if (event.request.cookies) {
+            event.request.cookies = '[REDACTED]';
+          }
+          if (event.request.headers) {
+            const headers = event.request.headers as Record<string, string>;
+            if (headers['Authorization']) {
+              headers['Authorization'] = '[REDACTED]';
+            }
+            if (headers['Cookie']) {
+              headers['Cookie'] = '[REDACTED]';
+            }
+          }
+        }
+        
         return event;
       },
     });

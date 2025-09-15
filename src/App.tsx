@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { LoadingProvider } from './contexts/LoadingContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import PrivateRoute from './components/PrivateRoute';
 import './App.css';
@@ -34,11 +35,12 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <AuthProvider>
-          <Router>
-            <div className="App">
-            <Suspense fallback={<LoadingSpinner />}>
-              <Routes>
+        <LoadingProvider>
+          <AuthProvider>
+            <Router>
+              <div className="App">
+              <Suspense fallback={<LoadingSpinner />}>
+                <Routes>
                 {/* Public routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
@@ -78,6 +80,7 @@ function App() {
           </div>
         </Router>
       </AuthProvider>
+      </LoadingProvider>
     </ThemeProvider>
     </ErrorBoundary>
   );
