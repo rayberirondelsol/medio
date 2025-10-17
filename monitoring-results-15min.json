@@ -1,0 +1,505 @@
+﻿{
+    "startTime":  "2025-10-17 13:25:05",
+    "logs":  [
+                 {
+                     "timestamp":  "13:25:37",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n"
+                 },
+                 {
+                     "timestamp":  "13:26:45",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n"
+                 },
+                 {
+                     "timestamp":  "13:27:48",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\n"
+                 },
+                 {
+                     "timestamp":  "13:28:51",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n"
+                 },
+                 {
+                     "timestamp":  "13:29:53",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n"
+                 },
+                 {
+                     "timestamp":  "13:30:56",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\n"
+                 },
+                 {
+                     "timestamp":  "13:31:59",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n"
+                 },
+                 {
+                     "timestamp":  "13:33:02",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\n"
+                 },
+                 {
+                     "timestamp":  "13:34:04",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n"
+                 },
+                 {
+                     "timestamp":  "13:35:07",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n"
+                 },
+                 {
+                     "timestamp":  "13:36:09",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n"
+                 },
+                 {
+                     "timestamp":  "13:37:12",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n"
+                 },
+                 {
+                     "timestamp":  "13:38:14",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n"
+                 },
+                 {
+                     "timestamp":  "13:39:17",
+                     "content":  "Usage:\r\n  flyctl.exe logs [flags]\r\n\r\nFlags:\r\n  -a, --app string       Application name\r\n  -c, --config string    Path to application configuration file\r\n  -h, --help             help for logs\r\n  -j, --json             JSON output\r\n      --machine string   Filter by machine ID\r\n  -n, --no-tail          Do not continually stream logs\r\n  -r, --region string    The target region (see \u0027flyctl platform regions\u0027)\r\n\r\nGlobal Flags:\r\n  -t, --access-token string   Fly API Access Token\r\n      --debug                 Print additional logs and traces\r\n      --verbose               Verbose output\r\n\r\nflyctl : Error: unknown flag: --since\r\nIn C:\\Users\\benja\\projects\\medio\\comprehensive-15min-monitor.ps1:129 Zeichen:26\r\n+ ...   $logOutput = flyctl logs -a medio-backend --since \"1m\" 2\u003e\u00261 | Out-S ...\r\n+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\n"
+                 }
+             ],
+    "statusChecks":  [
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  0,
+                             "timestamp":  "13:25:05",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  32,
+                             "timestamp":  "13:25:37",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  69,
+                             "timestamp":  "13:26:14",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  100,
+                             "timestamp":  "13:26:45",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  131,
+                             "timestamp":  "13:27:17",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  162,
+                             "timestamp":  "13:27:48",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  194,
+                             "timestamp":  "13:28:19",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  225,
+                             "timestamp":  "13:28:51",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  256,
+                             "timestamp":  "13:29:22",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  288,
+                             "timestamp":  "13:29:53",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  320,
+                             "timestamp":  "13:30:25",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  351,
+                             "timestamp":  "13:30:56",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  382,
+                             "timestamp":  "13:31:27",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  413,
+                             "timestamp":  "13:31:59",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  445,
+                             "timestamp":  "13:32:30",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  476,
+                             "timestamp":  "13:33:02",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  508,
+                             "timestamp":  "13:33:33",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  539,
+                             "timestamp":  "13:34:04",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  570,
+                             "timestamp":  "13:34:36",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  602,
+                             "timestamp":  "13:35:07",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  633,
+                             "timestamp":  "13:35:38",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  664,
+                             "timestamp":  "13:36:09",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  695,
+                             "timestamp":  "13:36:40",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  726,
+                             "timestamp":  "13:37:12",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  758,
+                             "timestamp":  "13:37:43",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  789,
+                             "timestamp":  "13:38:14",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  820,
+                             "timestamp":  "13:38:46",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  852,
+                             "timestamp":  "13:39:17",
+                             "status":  "PASS"
+                         },
+                         {
+                             "output":  "\u001b[1mApp\u001b[0m\r\n  Name     = medio-backend                                        \r\n  Owner    = personal                                             \r\n  Hostname = medio-backend.fly.dev                                \r\n  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  \r\n\r\n\u001b[1mMachines\u001b[0m\r\nPROCESS\tID            \tVERSION\tREGION\tSTATE  \tROLE\tCHECKS            \tLAST UPDATED         \r\napp    \t28715d4c671438\t16     \tiad   \tstarted\t    \t1 total, 1 passing\t2025-10-17T11:22:14Z\t\r\napp    \t2874234fed42e8\t16     \tiad   \tstopped\t    \t1 total, 1 warning\t2025-10-17T11:22:19Z\t\r\n\r\n",
+                             "elapsed":  883,
+                             "timestamp":  "13:39:49",
+                             "status":  "PASS"
+                         }
+                     ],
+    "endTime":  "2025-10-17 13:40:20",
+    "successCriteria":  {
+                            "SC006_15MinHealthChecks":  true,
+                            "SC010_DatabaseQueries":  true
+                        },
+    "healthChecks":  [
+                         {
+                             "status":  "PASS",
+                             "elapsed":  0,
+                             "timestamp":  "13:25:05",
+                             "statusCode":  200,
+                             "responseTimeMs":  276.16
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  32,
+                             "timestamp":  "13:25:37",
+                             "statusCode":  200,
+                             "responseTimeMs":  312.7
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  69,
+                             "timestamp":  "13:26:14",
+                             "statusCode":  200,
+                             "responseTimeMs":  189.85
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  100,
+                             "timestamp":  "13:26:45",
+                             "statusCode":  200,
+                             "responseTimeMs":  377.21
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  131,
+                             "timestamp":  "13:27:17",
+                             "statusCode":  200,
+                             "responseTimeMs":  203.67
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  162,
+                             "timestamp":  "13:27:48",
+                             "statusCode":  200,
+                             "responseTimeMs":  285.44
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  194,
+                             "timestamp":  "13:28:19",
+                             "statusCode":  200,
+                             "responseTimeMs":  267.71
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  225,
+                             "timestamp":  "13:28:51",
+                             "statusCode":  200,
+                             "responseTimeMs":  169.9
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  256,
+                             "timestamp":  "13:29:22",
+                             "statusCode":  200,
+                             "responseTimeMs":  266.7
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  288,
+                             "timestamp":  "13:29:53",
+                             "statusCode":  200,
+                             "responseTimeMs":  169.26
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  320,
+                             "timestamp":  "13:30:25",
+                             "statusCode":  200,
+                             "responseTimeMs":  222.3
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  351,
+                             "timestamp":  "13:30:56",
+                             "statusCode":  200,
+                             "responseTimeMs":  315.1
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  382,
+                             "timestamp":  "13:31:27",
+                             "statusCode":  200,
+                             "responseTimeMs":  162.47
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  413,
+                             "timestamp":  "13:31:59",
+                             "statusCode":  200,
+                             "responseTimeMs":  551.25
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  445,
+                             "timestamp":  "13:32:30",
+                             "statusCode":  200,
+                             "responseTimeMs":  553.22
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  476,
+                             "timestamp":  "13:33:02",
+                             "statusCode":  200,
+                             "responseTimeMs":  172.67
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  508,
+                             "timestamp":  "13:33:33",
+                             "statusCode":  200,
+                             "responseTimeMs":  192.92
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  539,
+                             "timestamp":  "13:34:04",
+                             "statusCode":  200,
+                             "responseTimeMs":  183.43
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  570,
+                             "timestamp":  "13:34:36",
+                             "statusCode":  200,
+                             "responseTimeMs":  313.73
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  602,
+                             "timestamp":  "13:35:07",
+                             "statusCode":  200,
+                             "responseTimeMs":  194.26
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  633,
+                             "timestamp":  "13:35:38",
+                             "statusCode":  200,
+                             "responseTimeMs":  165.13
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  664,
+                             "timestamp":  "13:36:09",
+                             "statusCode":  200,
+                             "responseTimeMs":  249.83
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  695,
+                             "timestamp":  "13:36:40",
+                             "statusCode":  200,
+                             "responseTimeMs":  238.43
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  726,
+                             "timestamp":  "13:37:12",
+                             "statusCode":  200,
+                             "responseTimeMs":  188.47
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  758,
+                             "timestamp":  "13:37:43",
+                             "statusCode":  200,
+                             "responseTimeMs":  250.12
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  789,
+                             "timestamp":  "13:38:14",
+                             "statusCode":  200,
+                             "responseTimeMs":  168.69
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  820,
+                             "timestamp":  "13:38:46",
+                             "statusCode":  200,
+                             "responseTimeMs":  262.36
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  852,
+                             "timestamp":  "13:39:17",
+                             "statusCode":  200,
+                             "responseTimeMs":  241.79
+                         },
+                         {
+                             "status":  "PASS",
+                             "elapsed":  883,
+                             "timestamp":  "13:39:49",
+                             "statusCode":  200,
+                             "responseTimeMs":  263.68
+                         }
+                     ],
+    "metrics":  {
+                    "healthCheckSuccessRate":  100,
+                    "errorsFound":  [
+                                        "Log error at 32 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 32 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 32 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 100 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 100 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 100 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 162 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 162 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 162 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 225 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 225 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 225 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 288 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 288 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 288 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 351 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 351 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 351 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 413 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 413 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 413 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 476 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 476 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 476 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 539 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 539 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 539 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 602 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 602 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 602 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 664 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 664 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 664 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 726 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 726 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 726 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 789 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 789 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 789 s: + FullyQualifiedErrorId : NativeCommandError",
+                                        "Log error at 852 s: flyctl : Error: unknown flag: --since",
+                                        "Log error at 852 s: + CategoryInfo          : NotSpecified: (Error: unknown flag: --since:String) [], RemoteException",
+                                        "Log error at 852 s: + FullyQualifiedErrorId : NativeCommandError"
+                                    ],
+                    "dbQueriesCount":  0,
+                    "maxResponseTime":  553.2197,
+                    "minResponseTime":  162.46980000000002,
+                    "totalChecks":  29,
+                    "avgResponseTime":  0,
+                    "dbQueriesUnder500ms":  0,
+                    "failedChecks":  0,
+                    "passedChecks":  29,
+                    "dbQueryTimes":  [
+
+                                     ]
+                }
+}

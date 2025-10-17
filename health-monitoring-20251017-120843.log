@@ -1,0 +1,27 @@
+========================================
+Medio Backend Health Monitoring Report
+Started: Fri, Oct 17, 2025 12:08:43 PM
+Duration: 300s (30s intervals)
+========================================
+
+=== Check #1 at 2025-10-17 12:08:43 ===
+Checking machine status...
+[1mApp[0m
+  Name     = medio-backend                                        
+  Owner    = personal                                             
+  Hostname = medio-backend.fly.dev                                
+  Image    = medio-backend:deployment-01K7RR5PPSF2MHJHRR6WY4BK4M  
+
+[1mMachines[0m
+PROCESS	ID            	VERSION	REGION	STATE  	ROLE	CHECKS            	LAST UPDATED         
+app    	28715d4c671438	16     	iad   	stopped	    	1 total, 1 warning	2025-10-17T10:07:18Z	
+app    	2874234fed42e8	16     	iad   	started	    	1 total, 1 passing	2025-10-17T10:01:57Z	
+
+
+Testing health endpoint...
+✓ Health check PASSED (0.419559s)
+
+Response body:
+{"status":"healthy","timestamp":"2025-10-17T10:08:45.190Z","uptime":407.596654725,"environment":"production","services":{"database":"healthy","sentry":"not configured"}}
+
+Checking recent logs for errors...

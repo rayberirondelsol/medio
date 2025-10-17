@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { resolveApiBaseUrlOrDefault } from '../utils/runtimeConfig';
 
 // Configure axios defaults
 axios.defaults.timeout = 10000; // 10 seconds timeout for all requests
@@ -6,7 +7,7 @@ axios.defaults.withCredentials = true; // Include cookies in requests
 
 // Create axios instance with custom configuration
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: resolveApiBaseUrlOrDefault('http://localhost:5000/api'),
   timeout: 10000, // 10 seconds
   withCredentials: true,
   headers: {

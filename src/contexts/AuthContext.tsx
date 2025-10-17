@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import axiosInstance, { RequestManager } from '../utils/axiosConfig';
+import { resolveApiBaseUrl } from '../utils/runtimeConfig';
 
 interface User {
   id: string;
@@ -19,11 +20,14 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = process.env.REACT_APP_API_URL;
+const getApiUrl = () => {
+  const url = resolveApiBaseUrl();
+  if (!url) {
+    throw new Error('Medio API endpoint is not configured. Please set the REACT_APP_API_URL environment variable.');
+  }
+  return url;
+};
 
-if (!API_URL) {
-  throw new Error('REACT_APP_API_URL environment variable is required');
-}
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -54,7 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const controller = RequestManager.createController('login');
     
     try {
-      const response = await axiosInstance.post(`${API_URL}/auth/login`, 
+      const apiUrl = getApiUrl();
+      const response = await axiosInstance.post(`${apiUrl}/auth/login`, 
         { email, password },
         { signal: controller.signal }
       );
@@ -79,7 +84,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const controller = RequestManager.createController('register');
     
     try {
-      const response = await axiosInstance.post(`${API_URL}/auth/register`, 
+      const apiUrl = getApiUrl();
+      const response = await axiosInstance.post(`${apiUrl}/auth/register`, 
         { email, password, name },
         { signal: controller.signal }
       );
@@ -105,7 +111,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       // Call logout endpoint to clear httpOnly cookie
-      await axiosInstance.post(`${API_URL}/auth/logout`, {}, { signal: controller.signal });
+      const apiUrl = getApiUrl();
+      await axiosInstance.post(`${apiUrl}/auth/logout`, {}, { signal: controller.signal });
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
@@ -132,3 +139,4 @@ export const useAuth = () => {
   }
   return context;
 };
+

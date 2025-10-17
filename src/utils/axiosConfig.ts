@@ -1,63 +1,119 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import type { AxiosRequestHeaders } from 'axios';
+import { resolveApiBaseUrl } from './runtimeConfig';
 
-// Create axios instance with default config
+let csrfToken: string | null = null;
+let csrfRequest: Promise<string | null> | null = null;
+
+const METHODS_REQUIRING_CSRF = ['post', 'put', 'patch', 'delete'];
+
+const shouldAttachCsrf = (method?: string): boolean => {
+  if (!method) {
+    return false;
+  }
+  return METHODS_REQUIRING_CSRF.includes(method.toLowerCase());
+};
+
+const fetchCsrfToken = async (): Promise<string | null> => {
+  if (csrfToken) {
+    return csrfToken;
+  }
+
+  if (csrfRequest) {
+    return csrfRequest;
+  }
+
+  const apiUrl = resolveApiBaseUrl();
+  if (!apiUrl) {
+    return null;
+  }
+
+  csrfRequest = axios
+    .get(`${apiUrl}/csrf-token`, { withCredentials: true })
+    .then((response) => {
+      const token = response?.data?.csrfToken;
+      csrfToken = typeof token === 'string' ? token : null;
+      return csrfToken;
+    })
+    .catch((error) => {
+      console.warn('Failed to fetch CSRF token', error);
+      return null;
+    })
+    .finally(() => {
+      csrfRequest = null;
+    });
+
+  return csrfRequest;
+};
+
 const axiosInstance = axios.create({
   withCredentials: true,
   timeout: 30000,
 });
 
-// Request interceptor for adding auth headers
 axiosInstance.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    // Add any auth headers or tokens here if needed
+  async (config: InternalAxiosRequestConfig) => {
+    if (shouldAttachCsrf(config.method)) {
+      const token = await fetchCsrfToken();
+      if (token) {
+        const headers: AxiosRequestHeaders = config.headers ?? {};
+        headers['X-CSRF-Token'] = token;
+        config.headers = headers;
+      }
+    }
     return config;
   },
-  (error: AxiosError) => {
-    return Promise.reject(error);
-  }
+  (error: AxiosError) => Promise.reject(error)
 );
 
-// Response interceptor for handling token refresh
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
-    
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+      _csrfRetry?: boolean;
+    };
+
+    if (error.response?.status === 403 && !originalRequest._csrfRetry) {
+      const message = (error.response.data as any)?.message;
+      if (typeof message === 'string' && message.toLowerCase().includes('csrf')) {
+        originalRequest._csrfRetry = true;
+        csrfToken = null;
+        await fetchCsrfToken();
+        return axiosInstance(originalRequest);
+      }
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      
+
       try {
-        // Try to refresh token
-        const API_URL = process.env.REACT_APP_API_URL;
-        if (API_URL) {
-          await axios.post(`${API_URL}/auth/refresh`, {}, { withCredentials: true });
-          // Retry the original request
+        const apiUrl = resolveApiBaseUrl();
+        if (apiUrl) {
+          await axios.post(`${apiUrl}/auth/refresh`, {}, { withCredentials: true });
           return axiosInstance(originalRequest);
         }
       } catch (refreshError) {
-        // Refresh failed, redirect to login
         window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
-    
+
     return Promise.reject(error);
   }
 );
 
-// Create AbortController manager for request cancellation
 export class RequestManager {
   private static controllers = new Map<string, AbortController>();
-  
+
   static createController(key: string): AbortController {
-    // Cancel any existing request with the same key
     this.cancelRequest(key);
-    
+
     const controller = new AbortController();
     this.controllers.set(key, controller);
     return controller;
   }
-  
+
   static cancelRequest(key: string): void {
     const controller = this.controllers.get(key);
     if (controller) {
@@ -65,9 +121,9 @@ export class RequestManager {
       this.controllers.delete(key);
     }
   }
-  
+
   static cancelAllRequests(): void {
-    this.controllers.forEach(controller => controller.abort());
+    this.controllers.forEach((controller) => controller.abort());
     this.controllers.clear();
   }
 }

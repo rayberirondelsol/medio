@@ -7,9 +7,10 @@ import { RATE_LIMITS } from '../constants/rateLimits';
 import { FiPlus, FiEdit2, FiTrash2, FiLink, FiYoutube } from 'react-icons/fi';
 import { SiNetflix, SiPrime } from 'react-icons/si';
 import axios from 'axios';
+import { resolveApiBaseUrlOrDefault } from '../utils/runtimeConfig';
 import './Videos.css';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = resolveApiBaseUrlOrDefault('http://localhost:5000/api');
 
 interface Video {
   id: string;
@@ -279,3 +280,4 @@ const Videos: React.FC = () => {
   );
 };
 export default Videos;
+
