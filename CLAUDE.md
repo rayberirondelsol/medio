@@ -37,3 +37,31 @@ This is a React TypeScript application created with Create React App. It's a sta
 - JSX: react-jsx (new transform)
 - Module resolution: Node.js style
 - Strict mode enabled for type checking
+
+## Recent Features
+
+### Add Video via Link (002-add-video-link) - 2025-10-17
+
+**Status**: Planning Complete (Phase 1)
+**Spec**: `specs/002-add-video-link/spec.md`
+**Plan**: `specs/002-add-video-link/plan.md`
+
+**What it adds**:
+- URL parsing utilities for YouTube, Vimeo, Dailymotion (`src/utils/urlParser.ts`)
+- Video metadata fetch service with backend proxy (`backend/src/services/youtubeService.js`)
+- Platform UUID management endpoint (`GET /api/platforms`)
+- Enhanced AddVideoModal component with auto-fill metadata
+- Error boundaries for graceful error handling
+- AbortController for request cancellation
+
+**New Dependencies**:
+- YouTube Data API v3 (requires `YOUTUBE_API_KEY` in backend/.env)
+- Vimeo API (optional)
+- Dailymotion API (public, no key required)
+
+**Key Technologies**:
+- Backend: Express.js, PostgreSQL, axios
+- Frontend: React 19, TypeScript, React Context API
+- Testing: Jest + React Testing Library + Playwright (TDD workflow)
+
+**Constitution Compliance**: ✅ All 6 principles met
