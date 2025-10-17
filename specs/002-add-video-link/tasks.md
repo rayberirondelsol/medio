@@ -135,29 +135,29 @@ description: "Task list for Add Video via Link feature implementation"
 
 ### Tests for User Story 3 (MANDATORY per Constitution) ⚠️
 
-- [ ] T053 [P] [US3] Unit test for invalid URL validation in frontend/tests/unit/utils/urlParser.test.ts
-- [ ] T054 [P] [US3] Unit test for error message formatting in frontend/tests/unit/utils/errorFormatter.test.ts
-- [ ] T055 [P] [US3] Integration test for private video error handling in backend/tests/integration/videoMetadata.test.js
-- [ ] T056 [P] [US3] Integration test for duplicate URL detection in backend/tests/integration/videos.test.js
-- [ ] T057 [P] [US3] Integration test for API quota exceeded error in backend/tests/integration/videoMetadata.test.js
-- [ ] T058 [US3] E2E test for invalid URL error message in frontend/tests/e2e/add-video-link.spec.ts
-- [ ] T059 [US3] E2E test for duplicate video warning flow in frontend/tests/e2e/add-video-link.spec.ts
-- [ ] T060 [US3] E2E test for timeout error handling in frontend/tests/e2e/add-video-link.spec.ts
+- [x] T053 [P] [US3] Unit test for invalid URL validation in frontend/tests/unit/utils/urlParser.test.ts
+- [x] T054 [P] [US3] Unit test for error message formatting in frontend/tests/unit/utils/errorFormatter.test.ts
+- [x] T055 [P] [US3] Integration test for private video error handling in backend/tests/integration/videoMetadata.test.js
+- [x] T056 [P] [US3] Integration test for duplicate URL detection in backend/tests/integration/videos.test.js
+- [x] T057 [P] [US3] Integration test for API quota exceeded error in backend/tests/integration/videoMetadata.test.js
+- [x] T058 [US3] E2E test for invalid URL error message in frontend/tests/e2e/add-video-link.spec.ts
+- [x] T059 [US3] E2E test for duplicate video warning flow in frontend/tests/e2e/add-video-link.spec.ts
+- [x] T060 [US3] E2E test for timeout error handling in frontend/tests/e2e/add-video-link.spec.ts
 
 ### Implementation for User Story 3
 
-- [ ] T061 [P] [US3] Create error formatter utility for user-friendly messages in frontend/src/utils/errorFormatter.ts
-- [ ] T062 [P] [US3] Add Sentry error logging to YouTube service in backend/src/services/youtubeService.js
-- [ ] T063 [P] [US3] Add Sentry error logging to Vimeo service in backend/src/services/vimeoService.js
-- [ ] T064 [P] [US3] Add Sentry error logging to Dailymotion service in backend/src/services/dailymotionService.js
-- [ ] T065 [US3] Add invalid URL error handling in AddVideoModal in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T066 [US3] Add private video error handling (show friendly message) in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T067 [US3] Add API failure error handling (show manual entry message) in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T068 [US3] Add timeout error handling in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T069 [US3] Add duplicate URL detection and warning modal in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T070 [US3] Wrap AddVideoModal with Error Boundary in frontend/src/components/videos/VideoFormErrorBoundary.tsx
-- [ ] T071 [US3] Handle unique constraint violation in backend with user-friendly error in backend/src/routes/videos.js
-- [ ] T072 [US3] Add error state clearing on URL change in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T061 [P] [US3] Create error formatter utility for user-friendly messages in frontend/src/utils/errorFormatter.ts
+- [x] T062 [P] [US3] Add Sentry error logging to YouTube service in backend/src/services/youtubeService.js
+- [x] T063 [P] [US3] Add Sentry error logging to Vimeo service in backend/src/services/vimeoService.js
+- [x] T064 [P] [US3] Add Sentry error logging to Dailymotion service in backend/src/services/dailymotionService.js
+- [x] T065 [US3] Add invalid URL error handling in AddVideoModal in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T066 [US3] Add private video error handling (show friendly message) in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T067 [US3] Add API failure error handling (show manual entry message) in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T068 [US3] Add timeout error handling in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T069 [US3] Add duplicate URL detection and warning modal in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T070 [US3] Wrap AddVideoModal with Error Boundary in frontend/src/components/videos/VideoFormErrorBoundary.tsx
+- [x] T071 [US3] Handle unique constraint violation in backend with user-friendly error in backend/src/routes/videos.js
+- [x] T072 [US3] Add error state clearing on URL change in frontend/src/components/videos/AddVideoModal.tsx
 
 **Checkpoint**: All error scenarios now handled gracefully - no crashes, clear messages, manual fallback always available
 

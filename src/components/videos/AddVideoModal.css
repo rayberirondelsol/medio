@@ -178,6 +178,28 @@
   line-height: 1.5;
 }
 
+.error-message strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.error-message p {
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.error-message p:last-child {
+  margin-bottom: 0;
+}
+
+.error-actionable {
+  font-style: italic;
+  opacity: 0.9;
+  font-size: 0.875rem;
+}
+
 /* Modal Actions */
 .modal-actions {
   display: flex;

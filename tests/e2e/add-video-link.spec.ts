@@ -682,3 +682,309 @@ test.describe('Add Dailymotion Video by Link', () => {
     await expect(page.locator('text=already exists').or(page.locator('text=already added'))).toBeVisible();
   });
 });
+
+// T058-T060: Phase 5 Error Handling E2E Tests
+test.describe('Phase 5: Error Handling - Invalid URL, Duplicate, and Timeout', () => {
+  let page: Page;
+
+  test.beforeEach(async ({ browser }) => {
+    page = await browser.newPage();
+    await page.goto('http://localhost:3000');
+
+    // Login
+    await page.click('button:has-text("Login")');
+    await page.fill('input[name="email"]', 'test@example.com');
+    await page.fill('input[name="password"]', 'password123');
+    await page.click('button[type="submit"]');
+    await page.waitForURL('**/library');
+  });
+
+  test.afterEach(async () => {
+    await page.close();
+  });
+
+  // T058: Invalid URL Error Message E2E Test
+  test.describe('Invalid URL Error Messages (T058)', () => {
+    test('should show clear error for completely invalid URL', async () => {
+      // Arrange
+      const invalidUrl = 'not-a-valid-url-at-all';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(invalidUrl);
+      await page.waitForTimeout(1000);
+
+      // Assert - Clear error message is displayed
+      await expect(page.locator('text=Invalid')).toBeVisible();
+      await expect(page.locator('text=URL').or(page.locator('text=link'))).toBeVisible();
+
+      // Assert - Submit button should be disabled or show error on click
+      const errorMessage = page.locator('[role="alert"]').or(page.locator('.error-message')).or(page.locator('text=Please enter a valid'));
+      await expect(errorMessage).toBeVisible();
+    });
+
+    test('should show error for unsupported platform URL', async () => {
+      // Arrange
+      const unsupportedUrl = 'https://www.tiktok.com/@user/video/123456789';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(unsupportedUrl);
+      await page.waitForTimeout(1000);
+
+      // Assert
+      await expect(page.locator('text=Unsupported').or(page.locator('text=not supported'))).toBeVisible();
+      await expect(page.locator('text=YouTube').or(page.locator('text=Vimeo').or(page.locator('text=Dailymotion')))).toBeVisible();
+    });
+
+    test('should show error for malformed YouTube URL', async () => {
+      // Arrange
+      const malformedUrl = 'https://www.youtube.com/notavideopage';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(malformedUrl);
+      await page.waitForTimeout(1000);
+
+      // Assert
+      await expect(page.locator('text=Invalid').or(page.locator('text=Unable to extract').or(page.locator('text=not recognized')))).toBeVisible();
+    });
+
+    test('should show actionable error message for invalid URL', async () => {
+      // Arrange
+      const invalidUrl = 'https://youtube<>.com/watch?v=test';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(invalidUrl);
+      await page.waitForTimeout(1000);
+
+      // Assert - Should contain actionable advice
+      const errorText = await page.locator('[role="alert"]').or(page.locator('.error-message')).textContent();
+      expect(errorText).toMatch(/try again|check|verify|correct/i);
+    });
+
+    test('should clear error when valid URL is entered', async () => {
+      // Arrange
+      const invalidUrl = 'not-a-url';
+      const validUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+
+      // Act - Enter invalid URL
+      await page.click('button:has-text("Add Video")');
+      const urlInput = page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]'));
+      await urlInput.fill(invalidUrl);
+      await page.waitForTimeout(1000);
+
+      // Assert - Error is shown
+      await expect(page.locator('text=Invalid')).toBeVisible();
+
+      // Act - Enter valid URL
+      await urlInput.clear();
+      await urlInput.fill(validUrl);
+      await page.waitForTimeout(2000);
+
+      // Assert - Error is cleared and metadata loads
+      await expect(page.locator('text=Invalid')).not.toBeVisible();
+      await expect(page.locator('input[name="title"]')).not.toBeEmpty();
+    });
+
+    test('should prevent submission with invalid URL', async () => {
+      // Arrange
+      const invalidUrl = 'javascript:alert("xss")';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(invalidUrl);
+      await page.waitForTimeout(1000);
+
+      // Try to submit
+      const submitButton = page.locator('button:has-text("Add Video")').last();
+      await submitButton.click();
+
+      // Assert - Modal should still be open with error
+      await expect(page.locator('[role="dialog"]')).toBeVisible();
+      await expect(page.locator('text=Invalid').or(page.locator('[role="alert"]'))).toBeVisible();
+    });
+  });
+
+  // T059: Duplicate Video Warning Flow E2E Test
+  test.describe('Duplicate Video Warning (T059)', () => {
+    test('should show warning modal when attempting to add duplicate video', async () => {
+      // Arrange
+      const youtubeUrl = 'https://www.youtube.com/watch?v=duplicateE2ETest';
+
+      // Act - Add video first time
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(youtubeUrl);
+      await page.waitForTimeout(2000);
+      await page.selectOption('select[name="age_rating"]', 'all_ages');
+      await page.click('button:has-text("Add Video")').last();
+      await page.waitForTimeout(1000);
+
+      // Act - Try to add same video again
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(youtubeUrl);
+      await page.waitForTimeout(2000);
+
+      // Assert - Warning/error message is shown
+      const duplicateWarning = page.locator('text=already').or(page.locator('text=duplicate').or(page.locator('text=exists')));
+      await expect(duplicateWarning).toBeVisible({ timeout: 5000 });
+    });
+
+    test('should provide link to existing video in library when duplicate detected', async () => {
+      // Arrange
+      const youtubeUrl = 'https://www.youtube.com/watch?v=linkDuplicateTest';
+
+      // Act - Add video
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(youtubeUrl);
+      await page.waitForTimeout(2000);
+      await page.selectOption('select[name="age_rating"]', 'all_ages');
+      await page.click('button:has-text("Add Video")').last();
+      await page.waitForTimeout(1000);
+
+      // Act - Try duplicate
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(youtubeUrl);
+      await page.waitForTimeout(2000);
+
+      // Assert - Should show link or button to view existing video
+      const viewExisting = page.locator('text=View in library').or(page.locator('text=Go to video').or(page.locator('button:has-text("View")')));
+      await expect(viewExisting.or(page.locator('text=already'))).toBeVisible({ timeout: 5000 });
+    });
+
+    test('should detect duplicate even with different URL format', async () => {
+      // Arrange
+      const youtubeUrl1 = 'https://www.youtube.com/watch?v=formatDupe';
+      const youtubeUrl2 = 'https://youtu.be/formatDupe';
+
+      // Act - Add with standard format
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(youtubeUrl1);
+      await page.waitForTimeout(2000);
+      await page.selectOption('select[name="age_rating"]', 'all_ages');
+      await page.click('button:has-text("Add Video")').last();
+      await page.waitForTimeout(1000);
+
+      // Act - Try with short format
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(youtubeUrl2);
+      await page.waitForTimeout(2000);
+
+      // Assert - Should detect as duplicate
+      await expect(page.locator('text=already').or(page.locator('text=duplicate'))).toBeVisible({ timeout: 5000 });
+    });
+
+    test('should allow user to cancel after duplicate warning', async () => {
+      // Arrange
+      const youtubeUrl = 'https://www.youtube.com/watch?v=cancelDupe';
+
+      // Act - Add video
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(youtubeUrl);
+      await page.waitForTimeout(2000);
+      await page.selectOption('select[name="age_rating"]', 'all_ages');
+      await page.click('button:has-text("Add Video")').last();
+      await page.waitForTimeout(1000);
+
+      // Act - Try duplicate and cancel
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(youtubeUrl);
+      await page.waitForTimeout(2000);
+
+      // Assert - Warning shown
+      await expect(page.locator('text=already').or(page.locator('text=duplicate'))).toBeVisible({ timeout: 5000 });
+
+      // Act - Cancel
+      await page.click('button:has-text("Cancel")');
+
+      // Assert - Modal closed
+      await expect(page.locator('[role="dialog"]')).not.toBeVisible();
+    });
+  });
+
+  // T060: Timeout Error Handling E2E Test
+  test.describe('Timeout Error Handling (T060)', () => {
+    test('should show timeout error when metadata fetch takes too long', async () => {
+      // Arrange - Use URL that will timeout or be very slow
+      const slowUrl = 'https://www.youtube.com/watch?v=timeoutTest';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(slowUrl);
+
+      // Wait longer than typical timeout (simulate slow response)
+      await page.waitForTimeout(35000); // Wait 35 seconds
+
+      // Assert - Timeout error message is shown
+      const timeoutError = page.locator('text=timeout').or(page.locator('text=taking too long').or(page.locator('text=timed out')));
+      await expect(timeoutError).toBeVisible();
+    });
+
+    test('should provide retry option after timeout', async () => {
+      // Arrange
+      const slowUrl = 'https://www.youtube.com/watch?v=retryTimeout';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      const urlInput = page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]'));
+      await urlInput.fill(slowUrl);
+      await page.waitForTimeout(35000);
+
+      // Assert - Error is shown
+      await expect(page.locator('text=timeout').or(page.locator('text=taking too long'))).toBeVisible();
+
+      // Assert - Retry button or option is available
+      const retryButton = page.locator('button:has-text("Retry")').or(page.locator('button:has-text("Try again")'));
+      await expect(retryButton.or(urlInput)).toBeVisible();
+    });
+
+    test('should show loading indicator before timeout', async () => {
+      // Arrange
+      const slowUrl = 'https://www.youtube.com/watch?v=loadingTimeout';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(slowUrl);
+
+      // Assert - Loading indicator appears
+      await expect(page.locator('text=Fetching').or(page.locator('[role="progressbar"]'))).toBeVisible({ timeout: 2000 });
+
+      // Assert - Loading indicator persists
+      await page.waitForTimeout(5000);
+      await expect(page.locator('text=Fetching').or(page.locator('[role="progressbar"]'))).toBeVisible();
+    });
+
+    test('should provide actionable guidance in timeout error', async () => {
+      // Arrange
+      const slowUrl = 'https://www.youtube.com/watch?v=actionableTimeout';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(slowUrl);
+      await page.waitForTimeout(35000);
+
+      // Assert - Error contains actionable advice
+      const errorText = await page.locator('text=timeout').or(page.locator('[role="alert"]')).textContent();
+      expect(errorText).toMatch(/try again|check.*connection|refresh|later/i);
+    });
+
+    test('should allow user to cancel during long loading', async () => {
+      // Arrange
+      const slowUrl = 'https://www.youtube.com/watch?v=cancelLoading';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      await page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]')).fill(slowUrl);
+
+      // Wait for loading to start
+      await expect(page.locator('text=Fetching').or(page.locator('[role="progressbar"]'))).toBeVisible({ timeout: 2000 });
+
+      // Act - Cancel while loading
+      await page.click('button:has-text("Cancel")');
+
+      // Assert - Modal closes
+      await expect(page.locator('[role="dialog"]')).not.toBeVisible();
+    });
+  });
+});

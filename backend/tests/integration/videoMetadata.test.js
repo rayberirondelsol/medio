@@ -874,4 +874,239 @@ describe('GET /api/videos/metadata', () => {
       });
     });
   });
+
+  // T055: Private Video Error Handling Tests (Phase 5: Error Handling)
+  describe('Private Video Error Handling (T055)', () => {
+    it('should return clear error for YouTube private video', async () => {
+      // Arrange
+      youtubeService.fetchVideoMetadata.mockRejectedValue(
+        new Error('Video is private')
+      );
+
+      // Act
+      const response = await request(app)
+        .get('/api/videos/metadata')
+        .query({
+          platform: 'youtube',
+          videoId: 'privateVideoId'
+        })
+        .set('Authorization', 'Bearer valid-test-token');
+
+      // Assert
+      expect(response.status).toBe(404);
+      expect(response.body.error).toMatch(/private/i);
+      expect(response.body.success).toBe(false);
+    });
+
+    it('should return clear error for Vimeo password-protected video', async () => {
+      // Arrange
+      vimeoService.fetchVideoMetadata.mockRejectedValue(
+        new Error('Video requires password')
+      );
+
+      // Act
+      const response = await request(app)
+        .get('/api/videos/metadata')
+        .query({
+          platform: 'vimeo',
+          videoId: '123456789'
+        })
+        .set('Authorization', 'Bearer valid-test-token');
+
+      // Assert
+      expect(response.status).toBe(404);
+      expect(response.body.error).toMatch(/password|private|restricted/i);
+      expect(response.body.success).toBe(false);
+    });
+
+    it('should return clear error for Dailymotion geo-restricted video', async () => {
+      // Arrange
+      dailymotionService.fetchVideoMetadata.mockRejectedValue(
+        new Error('Video is not available in your country')
+      );
+
+      // Act
+      const response = await request(app)
+        .get('/api/videos/metadata')
+        .query({
+          platform: 'dailymotion',
+          videoId: 'x8abc123'
+        })
+        .set('Authorization', 'Bearer valid-test-token');
+
+      // Assert
+      expect(response.status).toBe(404);
+      expect(response.body.error).toMatch(/not available|restricted/i);
+      expect(response.body.success).toBe(false);
+    });
+
+    it('should differentiate between private and deleted videos', async () => {
+      // Arrange
+      youtubeService.fetchVideoMetadata.mockRejectedValue(
+        new Error('This video is private')
+      );
+
+      // Act
+      const response = await request(app)
+        .get('/api/videos/metadata')
+        .query({
+          platform: 'youtube',
+          videoId: 'privateVideo'
+        })
+        .set('Authorization', 'Bearer valid-test-token');
+
+      // Assert
+      expect(response.status).toBe(404);
+      expect(response.body.error).not.toMatch(/deleted/i);
+      expect(response.body.error).toMatch(/private/i);
+    });
+
+    it('should handle age-restricted videos appropriately', async () => {
+      // Arrange
+      youtubeService.fetchVideoMetadata.mockRejectedValue(
+        new Error('Video is age-restricted')
+      );
+
+      // Act
+      const response = await request(app)
+        .get('/api/videos/metadata')
+        .query({
+          platform: 'youtube',
+          videoId: 'ageRestrictedId'
+        })
+        .set('Authorization', 'Bearer valid-test-token');
+
+      // Assert
+      expect(response.status).toBe(404);
+      expect(response.body.error).toMatch(/age-restricted|restricted|not available/i);
+      expect(response.body.success).toBe(false);
+    });
+  });
+
+  // T057: API Quota Exceeded Error Handling Tests (Phase 5: Error Handling)
+  describe('API Quota Exceeded Error Handling (T057)', () => {
+    it('should return 503 for YouTube API quota exceeded', async () => {
+      // Arrange
+      youtubeService.fetchVideoMetadata.mockRejectedValue(
+        new Error('YouTube API quota exceeded. Please try again tomorrow.')
+      );
+
+      // Act
+      const response = await request(app)
+        .get('/api/videos/metadata')
+        .query({
+          platform: 'youtube',
+          videoId: 'dQw4w9WgXcQ'
+        })
+        .set('Authorization', 'Bearer valid-test-token');
+
+      // Assert
+      expect(response.status).toBe(503);
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toMatch(/quota.*exceeded|service.*unavailable|try.*later/i);
+    });
+
+    it('should return 503 for Vimeo API rate limit', async () => {
+      // Arrange
+      vimeoService.fetchVideoMetadata.mockRejectedValue(
+        new Error('Vimeo API rate limit exceeded')
+      );
+
+      // Act
+      const response = await request(app)
+        .get('/api/videos/metadata')
+        .query({
+          platform: 'vimeo',
+          videoId: '123456789'
+        })
+        .set('Authorization', 'Bearer valid-test-token');
+
+      // Assert
+      expect(response.status).toBe(503);
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toMatch(/rate limit|quota|try.*later/i);
+    });
+
+    it('should return 503 for Dailymotion API quota limit', async () => {
+      // Arrange
+      dailymotionService.fetchVideoMetadata.mockRejectedValue(
+        new Error('Dailymotion API quota limit reached')
+      );
+
+      // Act
+      const response = await request(app)
+        .get('/api/videos/metadata')
+        .query({
+          platform: 'dailymotion',
+          videoId: 'x8abc123'
+        })
+        .set('Authorization', 'Bearer valid-test-token');
+
+      // Assert
+      expect(response.status).toBe(503);
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toMatch(/quota|limit|try.*later/i);
+    });
+
+    it('should provide actionable message when quota is exceeded', async () => {
+      // Arrange
+      youtubeService.fetchVideoMetadata.mockRejectedValue(
+        new Error('API quota exceeded')
+      );
+
+      // Act
+      const response = await request(app)
+        .get('/api/videos/metadata')
+        .query({
+          platform: 'youtube',
+          videoId: 'testVideo'
+        })
+        .set('Authorization', 'Bearer valid-test-token');
+
+      // Assert
+      expect(response.status).toBe(503);
+      expect(response.body.error).toMatch(/try.*later|try.*tomorrow|few hours/i);
+    });
+
+    it('should distinguish between quota and authentication errors', async () => {
+      // Arrange
+      youtubeService.fetchVideoMetadata.mockRejectedValue(
+        new Error('Invalid API key')
+      );
+
+      // Act
+      const response = await request(app)
+        .get('/api/videos/metadata')
+        .query({
+          platform: 'youtube',
+          videoId: 'testVideo'
+        })
+        .set('Authorization', 'Bearer valid-test-token');
+
+      // Assert
+      expect(response.status).toBe(500);
+      expect(response.body.error).not.toMatch(/quota/i);
+      expect(response.body.error).toMatch(/API key|configuration|invalid/i);
+    });
+
+    it('should handle per-user rate limiting separately from API quota', async () => {
+      // Arrange
+      youtubeService.fetchVideoMetadata.mockRejectedValue(
+        new Error('Too many requests from this IP')
+      );
+
+      // Act
+      const response = await request(app)
+        .get('/api/videos/metadata')
+        .query({
+          platform: 'youtube',
+          videoId: 'testVideo'
+        })
+        .set('Authorization', 'Bearer valid-test-token');
+
+      // Assert
+      expect(response.status).toBe(429);
+      expect(response.body.error).toMatch(/too many requests|rate limit|slow down/i);
+    });
+  });
 });

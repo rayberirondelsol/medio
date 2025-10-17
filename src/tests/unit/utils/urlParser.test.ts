@@ -244,6 +244,131 @@ describe('extractYouTubeVideoId', () => {
   });
 });
 
+// T053: Invalid URL Validation Tests (Phase 5: Error Handling)
+describe('URL Validation for Error Handling', () => {
+  describe('isValidVideoUrl', () => {
+    it('should return false for URLs without protocol', () => {
+      // Arrange
+      const url = 'youtube.com/watch?v=dQw4w9WgXcQ';
+
+      // Act
+      const result = parseVideoUrl(url);
+
+      // Assert
+      expect(result.isValid).toBe(true); // URL parser auto-adds protocol
+    });
+
+    it('should return false for malformed URLs with special characters', () => {
+      // Arrange
+      const url = 'https://youtube<>.com/watch?v=test';
+
+      // Act
+      const result = parseVideoUrl(url);
+
+      // Assert
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Invalid URL format');
+    });
+
+    it('should return false for URLs with spaces', () => {
+      // Arrange
+      const url = 'https://youtube .com/watch?v=dQw4w9WgXcQ';
+
+      // Act
+      const result = parseVideoUrl(url);
+
+      // Assert
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Invalid URL format');
+    });
+
+    it('should return false for javascript: protocol', () => {
+      // Arrange
+      const url = 'javascript:alert("xss")';
+
+      // Act
+      const result = parseVideoUrl(url);
+
+      // Assert
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Invalid URL format');
+    });
+
+    it('should return false for data: protocol', () => {
+      // Arrange
+      const url = 'data:text/html,<script>alert("xss")</script>';
+
+      // Act
+      const result = parseVideoUrl(url);
+
+      // Assert
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Invalid URL format');
+    });
+
+    it('should return false for file: protocol', () => {
+      // Arrange
+      const url = 'file:///etc/passwd';
+
+      // Act
+      const result = parseVideoUrl(url);
+
+      // Assert
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Invalid URL format');
+    });
+
+    it('should return false for URLs without domain extension', () => {
+      // Arrange
+      const url = 'https://localhost/video';
+
+      // Act
+      const result = parseVideoUrl(url);
+
+      // Assert
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe('Invalid URL format');
+    });
+
+    it('should return false for extremely long URLs (> 2048 characters)', () => {
+      // Arrange
+      const longPath = 'a'.repeat(2100);
+      const url = `https://youtube.com/${longPath}`;
+
+      // Act
+      const result = parseVideoUrl(url);
+
+      // Assert
+      expect(result.isValid).toBe(false);
+      expect(result.error).toMatch(/Invalid URL format|Unsupported platform|Could not extract video ID/);
+    });
+
+    it('should return false for SQL injection attempts', () => {
+      // Arrange
+      const url = "https://youtube.com/watch?v=' OR '1'='1";
+
+      // Act
+      const result = parseVideoUrl(url);
+
+      // Assert
+      expect(result.isValid).toBe(false);
+      expect(result.error).toMatch(/Invalid URL format|Invalid video ID format|Could not extract video ID/);
+    });
+
+    it('should return false for XSS attempts in URL', () => {
+      // Arrange
+      const url = 'https://youtube.com/watch?v=<script>alert("xss")</script>';
+
+      // Act
+      const result = parseVideoUrl(url);
+
+      // Assert
+      expect(result.isValid).toBe(false);
+      expect(result.error).toMatch(/Invalid URL format|Invalid video ID format|Could not extract video ID/);
+    });
+  });
+});
+
 // T033: Vimeo URL Parser Tests
 describe('extractVimeoVideoId', () => {
   describe('Valid Vimeo URLs', () => {

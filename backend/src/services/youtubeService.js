@@ -5,6 +5,7 @@
  */
 
 const axios = require('axios');
+const { captureException, withScope } = require('../utils/sentry');
 
 const YOUTUBE_API_BASE_URL = 'https://www.googleapis.com/youtube/v3';
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
@@ -110,30 +111,77 @@ async function fetchVideoMetadata(videoId) {
       const errorData = error.response.data;
 
       if (status === 404) {
+        // Log to Sentry with context
+        withScope((scope) => {
+          scope.setContext('youtube_api', {
+            videoId,
+            status,
+            error: 'Video not found'
+          });
+          captureException(error);
+        });
         throw new Error('Video not found');
       }
 
       if (status === 403) {
         // Check if it's a quota error
-        if (errorData.error?.errors?.[0]?.reason === 'quotaExceeded') {
-          throw new Error('YouTube API quota exceeded');
-        }
+        const isQuotaError = errorData.error?.errors?.[0]?.reason === 'quotaExceeded';
+
+        // Log quota errors to Sentry with high priority
+        withScope((scope) => {
+          scope.setLevel('error');
+          scope.setContext('youtube_api', {
+            videoId,
+            status,
+            error: 'API quota exceeded',
+            errorData
+          });
+          captureException(error);
+        });
+
         throw new Error('YouTube API quota exceeded');
       }
 
       if (status === 400) {
+        withScope((scope) => {
+          scope.setContext('youtube_api', {
+            videoId,
+            status,
+            error: 'Invalid request'
+          });
+          captureException(error);
+        });
+
         if (errorData.error?.message?.includes('API key')) {
           throw new Error('Invalid YouTube API key');
         }
         throw new Error('Invalid request to YouTube API');
       }
 
-      // Generic API error
+      // Generic API error - log to Sentry
+      withScope((scope) => {
+        scope.setContext('youtube_api', {
+          videoId,
+          status,
+          errorMessage: errorData.error?.message
+        });
+        captureException(error);
+      });
+
       throw new Error(`YouTube API error: ${errorData.error?.message || 'Unknown error'}`);
     }
 
     // Network error
     if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND' || error.code === 'ETIMEDOUT') {
+      withScope((scope) => {
+        scope.setContext('youtube_api', {
+          videoId,
+          errorCode: error.code,
+          error: 'Network error'
+        });
+        captureException(error);
+      });
+
       throw new Error('Network error');
     }
 
@@ -145,7 +193,16 @@ async function fetchVideoMetadata(videoId) {
       throw error;
     }
 
-    // Unknown error
+    // Unknown error - log to Sentry
+    withScope((scope) => {
+      scope.setContext('youtube_api', {
+        videoId,
+        error: 'Unknown error',
+        message: error.message
+      });
+      captureException(error);
+    });
+
     throw new Error('Failed to fetch video metadata');
   }
 }

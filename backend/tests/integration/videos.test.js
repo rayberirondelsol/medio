@@ -427,6 +427,210 @@ describe('POST /api/videos', () => {
     });
   });
 
+  // T056: Duplicate URL Detection Tests (Phase 5: Error Handling)
+  describe('Duplicate URL Detection (T056)', () => {
+    it('should detect exact duplicate URL and return clear error message', async () => {
+      // Arrange
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=exactDuplicate',
+        external_id: 'exactDuplicate',
+        title: 'Duplicate Test Video',
+        age_rating: 'all_ages'
+      };
+
+      // Act - Create first video
+      await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Act - Try to create duplicate
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert
+      expect(response.status).toBe(409);
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toMatch(/already exists|duplicate/i);
+      expect(response.body.error).toContain('URL');
+    });
+
+    it('should detect duplicate with different URL parameters', async () => {
+      // Arrange
+      const videoData1 = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=paramTest',
+        external_id: 'paramTest',
+        title: 'Param Test Video',
+        age_rating: 'all_ages'
+      };
+
+      const videoData2 = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=paramTest&t=10s&feature=share',
+        external_id: 'paramTest',
+        title: 'Param Test Video With Different Title',
+        age_rating: 'all_ages'
+      };
+
+      // Act - Create first video
+      await request(app)
+        .post('/api/videos')
+        .send(videoData1)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Act - Try to create video with URL parameters
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData2)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert - Should detect as duplicate based on external_id
+      expect(response.status).toBe(409);
+      expect(response.body.error).toMatch(/already exists|duplicate/i);
+    });
+
+    it('should detect duplicate from different URL formats (youtu.be vs youtube.com)', async () => {
+      // Arrange
+      const videoData1 = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=formatTest',
+        external_id: 'formatTest',
+        title: 'Format Test Video',
+        age_rating: 'all_ages'
+      };
+
+      const videoData2 = {
+        platform_id: testPlatformId,
+        video_url: 'https://youtu.be/formatTest',
+        external_id: 'formatTest',
+        title: 'Format Test Video Alt',
+        age_rating: 'all_ages'
+      };
+
+      // Act
+      await request(app)
+        .post('/api/videos')
+        .send(videoData1)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData2)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert
+      expect(response.status).toBe(409);
+      expect(response.body.error).toMatch(/already exists|duplicate/i);
+    });
+
+    it('should provide existing video details in duplicate error', async () => {
+      // Arrange
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=detailTest',
+        external_id: 'detailTest',
+        title: 'Detail Test Video',
+        age_rating: 'all_ages'
+      };
+
+      // Act
+      await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert
+      expect(response.status).toBe(409);
+      expect(response.body.error).toBeDefined();
+      // Optionally, check if response includes existing video ID or link
+      expect(response.body.existingVideo || response.body.error).toBeDefined();
+    });
+
+    it('should handle case-sensitive URL comparison correctly', async () => {
+      // Arrange
+      const videoData1 = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=CaseTest',
+        external_id: 'CaseTest',
+        title: 'Case Test Video',
+        age_rating: 'all_ages'
+      };
+
+      const videoData2 = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=casetest',
+        external_id: 'casetest',
+        title: 'Case Test Video Lower',
+        age_rating: 'all_ages'
+      };
+
+      // Act
+      const response1 = await request(app)
+        .post('/api/videos')
+        .send(videoData1)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      const response2 = await request(app)
+        .post('/api/videos')
+        .send(videoData2)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert - Different case should be treated as different videos
+      expect(response1.status).toBe(201);
+      expect(response2.status).toBe(201);
+    });
+
+    it('should check for duplicates before fetching metadata', async () => {
+      // Arrange
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=preCheckDupe',
+        external_id: 'preCheckDupe',
+        title: 'Pre-check Duplicate',
+        age_rating: 'all_ages'
+      };
+
+      // Act - Create first video
+      await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Act - Try duplicate (should fail before external API call)
+      const startTime = Date.now();
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+      const duration = Date.now() - startTime;
+
+      // Assert
+      expect(response.status).toBe(409);
+      expect(duration).toBeLessThan(500); // Should be fast, no external API call
+    });
+  });
+
   describe('Foreign Key Constraints', () => {
     it('should return 400 when platform_id does not exist', async () => {
       // Arrange

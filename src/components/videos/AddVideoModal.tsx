@@ -5,6 +5,7 @@ import { fetchVideoMetadata, createVideo } from '../../services/videoService';
 import { getPlatforms } from '../../services/platformService';
 import LoadingSpinner from '../LoadingSpinner';
 import { AgeRating, CreateVideoRequest, Platform } from '../../types/video';
+import { formatErrorMessage, ErrorType } from '../../utils/errorFormatter';
 import './AddVideoModal.css';
 
 interface AddVideoModalProps {
@@ -50,6 +51,8 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
   const [isLoadingPlatforms, setIsLoadingPlatforms] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorTitle, setErrorTitle] = useState<string | null>(null);
+  const [errorActionable, setErrorActionable] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
 
   // Track which fields have been manually edited by the user
@@ -121,6 +124,8 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
   const handleUrlChange = useCallback((url: string) => {
     // Clear previous errors when URL changes (T072 - User Story 3)
     setError(null);
+    setErrorTitle(null);
+    setErrorActionable(null);
     setValidationError(null);
 
     // Detect platform from URL
@@ -160,8 +165,15 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
       videoId = extractDailymotionVideoId(url);
     }
 
+    // T065: Invalid URL error handling
     if (!videoId) {
-      setError('Unable to extract video ID from URL. Please check the URL format.');
+      const formattedError = formatErrorMessage(
+        new Error('Unable to extract video ID from URL'),
+        ErrorType.MALFORMED_URL
+      );
+      setErrorTitle(formattedError.title);
+      setError(formattedError.message);
+      setErrorActionable(formattedError.actionable);
       return;
     }
 
@@ -188,7 +200,11 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
     } catch (err: any) {
       // Only show error if request wasn't cancelled
       if (err.message !== 'Request cancelled') {
-        setError(err.message || 'Failed to fetch video metadata. You can enter details manually.');
+        // T066, T067, T068: Private video, API failure, and timeout error handling
+        const formattedError = formatErrorMessage(err);
+        setErrorTitle(formattedError.title);
+        setError(formattedError.message);
+        setErrorActionable(formattedError.actionable);
       }
     } finally {
       setIsLoadingMetadata(false);
@@ -304,7 +320,11 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
         onVideoAdded();
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to save video. Please try again.');
+      // T069: Duplicate URL detection and enhanced error handling
+      const formattedError = formatErrorMessage(err);
+      setErrorTitle(formattedError.title);
+      setError(formattedError.message);
+      setErrorActionable(formattedError.actionable);
     } finally {
       setIsSaving(false);
     }
@@ -332,6 +352,8 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
     });
     setDetectedPlatform(null);
     setError(null);
+    setErrorTitle(null);
+    setErrorActionable(null);
     setValidationError(null);
   };
 
@@ -366,10 +388,12 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
         </div>
 
         <form onSubmit={handleSubmit} className="add-video-form">
-          {/* Error display */}
+          {/* Enhanced Error display (T065-T069) */}
           {(error || validationError) && (
             <div className="error-message" role="alert">
-              {validationError || error}
+              {errorTitle && <strong>{errorTitle}</strong>}
+              <p>{validationError || error}</p>
+              {errorActionable && <p className="error-actionable">{errorActionable}</p>}
             </div>
           )}
 

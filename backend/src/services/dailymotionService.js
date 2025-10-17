@@ -8,6 +8,7 @@
  */
 
 const axios = require('axios');
+const { captureException, withScope } = require('../utils/sentry');
 
 const DAILYMOTION_API_BASE_URL = 'https://api.dailymotion.com';
 
@@ -75,27 +76,80 @@ async function fetchVideoMetadata(videoId) {
       const errorData = error.response.data;
 
       if (status === 404) {
+        // Log to Sentry with context
+        withScope((scope) => {
+          scope.setContext('dailymotion_api', {
+            videoId,
+            status,
+            error: 'Video not found'
+          });
+          captureException(error);
+        });
         throw new Error('Video not found');
       }
 
       if (status === 410) {
+        // Log to Sentry with context
+        withScope((scope) => {
+          scope.setContext('dailymotion_api', {
+            videoId,
+            status,
+            error: 'Video deleted'
+          });
+          captureException(error);
+        });
         throw new Error('Video has been deleted');
       }
 
       if (status === 403) {
+        // Log to Sentry with context
+        withScope((scope) => {
+          scope.setContext('dailymotion_api', {
+            videoId,
+            status,
+            error: 'Private video or forbidden'
+          });
+          captureException(error);
+        });
         throw new Error('Video is private or access is forbidden');
       }
 
       if (status === 400) {
+        withScope((scope) => {
+          scope.setContext('dailymotion_api', {
+            videoId,
+            status,
+            error: 'Invalid request'
+          });
+          captureException(error);
+        });
         throw new Error('Invalid request to Dailymotion API');
       }
 
-      // Generic API error
+      // Generic API error - log to Sentry
+      withScope((scope) => {
+        scope.setContext('dailymotion_api', {
+          videoId,
+          status,
+          errorMessage: errorData.error?.message
+        });
+        captureException(error);
+      });
+
       throw new Error(`Dailymotion API error: ${errorData.error?.message || 'Unknown error'}`);
     }
 
     // Network error
     if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND' || error.code === 'ETIMEDOUT') {
+      withScope((scope) => {
+        scope.setContext('dailymotion_api', {
+          videoId,
+          errorCode: error.code,
+          error: 'Network error'
+        });
+        captureException(error);
+      });
+
       throw new Error('Network error');
     }
 
@@ -107,7 +161,16 @@ async function fetchVideoMetadata(videoId) {
       throw error;
     }
 
-    // Unknown error
+    // Unknown error - log to Sentry
+    withScope((scope) => {
+      scope.setContext('dailymotion_api', {
+        videoId,
+        error: 'Unknown error',
+        message: error.message
+      });
+      captureException(error);
+    });
+
     throw new Error('Failed to fetch video metadata');
   }
 }

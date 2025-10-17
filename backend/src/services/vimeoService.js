@@ -6,6 +6,7 @@
  */
 
 const axios = require('axios');
+const { captureException, withScope } = require('../utils/sentry');
 
 const VIMEO_API_BASE_URL = 'https://api.vimeo.com';
 const VIMEO_ACCESS_TOKEN = process.env.VIMEO_ACCESS_TOKEN;
@@ -80,23 +81,70 @@ async function fetchVideoMetadata(videoId) {
       const errorData = error.response.data;
 
       if (status === 404) {
+        // Log to Sentry with context
+        withScope((scope) => {
+          scope.setContext('vimeo_api', {
+            videoId,
+            status,
+            error: 'Video not found'
+          });
+          captureException(error);
+        });
         throw new Error('Video not found');
       }
 
       if (status === 403) {
+        // Log to Sentry with context
+        withScope((scope) => {
+          scope.setContext('vimeo_api', {
+            videoId,
+            status,
+            error: 'Private video or forbidden'
+          });
+          captureException(error);
+        });
         throw new Error('Video is private or access is forbidden');
       }
 
       if (status === 401) {
+        // Log authorization errors to Sentry
+        withScope((scope) => {
+          scope.setLevel('error');
+          scope.setContext('vimeo_api', {
+            videoId,
+            status,
+            error: 'Unauthorized',
+            hasToken: !!VIMEO_ACCESS_TOKEN
+          });
+          captureException(error);
+        });
         throw new Error('Unauthorized - Vimeo access token may be invalid or missing');
       }
 
-      // Generic API error
+      // Generic API error - log to Sentry
+      withScope((scope) => {
+        scope.setContext('vimeo_api', {
+          videoId,
+          status,
+          errorMessage: errorData.error
+        });
+        captureException(error);
+      });
+
       throw new Error(`Vimeo API error: ${errorData.error || 'Unknown error'}`);
     }
 
     // Network error
     if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND' || error.code === 'ETIMEDOUT') {
+      withScope((scope) => {
+        scope.setContext('vimeo_api', {
+          videoId,
+          errorCode: error.code,
+          error: 'Network error'
+        });
+        captureException(error);
+      });
+
       throw new Error('Network error');
     }
 
@@ -107,7 +155,16 @@ async function fetchVideoMetadata(videoId) {
       throw error;
     }
 
-    // Unknown error
+    // Unknown error - log to Sentry
+    withScope((scope) => {
+      scope.setContext('vimeo_api', {
+        videoId,
+        error: 'Unknown error',
+        message: error.message
+      });
+      captureException(error);
+    });
+
     throw new Error('Failed to fetch video metadata');
   }
 }
