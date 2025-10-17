@@ -35,7 +35,7 @@ describe('Dailymotion Service', () => {
             'owner.screenname': 'Test Creator',
             duration: 300,
             views_total: 75000,
-            created_time: 1705320600
+            created_time: 1705314600
           }
         };
 
@@ -80,7 +80,7 @@ describe('Dailymotion Service', () => {
             'owner.screenname': 'Minimal User',
             duration: 120,
             views_total: 0,
-            created_time: 1705320600
+            created_time: 1705314600
           }
         };
 
@@ -109,7 +109,7 @@ describe('Dailymotion Service', () => {
             'owner.screenname': 'Test',
             duration: 90,
             views_total: 500,
-            created_time: 1705320600
+            created_time: 1705314600
           }
         };
 
@@ -135,7 +135,7 @@ describe('Dailymotion Service', () => {
             'owner.screenname': 'Test',
             duration: 90,
             views_total: 500,
-            created_time: 1705320600
+            created_time: 1705314600
           }
         };
 
@@ -322,7 +322,7 @@ describe('Dailymotion Service', () => {
               'owner.screenname': 'Test',
               duration: testCase.seconds,
               views_total: 1000,
-              created_time: 1705320600
+              created_time: 1705314600
             }
           };
 
@@ -340,7 +340,7 @@ describe('Dailymotion Service', () => {
       it('should convert Unix timestamp to ISO 8601 date format', async () => {
         // Arrange
         const videoId = 'x8test2';
-        const unixTimestamp = 1705320600; // 2024-01-15 10:30:00 UTC
+        const unixTimestamp = 1705314600; // 2024-01-15 10:30:00 UTC
         const mockResponse = {
           data: {
             id: videoId,
@@ -375,7 +375,7 @@ describe('Dailymotion Service', () => {
             'owner.screenname': 'Test',
             duration: 60,
             views_total: 1234567,
-            created_time: 1705320600
+            created_time: 1705314600
           }
         };
 
@@ -400,7 +400,7 @@ describe('Dailymotion Service', () => {
             'owner.screenname': 'Test',
             duration: 60,
             views_total: 1000,
-            created_time: 1705320600
+            created_time: 1705314600
           }
         };
 

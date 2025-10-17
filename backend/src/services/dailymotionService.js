@@ -13,6 +13,41 @@ const { captureException, withScope } = require('../utils/sentry');
 const DAILYMOTION_API_BASE_URL = 'https://api.dailymotion.com';
 
 /**
+ * Convert duration in seconds to ISO 8601 format (PT#H#M#S)
+ *
+ * @param {number} seconds - Duration in seconds
+ * @returns {string} ISO 8601 duration format (e.g., "PT5M", "PT1H2M3S")
+ */
+function convertSecondsToISO8601(seconds) {
+  if (!seconds || seconds <= 0) {
+    return 'PT0S';
+  }
+
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  let duration = 'PT';
+
+  if (hours > 0) {
+    duration += `${hours}H`;
+  }
+  if (minutes > 0) {
+    duration += `${minutes}M`;
+  }
+  if (secs > 0) {
+    duration += `${secs}S`;
+  }
+
+  // If only PT remains (all values were 0), return PT0S
+  if (duration === 'PT') {
+    return 'PT0S';
+  }
+
+  return duration;
+}
+
+/**
  * Fetch video metadata from Dailymotion API
  *
  * @param {string} videoId - The Dailymotion video ID (alphanumeric, typically starts with 'x')
@@ -33,7 +68,7 @@ async function fetchVideoMetadata(videoId) {
   try {
     // Make request to Dailymotion API
     // Request specific fields to get video metadata
-    const fields = 'title,description,thumbnail_url,duration,owner.screenname';
+    const fields = 'id,title,description,thumbnail_1080_url,thumbnail_720_url,thumbnail_480_url,thumbnail_240_url,duration,owner.screenname,created_time,views_total';
 
     const response = await axios.get(`${DAILYMOTION_API_BASE_URL}/video/${videoId}`, {
       params: {
@@ -49,25 +84,55 @@ async function fetchVideoMetadata(videoId) {
 
     const video = response.data;
 
-    // Check if video data is present (deleted videos return empty object)
-    if (!video.title && !video.id) {
-      throw new Error('Video not found or has been deleted');
+    // Check if video data is present (empty object = invalid response)
+    if (!video || Object.keys(video).length === 0 || !video.id) {
+      throw new Error('Invalid API response');
     }
 
     // Extract metadata
     const title = video.title || 'Untitled';
     const description = video.description || '';
-    const thumbnailUrl = video.thumbnail_url || '';
-    const duration = video.duration || 0; // in seconds
     const channelName = video['owner.screenname'] || 'Unknown';
+
+    // Select best quality thumbnail (priority: 1080 > 720 > 480 > 240)
+    let thumbnailUrl;
+    if (video.thumbnail_1080_url) {
+      thumbnailUrl = video.thumbnail_1080_url;
+    } else if (video.thumbnail_720_url) {
+      thumbnailUrl = video.thumbnail_720_url;
+    } else if (video.thumbnail_480_url) {
+      thumbnailUrl = video.thumbnail_480_url;
+    } else if (video.thumbnail_240_url) {
+      thumbnailUrl = video.thumbnail_240_url;
+    } else {
+      thumbnailUrl = undefined;
+    }
+
+    // Duration conversion
+    const durationInSeconds = video.duration || 0;
+    const duration = convertSecondsToISO8601(durationInSeconds);
+
+    // Convert Unix timestamp to ISO 8601 (created_time is in seconds)
+    const publishedAt = video.created_time
+      ? new Date(video.created_time * 1000).toISOString()
+      : undefined;
+
+    // Convert view count to string
+    const viewCount = video.views_total !== undefined
+      ? String(video.views_total)
+      : undefined;
 
     // Return normalized metadata (matching YouTube service format)
     return {
+      videoId: video.id,
       title,
       description,
       thumbnailUrl,
       duration,
-      channelName
+      durationInSeconds,
+      channelName,
+      viewCount,
+      publishedAt
     };
   } catch (error) {
     // Handle specific error cases
@@ -107,11 +172,37 @@ async function fetchVideoMetadata(videoId) {
           scope.setContext('dailymotion_api', {
             videoId,
             status,
-            error: 'Private video or forbidden'
+            error: 'Private video or restricted'
           });
           captureException(error);
         });
-        throw new Error('Video is private or access is forbidden');
+        throw new Error('Video is private or restricted');
+      }
+
+      if (status === 401) {
+        // Log to Sentry with context
+        withScope((scope) => {
+          scope.setContext('dailymotion_api', {
+            videoId,
+            status,
+            error: 'Invalid API credentials'
+          });
+          captureException(error);
+        });
+        throw new Error('Invalid Dailymotion API credentials');
+      }
+
+      if (status === 429) {
+        // Log to Sentry with context
+        withScope((scope) => {
+          scope.setContext('dailymotion_api', {
+            videoId,
+            status,
+            error: 'Rate limit exceeded'
+          });
+          captureException(error);
+        });
+        throw new Error('Dailymotion API rate limit exceeded');
       }
 
       if (status === 400) {
@@ -156,8 +247,7 @@ async function fetchVideoMetadata(videoId) {
     // Re-throw if it's already our custom error
     if (error.message.includes('Video ID is required') ||
         error.message.includes('Invalid Dailymotion video ID format') ||
-        error.message.includes('Invalid API response') ||
-        error.message.includes('Video not found or has been deleted')) {
+        error.message.includes('Invalid API response')) {
       throw error;
     }
 
