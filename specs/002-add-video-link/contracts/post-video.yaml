@@ -1,0 +1,352 @@
+openapi: 3.0.3
+info:
+  title: Medio Video Platform API - Create Video
+  description: API contract for adding videos to family library (with platform_id UUID fix)
+  version: 1.0.0
+  contact:
+    name: Medio Development Team
+
+servers:
+  - url: https://medio-backend.fly.dev/api
+    description: Production server
+  - url: http://localhost:3001/api
+    description: Local development server
+
+paths:
+  /videos:
+    post:
+      summary: Add video to family library
+      description: |
+        Creates a new video record in the authenticated user's family library.
+
+        **Bug Fix**: This endpoint now properly accepts `platform_id` as UUID (FR-029).
+        Previous bug sent platform_id as string, causing validation errors.
+
+        **Duplicate Detection**: Backend checks for duplicate video URLs per family (FR-023).
+        If duplicate found, returns 409 Conflict with details (FR-024).
+
+        **Server-Side Validation**: All fields validated server-side (FR-031).
+      operationId: createVideo
+      tags:
+        - Videos
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVideoRequest'
+            examples:
+              youtube:
+                summary: Add YouTube video with auto-fetched metadata
+                value:
+                  platform_id: "550e8400-e29b-41d4-a716-446655440000"
+                  video_id: "dQw4w9WgXcQ"
+                  video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                  title: "Never Gonna Give You Up"
+                  description: "Rick Astley's official music video"
+                  thumbnail_url: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+                  duration: 212
+                  age_rating: "PG"
+                  channel_name: "Rick Astley"
+              manualEntry:
+                summary: Manual entry without metadata
+                value:
+                  platform_id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+                  video_id: "123456789"
+                  video_url: "https://vimeo.com/123456789"
+                  title: "Manually Entered Video Title"
+                  age_rating: "G"
+      responses:
+        '201':
+          description: Video successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateVideoResponse'
+              examples:
+                success:
+                  summary: Successful video creation
+                  value:
+                    success: true
+                    video:
+                      id: "8d9f7689-8536-51ef-055c-f18ad2e91bf8"
+                      platform_id: "550e8400-e29b-41d4-a716-446655440000"
+                      video_id: "dQw4w9WgXcQ"
+                      video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                      title: "Never Gonna Give You Up"
+                      description: "Rick Astley's official music video"
+                      thumbnail_url: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+                      duration: 212
+                      age_rating: "PG"
+                      channel_name: "Rick Astley"
+                      added_date: "2025-10-17T15:30:00Z"
+        '400':
+          description: Bad request - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateVideoError'
+              examples:
+                invalidPlatformId:
+                  summary: Invalid platform_id UUID
+                  value:
+                    success: false
+                    error: "Invalid platform ID"
+                    code: "INVALID_PLATFORM"
+                    details:
+                      platform_id: ["Must be a valid UUID"]
+                missingFields:
+                  summary: Missing required fields
+                  value:
+                    success: false
+                    error: "Validation failed"
+                    code: "VALIDATION_ERROR"
+                    details:
+                      title: ["Title is required"]
+                      age_rating: ["Age rating is required"]
+                invalidAgeRating:
+                  summary: Invalid age rating value
+                  value:
+                    success: false
+                    error: "Validation failed"
+                    code: "VALIDATION_ERROR"
+                    details:
+                      age_rating: ["Must be one of: G, PG, PG-13, R"]
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateVideoError'
+              examples:
+                unauthorized:
+                  summary: Missing authentication
+                  value:
+                    success: false
+                    error: "Authentication required"
+                    code: "UNAUTHORIZED"
+        '409':
+          description: Conflict - duplicate video URL detected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateVideoError'
+              examples:
+                duplicate:
+                  summary: Video URL already exists in family library
+                  value:
+                    success: false
+                    error: "This video is already in your library"
+                    code: "DUPLICATE_URL"
+                    details:
+                      video_url: ["A video with this URL already exists in your family's library"]
+                      existing_video_id: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateVideoError'
+              examples:
+                serverError:
+                  summary: Database error
+                  value:
+                    success: false
+                    error: "Failed to save video. Please try again."
+                    code: "SERVER_ERROR"
+
+components:
+  schemas:
+    CreateVideoRequest:
+      type: object
+      required:
+        - platform_id
+        - video_id
+        - video_url
+        - title
+        - age_rating
+      properties:
+        platform_id:
+          type: string
+          format: uuid
+          description: Platform UUID (from GET /api/platforms) - **MUST BE UUID, NOT STRING**
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        video_id:
+          type: string
+          description: Platform-specific video identifier
+          minLength: 1
+          maxLength: 255
+          example: "dQw4w9WgXcQ"
+        video_url:
+          type: string
+          format: uri
+          description: Original video URL pasted by user
+          example: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        title:
+          type: string
+          description: Video title (auto-fetched or manually entered)
+          minLength: 1
+          maxLength: 500
+          example: "Never Gonna Give You Up"
+        description:
+          type: string
+          description: Video description (optional)
+          example: "Rick Astley's official music video"
+        thumbnail_url:
+          type: string
+          format: uri
+          description: URL to video thumbnail (optional)
+          example: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+        duration:
+          type: integer
+          description: Video duration in seconds (optional)
+          minimum: 0
+          example: 212
+        age_rating:
+          type: string
+          description: Parent-assigned age rating (mandatory - FR-026)
+          enum:
+            - G
+            - PG
+            - PG-13
+            - R
+          example: "PG"
+        channel_name:
+          type: string
+          description: Channel or creator name (optional)
+          maxLength: 255
+          example: "Rick Astley"
+
+    CreateVideoResponse:
+      type: object
+      required:
+        - success
+        - video
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+          example: true
+        video:
+          $ref: '#/components/schemas/Video'
+
+    Video:
+      type: object
+      required:
+        - id
+        - platform_id
+        - video_id
+        - video_url
+        - title
+        - age_rating
+        - added_date
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique video identifier
+          example: "8d9f7689-8536-51ef-055c-f18ad2e91bf8"
+        platform_id:
+          type: string
+          format: uuid
+          description: Platform UUID
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        video_id:
+          type: string
+          description: Platform-specific video ID
+          example: "dQw4w9WgXcQ"
+        video_url:
+          type: string
+          format: uri
+          description: Original video URL
+          example: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        title:
+          type: string
+          description: Video title
+          example: "Never Gonna Give You Up"
+        description:
+          type: string
+          nullable: true
+          description: Video description
+          example: "Rick Astley's official music video"
+        thumbnail_url:
+          type: string
+          format: uri
+          nullable: true
+          description: Thumbnail URL
+          example: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+        duration:
+          type: integer
+          nullable: true
+          description: Duration in seconds
+          example: 212
+        age_rating:
+          type: string
+          description: Parent-assigned age rating
+          enum:
+            - G
+            - PG
+            - PG-13
+            - R
+          example: "PG"
+        channel_name:
+          type: string
+          nullable: true
+          description: Channel or creator name
+          example: "Rick Astley"
+        added_date:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when video was added
+          example: "2025-10-17T15:30:00Z"
+
+    CreateVideoError:
+      type: object
+      required:
+        - success
+        - error
+        - code
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+          example: false
+        error:
+          type: string
+          description: User-friendly error message (no technical jargon - FR-019, SC-008)
+          example: "This video is already in your library"
+        code:
+          type: string
+          description: Machine-readable error code
+          enum:
+            - DUPLICATE_URL
+            - INVALID_PLATFORM
+            - VALIDATION_ERROR
+            - UNAUTHORIZED
+            - SERVER_ERROR
+          example: "DUPLICATE_URL"
+        details:
+          type: object
+          description: Field-specific validation errors or additional context
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            video_url: ["A video with this URL already exists in your family's library"]
+            existing_video_id: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+      description: |
+        httpOnly cookie containing JWT authentication token.
+        Set by POST /api/auth/login endpoint.
+
+tags:
+  - name: Videos
+    description: Video management endpoints

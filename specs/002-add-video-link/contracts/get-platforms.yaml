@@ -1,0 +1,146 @@
+openapi: 3.0.3
+info:
+  title: Medio Video Platform API - Get Platforms
+  description: API contract for fetching video platform list with UUIDs
+  version: 1.0.0
+  contact:
+    name: Medio Development Team
+
+servers:
+  - url: https://medio-backend.fly.dev/api
+    description: Production server
+  - url: http://localhost:3001/api
+    description: Local development server
+
+paths:
+  /platforms:
+    get:
+      summary: List all video platforms
+      description: |
+        Fetches the list of supported video platforms with their UUIDs.
+        Frontend should cache this response for the session duration to minimize requests.
+
+        **New Endpoint**: Created to fix platform_id UUID mismatch bug (FR-030).
+      operationId: getPlatforms
+      tags:
+        - Platforms
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved platform list
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - platforms
+                properties:
+                  platforms:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Platform'
+              examples:
+                success:
+                  summary: Successful response with platform list
+                  value:
+                    platforms:
+                      - id: "550e8400-e29b-41d4-a716-446655440000"
+                        name: "youtube"
+                        requiresAuth: false
+                      - id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+                        name: "vimeo"
+                        requiresAuth: false
+                      - id: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                        name: "dailymotion"
+                        requiresAuth: false
+                      - id: "8d9f7689-8536-51ef-055c-f18ad2e91bf8"
+                        name: "netflix"
+                        requiresAuth: true
+                      - id: "9e0g8799-9647-62fg-166d-g29be3f02cg9"
+                        name: "disney_plus"
+                        requiresAuth: true
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                unauthorized:
+                  summary: Missing or invalid authentication
+                  value:
+                    error: "Authentication required"
+                    code: "UNAUTHORIZED"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                serverError:
+                  summary: Database connection failure
+                  value:
+                    error: "Failed to fetch platforms"
+                    code: "SERVER_ERROR"
+
+components:
+  schemas:
+    Platform:
+      type: object
+      required:
+        - id
+        - name
+        - requiresAuth
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique platform identifier (UUID)
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        name:
+          type: string
+          description: Platform name (lowercase, no spaces)
+          enum:
+            - youtube
+            - vimeo
+            - dailymotion
+            - netflix
+            - disney_plus
+          example: "youtube"
+        requiresAuth:
+          type: boolean
+          description: Whether platform requires user authentication for video access
+          example: false
+
+    Error:
+      type: object
+      required:
+        - error
+        - code
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+          example: "Authentication required"
+        code:
+          type: string
+          description: Machine-readable error code
+          enum:
+            - UNAUTHORIZED
+            - SERVER_ERROR
+          example: "UNAUTHORIZED"
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+      description: |
+        httpOnly cookie containing JWT authentication token.
+        Set by POST /api/auth/login endpoint.
+
+tags:
+  - name: Platforms
+    description: Video platform management endpoints

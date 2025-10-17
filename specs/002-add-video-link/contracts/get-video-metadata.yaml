@@ -1,0 +1,261 @@
+openapi: 3.0.3
+info:
+  title: Medio Video Platform API - Get Video Metadata
+  description: API contract for fetching video metadata from external platforms (YouTube, Vimeo, Dailymotion)
+  version: 1.0.0
+  contact:
+    name: Medio Development Team
+
+servers:
+  - url: https://medio-backend.fly.dev/api
+    description: Production server
+  - url: http://localhost:3001/api
+    description: Local development server
+
+paths:
+  /videos/metadata:
+    get:
+      summary: Fetch video metadata from external platform
+      description: |
+        Fetches video metadata (title, description, thumbnail, duration) from the specified
+        video platform API. Backend proxies the request to hide API keys from frontend (FR-036).
+
+        **Performance**: Expected response time < 2 seconds for 95% of requests (SC-002).
+        **Timeout**: Requests timeout after 10 seconds (FR-013).
+        **Rate Limiting**: Backend implements rate limiting to prevent quota exhaustion (FR-037).
+
+        **Supported Platforms**:
+        - YouTube (via YouTube Data API v3)
+        - Vimeo (via Vimeo API)
+        - Dailymotion (via Dailymotion API)
+      operationId: getVideoMetadata
+      tags:
+        - Videos
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: platform
+          in: query
+          required: true
+          description: Video platform name
+          schema:
+            type: string
+            enum:
+              - youtube
+              - vimeo
+              - dailymotion
+          example: "youtube"
+        - name: videoId
+          in: query
+          required: true
+          description: Platform-specific video identifier
+          schema:
+            type: string
+          examples:
+            youtube:
+              summary: YouTube video ID
+              value: "dQw4w9WgXcQ"
+            vimeo:
+              summary: Vimeo video ID
+              value: "123456789"
+            dailymotion:
+              summary: Dailymotion video ID
+              value: "x8abcde"
+      responses:
+        '200':
+          description: Successfully retrieved video metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataResponse'
+              examples:
+                youtubeSuccess:
+                  summary: Successful YouTube metadata fetch
+                  value:
+                    success: true
+                    metadata:
+                      title: "Never Gonna Give You Up"
+                      description: "Rick Astley's official music video for 'Never Gonna Give You Up'..."
+                      thumbnailUrl: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+                      duration: 212
+                      channelName: "Rick Astley"
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataError'
+              examples:
+                invalidPlatform:
+                  summary: Unsupported platform
+                  value:
+                    success: false
+                    error: "Unsupported platform. Use youtube, vimeo, or dailymotion."
+                    code: "INVALID_PLATFORM"
+                missingVideoId:
+                  summary: Missing video ID
+                  value:
+                    success: false
+                    error: "Video ID is required"
+                    code: "VALIDATION_ERROR"
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataError'
+              examples:
+                unauthorized:
+                  summary: Missing authentication
+                  value:
+                    success: false
+                    error: "Authentication required"
+                    code: "UNAUTHORIZED"
+        '404':
+          description: Video not found or private
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataError'
+              examples:
+                notFound:
+                  summary: Video does not exist
+                  value:
+                    success: false
+                    error: "This video is private or unavailable. Please check the URL or try a different video."
+                    code: "VIDEO_NOT_FOUND"
+                privateVideo:
+                  summary: Video is private
+                  value:
+                    success: false
+                    error: "This video is private and cannot be added. Please check the URL or try a different video."
+                    code: "PRIVATE_VIDEO"
+        '429':
+          description: Rate limit exceeded or API quota exhausted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataError'
+              examples:
+                quotaExceeded:
+                  summary: YouTube API quota exceeded
+                  value:
+                    success: false
+                    error: "Unable to fetch video details automatically. You can enter the information manually below."
+                    code: "QUOTA_EXCEEDED"
+        '500':
+          description: Internal server error or external API failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataError'
+              examples:
+                apiError:
+                  summary: External API failure
+                  value:
+                    success: false
+                    error: "Unable to fetch video details automatically. You can enter the information manually below."
+                    code: "API_ERROR"
+        '504':
+          description: Gateway timeout - external API request timed out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataError'
+              examples:
+                timeout:
+                  summary: Request timeout
+                  value:
+                    success: false
+                    error: "Request timed out. You can enter the information manually below."
+                    code: "TIMEOUT"
+
+components:
+  schemas:
+    MetadataResponse:
+      type: object
+      required:
+        - success
+        - metadata
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+          example: true
+        metadata:
+          $ref: '#/components/schemas/VideoMetadata'
+
+    VideoMetadata:
+      type: object
+      required:
+        - title
+        - description
+        - thumbnailUrl
+        - duration
+        - channelName
+      properties:
+        title:
+          type: string
+          description: Video title
+          maxLength: 500
+          example: "Never Gonna Give You Up"
+        description:
+          type: string
+          description: Video description
+          example: "Rick Astley's official music video for 'Never Gonna Give You Up'..."
+        thumbnailUrl:
+          type: string
+          format: uri
+          description: URL to video thumbnail image (high quality preferred)
+          example: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+        duration:
+          type: integer
+          description: Video duration in seconds
+          minimum: 0
+          example: 212
+        channelName:
+          type: string
+          description: Channel or creator name
+          example: "Rick Astley"
+
+    MetadataError:
+      type: object
+      required:
+        - success
+        - error
+        - code
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+          example: false
+        error:
+          type: string
+          description: User-friendly error message (no technical jargon - FR-019, SC-008)
+          example: "This video is private or unavailable. Please check the URL or try a different video."
+        code:
+          type: string
+          description: Machine-readable error code
+          enum:
+            - VIDEO_NOT_FOUND
+            - PRIVATE_VIDEO
+            - QUOTA_EXCEEDED
+            - TIMEOUT
+            - API_ERROR
+            - INVALID_PLATFORM
+            - VALIDATION_ERROR
+            - UNAUTHORIZED
+          example: "VIDEO_NOT_FOUND"
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+      description: |
+        httpOnly cookie containing JWT authentication token.
+        Set by POST /api/auth/login endpoint.
+
+tags:
+  - name: Videos
+    description: Video management endpoints
