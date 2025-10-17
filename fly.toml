@@ -34,5 +34,5 @@ primary_region = 'iad'
   cpus = 1
 
 [[statics]]
-  guest_path = '/app/build'
+  guest_path = '/usr/share/nginx/html'
   url_prefix = '/'

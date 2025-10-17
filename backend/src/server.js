@@ -17,6 +17,9 @@ const logger = require('./utils/logger');
 const { initSentry, addSentryErrorHandler } = require('./utils/sentry');
 
 const app = express();
+
+// Trust Fly.io proxy to ensure correct client IP and secure cookies
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
 
 // Initialize Sentry error tracking (must be early in the app)
@@ -137,7 +140,7 @@ const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict'
+    sameSite: 'none'
   }
 });
 
@@ -254,3 +257,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   logger.info(`Server is running on port ${PORT}`);
 });
+
+
+
+

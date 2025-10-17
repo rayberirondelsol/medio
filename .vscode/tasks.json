@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Claude WSL",
+      "type": "shell",
+      "command": "wsl",
+      "args": [
+        "bash",
+        "-c",
+        "cd /mnt/c/Users/benja/projects/medio && cmd.exe /c claude --dangerously-skip-permissions"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "focus": true
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Claude in Windows",
+      "type": "shell",
+      "command": "claude",
+      "args": [
+        "--dangerously-skip-permissions"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "focus": true
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

@@ -4,13 +4,7 @@ import axios from 'axios';
 import axiosInstance, { RequestManager } from '../utils/axiosConfig';
 import VideoPlayer from '../components/VideoPlayer';
 import NFCScanner from '../components/NFCScanner';
-import './KidsMode.css';
-
-const API_URL = process.env.REACT_APP_API_URL;
-
-if (!API_URL) {
-  throw new Error('REACT_APP_API_URL environment variable is required');
-}
+import { resolveApiBaseUrl } from '../utils/runtimeConfig';
 
 interface Video {
   id: string;
@@ -28,7 +22,13 @@ interface Session {
 }
 
 const XIcon = FiX as React.ElementType;
+const MISSING_API_MESSAGE = 
+  'Kids Mode is temporarily unavailable because the Medio API endpoint is not configured. ' +
+  'Please set the REACT_APP_API_URL environment variable.';
 const KidsMode: React.FC = () => {
+  const apiUrl = resolveApiBaseUrl();
+  const isApiConfigured = Boolean(apiUrl);
+
   const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [showScanner, setShowScanner] = useState(true);
@@ -58,6 +58,10 @@ const KidsMode: React.FC = () => {
   }, [currentSession]);
   
   useEffect(() => {
+    if (!apiUrl) {
+      return;
+    }
+
     return () => {
       // Use ref to access session on unmount to avoid stale closure
       if (sessionRef.current && navigator.sendBeacon) {
@@ -65,17 +69,22 @@ const KidsMode: React.FC = () => {
           session_id: sessionRef.current.session_id,
           stopped_reason: 'manual'
         });
-        navigator.sendBeacon(`${API_URL}/sessions/end/public`, data);
+        navigator.sendBeacon(`${apiUrl}/sessions/end/public`, data);
       }
     };
-  }, []);
+  }, [apiUrl]);
 
   const handleNFCScan = async (chipUID: string) => {
+    if (!apiUrl) {
+      setError(MISSING_API_MESSAGE);
+      return;
+    }
+
     const controller = RequestManager.createController('nfcScan');
     
     try {
       setError('');
-      const response = await axiosInstance.post(`${API_URL}/nfc/scan/public`, {
+      const response = await axiosInstance.post(`${apiUrl}/nfc/scan/public`, {
         chip_uid: chipUID,
         profile_id: null // Could be selected from a profile selector
       }, { signal: controller.signal });
@@ -106,10 +115,14 @@ const KidsMode: React.FC = () => {
   };
 
   const startSession = async (videoId: string) => {
+    if (!apiUrl) {
+      return;
+    }
+
     const controller = RequestManager.createController('startSession');
     
     try {
-      const response = await axiosInstance.post(`${API_URL}/sessions/start/public`, {
+      const response = await axiosInstance.post(`${apiUrl}/sessions/start/public`, {
         video_id: videoId,
         profile_id: null // Could be from selected profile
       }, { signal: controller.signal });
@@ -159,10 +172,14 @@ const KidsMode: React.FC = () => {
   };
 
   const checkSessionStatus = async (sessionId: string) => {
+    if (!apiUrl) {
+      return;
+    }
+
     const controller = RequestManager.createController('heartbeat');
     
     try {
-      const response = await axiosInstance.post(`${API_URL}/sessions/heartbeat/public`, {
+      const response = await axiosInstance.post(`${apiUrl}/sessions/heartbeat/public`, {
         session_id: sessionId
       }, { signal: controller.signal });
 
@@ -177,12 +194,12 @@ const KidsMode: React.FC = () => {
   };
 
   const endSession = async (reason: string) => {
-    if (!currentSession) return;
+    if (!currentSession || !apiUrl) return;
     
     const controller = RequestManager.createController('endSession');
 
     try {
-      await axiosInstance.post(`${API_URL}/sessions/end/public`, {
+      await axiosInstance.post(`${apiUrl}/sessions/end/public`, {
         session_id: currentSession.session_id,
         stopped_reason: reason
       }, { signal: controller.signal });
@@ -231,15 +248,24 @@ const KidsMode: React.FC = () => {
               <span className="rainbow-text">Medio Kids</span>
             </h1>
             <p className="scanner-instruction">
-              Scan your magic chip to watch a video!
+              {isApiConfigured
+                ? 'Scan your magic chip to watch a video!'
+                : 'Kids Mode requires the Medio API to be configured.'}
             </p>
           </div>
 
-          <NFCScanner onScan={handleNFCScan} />
-
-          {error && (
-            <div className="error-bubble">
-              {error}
+          {isApiConfigured ? (
+            <>
+              <NFCScanner onScan={handleNFCScan} />
+              {error && (
+                <div className="error-bubble" role="alert">
+                  {error}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="error-bubble" role="alert">
+              {MISSING_API_MESSAGE}
             </div>
           )}
 
@@ -274,3 +300,4 @@ const KidsMode: React.FC = () => {
 };
 
 export default KidsMode;
+

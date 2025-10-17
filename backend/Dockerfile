@@ -15,9 +15,10 @@ RUN npm ci --only=production
 # Copy source code with correct ownership
 COPY --chown=nodejs:nodejs . .
 
-# Create upload directories with correct permissions
-RUN mkdir -p /app/uploads/videos /app/uploads/thumbnails && \
-    chown -R nodejs:nodejs /app/uploads
+# Ensure directories are owned by the app user
+RUN chown -R nodejs:nodejs /app && \
+    mkdir -p /app/uploads/videos /app/uploads/thumbnails /app/logs && \
+    chown -R nodejs:nodejs /app/uploads /app/logs
 
 # Switch to non-root user
 USER nodejs

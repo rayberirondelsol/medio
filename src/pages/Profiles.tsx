@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { FiPlus, FiEdit2, FiTrash2, FiClock, FiUser } from 'react-icons/fi';
 import axios from 'axios';
+import { resolveApiBaseUrlOrDefault } from '../utils/runtimeConfig';
 import './Profiles.css';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = resolveApiBaseUrlOrDefault('http://localhost:5000/api');
 
 interface Profile {
   id: string;
@@ -203,3 +204,4 @@ const Profiles: React.FC = () => {
 };
 
 export default Profiles;
+
