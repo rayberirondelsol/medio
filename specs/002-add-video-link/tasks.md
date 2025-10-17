@@ -191,16 +191,16 @@ description: "Task list for Add Video via Link feature implementation"
 
 **Purpose**: Improvements that affect multiple user stories and ensure production readiness
 
-- [ ] T081 [P] Add rate limiting middleware to /api/videos/metadata endpoint in backend/src/middleware/rateLimiter.js
-- [ ] T082 [P] Add API quota monitoring/logging for YouTube API in backend/src/services/youtubeService.js
-- [ ] T083 [P] Update CLAUDE.md with feature status in CLAUDE.md
-- [ ] T084 [P] Verify 80% code coverage requirement met (Constitution mandate) using npm run test:coverage
-- [ ] T085 [P] Run frontend linting (npm run lint) and fix any issues
-- [ ] T086 [P] Run backend linting (npm run lint) and fix any issues
-- [ ] T087 [P] Test Docker build succeeds (make build or docker-compose build)
-- [ ] T088 Run quickstart.md validation scenarios in specs/002-add-video-link/quickstart.md
-- [ ] T089 Security review: verify API keys not exposed, httpOnly cookies used
-- [ ] T090 Performance review: verify metadata fetch < 2s for 95% of requests (SC-002)
+- [x] T081 [P] Add rate limiting middleware to /api/videos/metadata endpoint in backend/src/middleware/rateLimiter.js
+- [x] T082 [P] Add API quota monitoring/logging for YouTube API in backend/src/services/youtubeService.js
+- [x] T083 [P] Update CLAUDE.md with feature status in CLAUDE.md
+- [x] T084 [P] Verify 80% code coverage requirement met (Constitution mandate) using npm run test:coverage
+- [x] T085 [P] Run frontend linting (npm run lint) and fix any issues
+- [x] T086 [P] Run backend linting (npm run lint) and fix any issues
+- [x] T087 [P] Test Docker build succeeds (make build or docker-compose build)
+- [x] T088 Run quickstart.md validation scenarios in specs/002-add-video-link/quickstart.md
+- [x] T089 Security review: verify API keys not exposed, httpOnly cookies used
+- [x] T090 Performance review: verify metadata fetch < 2s for 95% of requests (SC-002)
 
 ---
 

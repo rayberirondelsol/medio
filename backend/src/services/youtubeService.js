@@ -2,6 +2,7 @@
  * YouTube Service
  *
  * Handles interactions with YouTube Data API v3 to fetch video metadata.
+ * T082: Enhanced with API quota monitoring and usage tracking
  */
 
 const axios = require('axios');
@@ -9,6 +10,11 @@ const { captureException, withScope } = require('../utils/sentry');
 
 const YOUTUBE_API_BASE_URL = 'https://www.googleapis.com/youtube/v3';
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+
+// T082: API quota monitoring counters
+let apiCallCount = 0;
+let quotaExceededCount = 0;
+let lastQuotaExceeded = null;
 
 /**
  * Parse ISO 8601 duration format to seconds
@@ -50,6 +56,14 @@ async function fetchVideoMetadata(videoId) {
   }
 
   try {
+    // T082: Track API call
+    apiCallCount++;
+
+    // T082: Log usage metrics every 100 calls
+    if (apiCallCount % 100 === 0) {
+      console.log(`[YouTube API] Usage stats - Total calls: ${apiCallCount}, Quota exceeded: ${quotaExceededCount}`);
+    }
+
     // Make request to YouTube Data API v3
     const response = await axios.get(`${YOUTUBE_API_BASE_URL}/videos`, {
       params: {
@@ -127,14 +141,27 @@ async function fetchVideoMetadata(videoId) {
         // Check if it's a quota error
         const isQuotaError = errorData.error?.errors?.[0]?.reason === 'quotaExceeded';
 
-        // Log quota errors to Sentry with high priority
+        // T082: Track quota exceeded events
+        quotaExceededCount++;
+        lastQuotaExceeded = new Date();
+
+        // T082: Log quota exceeded with usage metrics
+        console.error(`[YouTube API] QUOTA EXCEEDED - Call #${apiCallCount}, Total exceeded: ${quotaExceededCount}, Timestamp: ${lastQuotaExceeded.toISOString()}`);
+
+        // Log quota errors to Sentry with high priority and usage metrics
         withScope((scope) => {
           scope.setLevel('error');
           scope.setContext('youtube_api', {
             videoId,
             status,
             error: 'API quota exceeded',
-            errorData
+            errorData,
+            // T082: Add quota monitoring metrics
+            usageMetrics: {
+              totalCalls: apiCallCount,
+              quotaExceededCount,
+              lastQuotaExceeded: lastQuotaExceeded.toISOString()
+            }
           });
           captureException(error);
         });
@@ -207,6 +234,35 @@ async function fetchVideoMetadata(videoId) {
   }
 }
 
+/**
+ * T082: Get API quota statistics
+ *
+ * Returns current usage metrics for monitoring and alerting
+ *
+ * @returns {Object} Quota statistics
+ */
+function getQuotaStats() {
+  return {
+    totalCalls: apiCallCount,
+    quotaExceededCount,
+    lastQuotaExceeded: lastQuotaExceeded ? lastQuotaExceeded.toISOString() : null,
+    quotaExceededRate: apiCallCount > 0 ? (quotaExceededCount / apiCallCount) * 100 : 0
+  };
+}
+
+/**
+ * T082: Reset quota statistics
+ *
+ * Useful for testing or periodic resets
+ */
+function resetQuotaStats() {
+  apiCallCount = 0;
+  quotaExceededCount = 0;
+  lastQuotaExceeded = null;
+}
+
 module.exports = {
-  fetchVideoMetadata
+  fetchVideoMetadata,
+  getQuotaStats, // T082
+  resetQuotaStats // T082
 };

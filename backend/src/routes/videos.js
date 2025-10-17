@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const pool = require('../db/pool');
 const { authenticateToken } = require('../middleware/auth');
+const { metadataRateLimiter } = require('../middleware/rateLimiter'); // T081
 const { getPlatformByName } = require('../services/platformService');
 const youtubeService = require('../services/youtubeService');
 const vimeoService = require('../services/vimeoService');
@@ -10,7 +11,8 @@ const dailymotionService = require('../services/dailymotionService');
 const router = express.Router();
 
 // Get video metadata from external platform
-router.get('/metadata', authenticateToken, async (req, res) => {
+// T081: Rate limited to prevent API quota abuse (30 requests per 15 minutes)
+router.get('/metadata', metadataRateLimiter, authenticateToken, async (req, res) => {
   try {
     const { platform, videoId } = req.query;
 
