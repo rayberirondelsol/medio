@@ -27,11 +27,11 @@ description: "Task list for Add Video via Link feature implementation"
 
 **Purpose**: Project initialization and basic structure for the feature
 
-- [ ] T001 [P] Create database migration for unique constraint on (family_id, video_url) in backend/migrations/
-- [ ] T002 [P] Create database migration for indexes (family_id, platform_id, added_date) in backend/migrations/
-- [ ] T003 [P] Add YOUTUBE_API_KEY to backend/.env.example with documentation
-- [ ] T004 [P] Install/verify axios is available in backend package.json
-- [ ] T005 [P] Verify React Context API setup in frontend (no new dependencies needed)
+- [x] T001 [P] Create database migration for unique constraint on (family_id, video_url) in backend/migrations/
+- [x] T002 [P] Create database migration for indexes (family_id, platform_id, added_date) in backend/migrations/
+- [x] T003 [P] Add YOUTUBE_API_KEY to backend/.env.example with documentation
+- [x] T004 [P] Install/verify axios is available in backend package.json
+- [x] T005 [P] Verify React Context API setup in frontend (no new dependencies needed)
 
 ---
 
@@ -41,14 +41,14 @@ description: "Task list for Add Video via Link feature implementation"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T006 Create GET /api/platforms endpoint in backend/src/routes/platforms.js
-- [ ] T007 [P] Create Platform service for UUID lookups in backend/src/services/platformService.js
-- [ ] T008 [P] Update videos route to accept UUID for platform_id in backend/src/routes/videos.js
-- [ ] T009 [P] Add server-side URL validation helper in backend/src/utils/urlValidator.js
-- [ ] T010 [P] Add duplicate video URL check in backend/src/routes/videos.js (catch unique constraint violation)
-- [ ] T011 [P] Create base error boundary component in frontend/src/components/common/ErrorBoundary.tsx
-- [ ] T012 [P] Create platform service for fetching UUIDs in frontend/src/services/platformService.ts
-- [ ] T013 [P] Add VideoMetadata TypeScript types in frontend/src/types/video.ts
+- [x] T006 Create GET /api/platforms endpoint in backend/src/routes/platforms.js
+- [x] T007 [P] Create Platform service for UUID lookups in backend/src/services/platformService.js
+- [x] T008 [P] Update videos route to accept UUID for platform_id in backend/src/routes/videos.js
+- [x] T009 [P] Add server-side URL validation helper in backend/src/utils/urlValidator.js
+- [x] T010 [P] Add duplicate video URL check in backend/src/routes/videos.js (catch unique constraint violation)
+- [x] T011 [P] Create base error boundary component in frontend/src/components/common/ErrorBoundary.tsx
+- [x] T012 [P] Create platform service for fetching UUIDs in frontend/src/services/platformService.ts
+- [x] T013 [P] Add VideoMetadata TypeScript types in frontend/src/types/video.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -64,27 +64,27 @@ description: "Task list for Add Video via Link feature implementation"
 
 **CONSTITUTION REQUIREMENT**: Write these tests FIRST, get them reviewed and approved, ensure they FAIL before implementation (TDD red-green-refactor cycle)
 
-- [ ] T014 [P] [US1] Unit test for YouTube URL parsing in frontend/tests/unit/utils/urlParser.test.ts
-- [ ] T015 [P] [US1] Unit test for YouTube platform detection in frontend/tests/unit/utils/platformDetector.test.ts
-- [ ] T016 [P] [US1] Unit test for YouTube service API client in backend/tests/unit/services/youtubeService.test.js
-- [ ] T017 [P] [US1] Integration test for GET /api/videos/metadata?platform=youtube in backend/tests/integration/videoMetadata.test.js
-- [ ] T018 [P] [US1] Integration test for POST /api/videos with YouTube video in backend/tests/integration/videos.test.js
-- [ ] T019 [P] [US1] Integration test for GET /api/platforms in backend/tests/integration/platforms.test.js
-- [ ] T020 [US1] E2E test for full YouTube video add flow in frontend/tests/e2e/add-video-link.spec.ts
+- [x] T014 [P] [US1] Unit test for YouTube URL parsing in frontend/tests/unit/utils/urlParser.test.ts
+- [x] T015 [P] [US1] Unit test for YouTube platform detection in frontend/tests/unit/utils/platformDetector.test.ts
+- [x] T016 [P] [US1] Unit test for YouTube service API client in backend/tests/unit/services/youtubeService.test.js
+- [x] T017 [P] [US1] Integration test for GET /api/videos/metadata?platform=youtube in backend/tests/integration/videoMetadata.test.js
+- [x] T018 [P] [US1] Integration test for POST /api/videos with YouTube video in backend/tests/integration/videos.test.js
+- [x] T019 [P] [US1] Integration test for GET /api/platforms in backend/tests/integration/platforms.test.js
+- [x] T020 [US1] E2E test for full YouTube video add flow in frontend/tests/e2e/add-video-link.spec.ts
 
 ### Implementation for User Story 1
 
-- [ ] T021 [P] [US1] Create URL parser utility for YouTube formats in frontend/src/utils/urlParser.ts
-- [ ] T022 [P] [US1] Create platform detector utility in frontend/src/utils/platformDetector.ts
-- [ ] T023 [US1] Create YouTube service with Data API v3 integration in backend/src/services/youtubeService.js
-- [ ] T024 [US1] Create GET /api/videos/metadata endpoint in backend/src/routes/videos.js
-- [ ] T025 [US1] Update AddVideoModal to handle URL paste and platform detection in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T026 [US1] Add metadata fetch service method in frontend/src/services/videoService.ts
-- [ ] T027 [US1] Implement auto-fill logic in AddVideoModal on metadata fetch success in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T028 [US1] Add loading spinner during metadata fetch in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T029 [US1] Add AbortController for request cancellation on unmount in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T030 [US1] Implement 10-second timeout for metadata fetch in frontend/src/services/videoService.ts
-- [ ] T031 [US1] Add age rating validation before save in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T021 [P] [US1] Create URL parser utility for YouTube formats in frontend/src/utils/urlParser.ts
+- [x] T022 [P] [US1] Create platform detector utility in frontend/src/utils/platformDetector.ts
+- [x] T023 [US1] Create YouTube service with Data API v3 integration in backend/src/services/youtubeService.js
+- [x] T024 [US1] Create GET /api/videos/metadata endpoint in backend/src/routes/videos.js
+- [x] T025 [US1] Update AddVideoModal to handle URL paste and platform detection in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T026 [US1] Add metadata fetch service method in frontend/src/services/videoService.ts
+- [x] T027 [US1] Implement auto-fill logic in AddVideoModal on metadata fetch success in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T028 [US1] Add loading spinner during metadata fetch in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T029 [US1] Add AbortController for request cancellation on unmount in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T030 [US1] Implement 10-second timeout for metadata fetch in frontend/src/services/videoService.ts
+- [x] T031 [US1] Add age rating validation before save in frontend/src/components/videos/AddVideoModal.tsx
 
 **Checkpoint**: At this point, User Story 1 should be fully functional - can add YouTube videos with auto-filled metadata
 
@@ -98,30 +98,30 @@ description: "Task list for Add Video via Link feature implementation"
 
 ### Tests for User Story 2 (MANDATORY per Constitution) ⚠️
 
-- [ ] T032 [P] [US2] Unit test for YouTube short URL (youtu.be) parsing in frontend/tests/unit/utils/urlParser.test.ts
-- [ ] T033 [P] [US2] Unit test for YouTube embed URL parsing in frontend/tests/unit/utils/urlParser.test.ts
-- [ ] T034 [P] [US2] Unit test for Vimeo URL parsing in frontend/tests/unit/utils/urlParser.test.ts
-- [ ] T035 [P] [US2] Unit test for Dailymotion URL parsing (both formats) in frontend/tests/unit/utils/urlParser.test.ts
-- [ ] T036 [P] [US2] Unit test for Vimeo service API client in backend/tests/unit/services/vimeoService.test.js
-- [ ] T037 [P] [US2] Unit test for Dailymotion service API client in backend/tests/unit/services/dailymotionService.test.js
-- [ ] T038 [P] [US2] Integration test for GET /api/videos/metadata?platform=vimeo in backend/tests/integration/videoMetadata.test.js
-- [ ] T039 [P] [US2] Integration test for GET /api/videos/metadata?platform=dailymotion in backend/tests/integration/videoMetadata.test.js
-- [ ] T040 [US2] E2E test for Vimeo video add flow in frontend/tests/e2e/add-video-link.spec.ts
-- [ ] T041 [US2] E2E test for Dailymotion video add flow in frontend/tests/e2e/add-video-link.spec.ts
+- [x] T032 [P] [US2] Unit test for YouTube short URL (youtu.be) parsing in frontend/tests/unit/utils/urlParser.test.ts
+- [x] T033 [P] [US2] Unit test for YouTube embed URL parsing in frontend/tests/unit/utils/urlParser.test.ts
+- [x] T034 [P] [US2] Unit test for Vimeo URL parsing in frontend/tests/unit/utils/urlParser.test.ts
+- [x] T035 [P] [US2] Unit test for Dailymotion URL parsing (both formats) in frontend/tests/unit/utils/urlParser.test.ts
+- [x] T036 [P] [US2] Unit test for Vimeo service API client in backend/tests/unit/services/vimeoService.test.js
+- [x] T037 [P] [US2] Unit test for Dailymotion service API client in backend/tests/unit/services/dailymotionService.test.js
+- [x] T038 [P] [US2] Integration test for GET /api/videos/metadata?platform=vimeo in backend/tests/integration/videoMetadata.test.js
+- [x] T039 [P] [US2] Integration test for GET /api/videos/metadata?platform=dailymotion in backend/tests/integration/videoMetadata.test.js
+- [x] T040 [US2] E2E test for Vimeo video add flow in frontend/tests/e2e/add-video-link.spec.ts
+- [x] T041 [US2] E2E test for Dailymotion video add flow in frontend/tests/e2e/add-video-link.spec.ts
 
 ### Implementation for User Story 2
 
-- [ ] T042 [P] [US2] Extend urlParser to support YouTube short URLs (youtu.be) in frontend/src/utils/urlParser.ts
-- [ ] T043 [P] [US2] Extend urlParser to support YouTube embed URLs in frontend/src/utils/urlParser.ts
-- [ ] T044 [P] [US2] Extend urlParser to support Vimeo URLs in frontend/src/utils/urlParser.ts
-- [ ] T045 [P] [US2] Extend urlParser to support Dailymotion URLs (dailymotion.com and dai.ly) in frontend/src/utils/urlParser.ts
-- [ ] T046 [P] [US2] Extend platformDetector to detect Vimeo in frontend/src/utils/platformDetector.ts
-- [ ] T047 [P] [US2] Extend platformDetector to detect Dailymotion in frontend/src/utils/platformDetector.ts
-- [ ] T048 [P] [US2] Create Vimeo service with API integration in backend/src/services/vimeoService.js
-- [ ] T049 [P] [US2] Create Dailymotion service with API integration in backend/src/services/dailymotionService.js
-- [ ] T050 [US2] Update GET /api/videos/metadata to route to Vimeo service in backend/src/routes/videos.js
-- [ ] T051 [US2] Update GET /api/videos/metadata to route to Dailymotion service in backend/src/routes/videos.js
-- [ ] T052 [US2] Update AddVideoModal to auto-select platform dropdown based on detection in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T042 [P] [US2] Extend urlParser to support YouTube short URLs (youtu.be) in frontend/src/utils/urlParser.ts
+- [x] T043 [P] [US2] Extend urlParser to support YouTube embed URLs in frontend/src/utils/urlParser.ts
+- [x] T044 [P] [US2] Extend urlParser to support Vimeo URLs in frontend/src/utils/urlParser.ts
+- [x] T045 [P] [US2] Extend urlParser to support Dailymotion URLs (dailymotion.com and dai.ly) in frontend/src/utils/urlParser.ts
+- [x] T046 [P] [US2] Extend platformDetector to detect Vimeo in frontend/src/utils/platformDetector.ts
+- [x] T047 [P] [US2] Extend platformDetector to detect Dailymotion in frontend/src/utils/platformDetector.ts
+- [x] T048 [P] [US2] Create Vimeo service with API integration in backend/src/services/vimeoService.js
+- [x] T049 [P] [US2] Create Dailymotion service with API integration in backend/src/services/dailymotionService.js
+- [x] T050 [US2] Update GET /api/videos/metadata to route to Vimeo service in backend/src/routes/videos.js
+- [x] T051 [US2] Update GET /api/videos/metadata to route to Dailymotion service in backend/src/routes/videos.js
+- [x] T052 [US2] Update AddVideoModal to auto-select platform dropdown based on detection in frontend/src/components/videos/AddVideoModal.tsx
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work - can add videos from YouTube, Vimeo, Dailymotion with various URL formats
 

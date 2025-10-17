@@ -12,6 +12,7 @@ const videoRoutes = require('./routes/videos');
 const nfcRoutes = require('./routes/nfc');
 const profileRoutes = require('./routes/profiles');
 const sessionRoutes = require('./routes/sessions');
+const platformRoutes = require('./routes/platforms');
 const { validateCookieSecret } = require('./utils/crypto');
 const logger = require('./utils/logger');
 const { initSentry, addSentryErrorHandler } = require('./utils/sentry');
@@ -183,6 +184,7 @@ app.use(`${apiPrefix}/videos`, videoRoutes);
 app.use(`${apiPrefix}/nfc`, nfcRoutes);
 app.use(`${apiPrefix}/profiles`, profileRoutes);
 app.use(`${apiPrefix}/sessions`, sessionRoutes);
+app.use(`${apiPrefix}/platforms`, platformRoutes);
 
 // Legacy routes for backward compatibility
 app.use('/api/auth', authRoutes);
@@ -190,6 +192,7 @@ app.use('/api/videos', videoRoutes);
 app.use('/api/nfc', nfcRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/sessions', sessionRoutes);
+app.use('/api/platforms', platformRoutes);
 
 // Health check endpoint with detailed status
 const healthCheck = async (req, res) => {

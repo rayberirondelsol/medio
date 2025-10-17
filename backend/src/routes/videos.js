@@ -2,8 +2,84 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const pool = require('../db/pool');
 const { authenticateToken } = require('../middleware/auth');
+const { getPlatformByName } = require('../services/platformService');
+const youtubeService = require('../services/youtubeService');
+const vimeoService = require('../services/vimeoService');
+const dailymotionService = require('../services/dailymotionService');
 
 const router = express.Router();
+
+// Get video metadata from external platform
+router.get('/metadata', authenticateToken, async (req, res) => {
+  try {
+    const { platform, videoId } = req.query;
+
+    // Validate required parameters
+    if (!platform) {
+      return res.status(400).json({
+        success: false,
+        error: 'Platform parameter is required'
+      });
+    }
+
+    if (!videoId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Video ID parameter is required'
+      });
+    }
+
+    // Validate videoId format (alphanumeric, dashes, underscores only)
+    if (!/^[a-zA-Z0-9_-]+$/.test(videoId)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid video ID format'
+      });
+    }
+
+    // Check if platform is supported
+    const supportedPlatforms = ['youtube', 'vimeo', 'dailymotion'];
+    if (!supportedPlatforms.includes(platform.toLowerCase())) {
+      return res.status(400).json({
+        success: false,
+        error: `Unsupported platform: ${platform}`
+      });
+    }
+
+    // Fetch metadata from the appropriate service
+    let metadata;
+
+    if (platform.toLowerCase() === 'youtube') {
+      metadata = await youtubeService.fetchVideoMetadata(videoId);
+    } else if (platform.toLowerCase() === 'vimeo') {
+      metadata = await vimeoService.fetchVideoMetadata(videoId);
+    } else if (platform.toLowerCase() === 'dailymotion') {
+      metadata = await dailymotionService.fetchVideoMetadata(videoId);
+    }
+
+    // Return metadata
+    res.json({
+      success: true,
+      data: metadata
+    });
+  } catch (error) {
+    console.error('Error fetching video metadata:', error);
+
+    // Handle specific error types
+    if (error.message.includes('not found') || error.message.includes('private')) {
+      return res.status(404).json({
+        success: false,
+        error: error.message
+      });
+    }
+
+    // Return 500 for all other errors
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to fetch video metadata'
+    });
+  }
+});
 
 // Get all videos for a user with pagination
 router.get('/', authenticateToken, async (req, res) => {
@@ -57,6 +133,7 @@ router.post('/',
     body('thumbnail_url').optional().isURL(),
     body('platform_id').isUUID(),
     body('platform_video_id').notEmpty().trim().escape(),
+    body('video_url').optional().isURL(),
     body('duration_seconds').optional().isInt({ min: 1 }),
     body('age_rating').optional().isIn(['G', 'PG', 'PG-13', 'R'])
   ],
@@ -66,18 +143,70 @@ router.post('/',
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { title, description, thumbnail_url, platform_id, platform_video_id, duration_seconds, age_rating } = req.body;
+    const { title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating } = req.body;
 
     try {
+      // T008: Validate that platform_id exists in platforms table
+      const platformCheck = await pool.query(
+        'SELECT id FROM platforms WHERE id = $1',
+        [platform_id]
+      );
+
+      if (platformCheck.rows.length === 0) {
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid platform',
+          code: 'INVALID_PLATFORM',
+          details: {
+            platform_id: ['The specified platform does not exist']
+          }
+        });
+      }
+
+      // T010: Check for duplicate video_url if provided
+      if (video_url) {
+        const duplicateCheck = await pool.query(
+          'SELECT id FROM videos WHERE user_id = $1 AND video_url = $2',
+          [req.user.id, video_url]
+        );
+
+        if (duplicateCheck.rows.length > 0) {
+          return res.status(409).json({
+            success: false,
+            error: 'This video is already in your library',
+            code: 'DUPLICATE_URL',
+            details: {
+              video_url: ['A video with this URL already exists in your family\'s library'],
+              existing_video_id: duplicateCheck.rows[0].id
+            }
+          });
+        }
+      }
+
+      // Insert the video
       const result = await pool.query(`
-        INSERT INTO videos (user_id, title, description, thumbnail_url, platform_id, platform_video_id, duration_seconds, age_rating)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        INSERT INTO videos (user_id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *
-      `, [req.user.id, title, description, thumbnail_url, platform_id, platform_video_id, duration_seconds, age_rating]);
+      `, [req.user.id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating]);
 
       res.status(201).json(result.rows[0]);
     } catch (error) {
       console.error('Error adding video:', error);
+
+      // T010: Handle database unique constraint violation (23505)
+      if (error.code === '23505' && error.constraint === 'unique_video_url_per_user') {
+        // Extract the video ID if possible (this is a fallback in case the pre-check missed it)
+        return res.status(409).json({
+          success: false,
+          error: 'This video is already in your library',
+          code: 'DUPLICATE_URL',
+          details: {
+            video_url: ['A video with this URL already exists in your family\'s library']
+          }
+        });
+      }
+
       res.status(500).json({ message: 'Failed to add video' });
     }
   }
