@@ -1,0 +1,155 @@
+[2m2025-10-17T10:35:37Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]App medio-backend has excess capacity, autostopping machine 28715d4c671438. 0 out of 1 machines left running (region=iad, process group=app)
+[2m2025-10-17T10:35:37Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Sending signal SIGINT to main child process w/ PID 642
+[2m2025-10-17T10:35:37Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Main child exited with signal (with signal 'SIGINT', core dumped? false)
+[2m2025-10-17T10:35:37Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Starting clean up.
+[2m2025-10-17T10:35:37Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][  416.433595] reboot: Restarting system
+[2m2025-10-17T11:12:24Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025-10-17T11:12:24.371650082 [01K7RR7N9TJ47HMZNEP8FKWJM1:main] Running Firecracker v1.12.1
+[2m2025-10-17T11:12:24Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025-10-17T11:12:24.371794403 [01K7RR7N9TJ47HMZNEP8FKWJM1:main] Listening on API socket ("/fc.sock").
+[2m2025-10-17T11:12:25Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Starting init (commit: 751b7bee)...
+[2m2025-10-17T11:12:25Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Preparing to run: `docker-entrypoint.sh node src/server.js` as nodejs
+[2m2025-10-17T11:12:25Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m [fly api proxy] listening at /.fly/api
+[2m2025-10-17T11:12:25Z[0m runner[28715d4c671438] [32miad[0m [[34minfo[0m]Machine started in 1.072s
+[2m2025-10-17T11:12:25Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025/10/17 11:12:25 INFO SSH listening listen_address=[fdaa:2c:d077:a7b:2ff:79ac:56f8:2]:22
+[2m2025-10-17T11:12:26Z[0m health[28715d4c671438] [32miad[0m [[31merror[0m]Health check on port 5000 has failed. Your app is not responding properly. Services exposed on ports [80, 443] will have intermittent failures until the health check passes.
+[2m2025-10-17T11:12:27Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]Sentry DSN not configured, error tracking disabled
+[2m2025-10-17T11:12:27Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m[32minfo[32m[39m: [32mServer is running on port 5000[39m {"timestamp":"2025-10-17 11:12:27:1227"}
+[2m2025-10-17T11:12:28Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]2025-10-17T11:12:28.122921684 [01K7RR7NA0B9ZMXQTKGWG13QRS:main] Running Firecracker v1.12.1
+[2m2025-10-17T11:12:28Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]2025-10-17T11:12:28.123162949 [01K7RR7NA0B9ZMXQTKGWG13QRS:main] Listening on API socket ("/fc.sock").
+[2m2025-10-17T11:12:29Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Starting init (commit: 751b7bee)...
+[2m2025-10-17T11:12:29Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Preparing to run: `docker-entrypoint.sh node src/server.js` as nodejs
+[2m2025-10-17T11:12:29Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m [fly api proxy] listening at /.fly/api
+[2m2025-10-17T11:12:29Z[0m runner[2874234fed42e8] [32miad[0m [[34minfo[0m]Machine started in 1.568s
+[2m2025-10-17T11:12:29Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]2025/10/17 11:12:29 INFO SSH listening listen_address=[fdaa:2c:d077:a7b:1c5:db2e:33ba:2]:22
+[2m2025-10-17T11:12:30Z[0m health[2874234fed42e8] [32miad[0m [[31merror[0m]Health check on port 5000 has failed. Your app is not responding properly. Services exposed on ports [80, 443] will have intermittent failures until the health check passes.
+[2m2025-10-17T11:12:32Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]Sentry DSN not configured, error tracking disabled
+[2m2025-10-17T11:12:32Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m[32minfo[32m[39m: [32mServer is running on port 5000[39m {"timestamp":"2025-10-17 11:12:32:1232"}
+[2m2025-10-17T11:12:33Z[0m health[28715d4c671438] [32miad[0m [[34minfo[0m]Health check on port 5000 is now passing.
+[2m2025-10-17T11:12:41Z[0m health[2874234fed42e8] [32miad[0m [[34minfo[0m]Health check on port 5000 is now passing.
+[2m2025-10-17T11:19:30Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]App medio-backend has excess capacity, autostopping machine 28715d4c671438. 1 out of 2 machines left running (region=iad, process group=app)
+[2m2025-10-17T11:19:30Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Sending signal SIGINT to main child process w/ PID 646
+[2m2025-10-17T11:19:30Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Main child exited with signal (with signal 'SIGINT', core dumped? false)
+[2m2025-10-17T11:19:30Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Starting clean up.
+[2m2025-10-17T11:19:30Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][  426.451288] reboot: Restarting system
+[2m2025-10-17T11:22:13Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]Starting machine
+[2m2025-10-17T11:22:13Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025-10-17T11:22:13.873311727 [01K7RR7N9TJ47HMZNEP8FKWJM1:main] Running Firecracker v1.12.1
+[2m2025-10-17T11:22:13Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025-10-17T11:22:13.873518338 [01K7RR7N9TJ47HMZNEP8FKWJM1:main] Listening on API socket ("/fc.sock").
+[2m2025-10-17T11:22:14Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Starting init (commit: 751b7bee)...
+[2m2025-10-17T11:22:14Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Preparing to run: `docker-entrypoint.sh node src/server.js` as nodejs
+[2m2025-10-17T11:22:14Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m [fly api proxy] listening at /.fly/api
+[2m2025-10-17T11:22:14Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Starting init (commit: 751b7bee)...
+[2m2025-10-17T11:22:14Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Preparing to run: `docker-entrypoint.sh node src/server.js` as nodejs
+[2m2025-10-17T11:22:14Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m [fly api proxy] listening at /.fly/api
+[2m2025-10-17T11:22:15Z[0m runner[28715d4c671438] [32miad[0m [[34minfo[0m]Machine started in 1.166s
+[2m2025-10-17T11:22:15Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine started in 1.283349674s
+[2m2025-10-17T11:22:15Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025/10/17 11:22:15 INFO SSH listening listen_address=[fdaa:2c:d077:a7b:2ff:79ac:56f8:2]:22
+[2m2025-10-17T11:22:15Z[0m health[28715d4c671438] [32miad[0m [[31merror[0m]Health check on port 5000 has failed. Your app is not responding properly. Services exposed on ports [80, 443] will have intermittent failures until the health check passes.
+[2m2025-10-17T11:22:15Z[0m runner[28715d4c671438] [32miad[0m [[34minfo[0m]Machine started in 1.166s
+[2m2025-10-17T11:22:15Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine started in 1.283349674s
+[2m2025-10-17T11:22:15Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025/10/17 11:22:15 INFO SSH listening listen_address=[fdaa:2c:d077:a7b:2ff:79ac:56f8:2]:22
+[2m2025-10-17T11:22:15Z[0m health[28715d4c671438] [32miad[0m [[31merror[0m]Health check on port 5000 has failed. Your app is not responding properly. Services exposed on ports [80, 443] will have intermittent failures until the health check passes.
+[2m2025-10-17T11:22:16Z[0m proxy[2874234fed42e8] [32miad[0m [[34minfo[0m]App medio-backend has excess capacity, autostopping machine 2874234fed42e8. 0 out of 1 machines left running (region=iad, process group=app)
+[2m2025-10-17T11:22:16Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Sending signal SIGINT to main child process w/ PID 643
+[2m2025-10-17T11:22:17Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]Sentry DSN not configured, error tracking disabled
+[2m2025-10-17T11:22:17Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m[32minfo[32m[39m: [32mServer is running on port 5000[39m {"timestamp":"2025-10-17 11:22:17:2217"}
+[2m2025-10-17T11:22:17Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine became reachable in 2.868264833s
+[2m2025-10-17T11:22:17Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Main child exited with signal (with signal 'SIGINT', core dumped? false)
+[2m2025-10-17T11:22:17Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Starting clean up.
+[2m2025-10-17T11:22:17Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][  589.018033] reboot: Restarting system
+[2m2025-10-17T11:22:17Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]Sentry DSN not configured, error tracking disabled
+[2m2025-10-17T11:22:17Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m[32minfo[32m[39m: [32mServer is running on port 5000[39m {"timestamp":"2025-10-17 11:22:17:2217"}
+[2m2025-10-17T11:22:17Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine became reachable in 2.868264833s
+[2m2025-10-17T11:22:31Z[0m health[28715d4c671438] [32miad[0m [[34minfo[0m]Health check on port 5000 is now passing.
+[2m2025-10-17T11:41:32Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]App medio-backend has excess capacity, autostopping machine 28715d4c671438. 0 out of 1 machines left running (region=iad, process group=app)
+[2m2025-10-17T11:41:32Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Sending signal SIGINT to main child process w/ PID 642
+[2m2025-10-17T11:41:32Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Main child exited with signal (with signal 'SIGINT', core dumped? false)
+[2m2025-10-17T11:41:32Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Starting clean up.
+[2m2025-10-17T11:41:32Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][ 1158.321786] reboot: Restarting system
+[2m2025-10-17T11:42:02Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]Starting machine
+[2m2025-10-17T11:42:02Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025-10-17T11:42:02.481292410 [01K7RR7N9TJ47HMZNEP8FKWJM1:main] Running Firecracker v1.12.1
+[2m2025-10-17T11:42:02Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025-10-17T11:42:02.481424901 [01K7RR7N9TJ47HMZNEP8FKWJM1:main] Listening on API socket ("/fc.sock").
+[2m2025-10-17T11:42:03Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Starting init (commit: 751b7bee)...
+[2m2025-10-17T11:42:03Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Preparing to run: `docker-entrypoint.sh node src/server.js` as nodejs
+[2m2025-10-17T11:42:03Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m [fly api proxy] listening at /.fly/api
+[2m2025-10-17T11:42:03Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine started in 1.231072188s
+[2m2025-10-17T11:42:03Z[0m runner[28715d4c671438] [32miad[0m [[34minfo[0m]Machine started in 1.117s
+[2m2025-10-17T11:42:03Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025/10/17 11:42:03 INFO SSH listening listen_address=[fdaa:2c:d077:a7b:2ff:79ac:56f8:2]:22
+[2m2025-10-17T11:42:03Z[0m health[28715d4c671438] [32miad[0m [[31merror[0m]Health check on port 5000 has failed. Your app is not responding properly. Services exposed on ports [80, 443] will have intermittent failures until the health check passes.
+[2m2025-10-17T11:42:06Z[0m proxy[2874234fed42e8] [32miad[0m [[34minfo[0m]Starting machine
+[2m2025-10-17T11:42:06Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]2025-10-17T11:42:06.719023516 [01K7RR7NA0B9ZMXQTKGWG13QRS:main] Running Firecracker v1.12.1
+[2m2025-10-17T11:42:06Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]2025-10-17T11:42:06.719171279 [01K7RR7NA0B9ZMXQTKGWG13QRS:main] Listening on API socket ("/fc.sock").
+[2m2025-10-17T11:42:06Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]Sentry DSN not configured, error tracking disabled
+[2m2025-10-17T11:42:06Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m[32minfo[32m[39m: [32mServer is running on port 5000[39m {"timestamp":"2025-10-17 11:42:06:426"}
+[2m2025-10-17T11:42:06Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine became reachable in 2.532747267s
+[2m2025-10-17T11:42:07Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Starting init (commit: 751b7bee)...
+[2m2025-10-17T11:42:08Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Preparing to run: `docker-entrypoint.sh node src/server.js` as nodejs
+[2m2025-10-17T11:42:08Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m [fly api proxy] listening at /.fly/api
+[2m2025-10-17T11:42:08Z[0m proxy[2874234fed42e8] [32miad[0m [[34minfo[0m]machine started in 1.77208886s
+[2m2025-10-17T11:42:08Z[0m runner[2874234fed42e8] [32miad[0m [[34minfo[0m]Machine started in 1.617s
+[2m2025-10-17T11:42:08Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]2025/10/17 11:42:08 INFO SSH listening listen_address=[fdaa:2c:d077:a7b:1c5:db2e:33ba:2]:22
+[2m2025-10-17T11:42:08Z[0m health[2874234fed42e8] [32miad[0m [[31merror[0m]Health check on port 5000 has failed. Your app is not responding properly. Services exposed on ports [80, 443] will have intermittent failures until the health check passes.
+[2m2025-10-17T11:42:11Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]Sentry DSN not configured, error tracking disabled
+[2m2025-10-17T11:42:11Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m[32minfo[32m[39m: [32mServer is running on port 5000[39m {"timestamp":"2025-10-17 11:42:11:4211"}
+[2m2025-10-17T11:42:11Z[0m proxy[2874234fed42e8] [32miad[0m [[34minfo[0m]machine became reachable in 3.216127699s
+[2m2025-10-17T11:42:12Z[0m health[2874234fed42e8] [32miad[0m [[34minfo[0m]Health check on port 5000 is now passing.
+[2m2025-10-17T11:42:12Z[0m health[28715d4c671438] [32miad[0m [[34minfo[0m]Health check on port 5000 is now passing.
+[2m2025-10-17T11:44:53Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][31m[31merror[31m[39m: [31minvalid csrf token[39m {"ip":"2a09:8280:1::9b:7665:0","method":"POST","stack":"ForbiddenError: invalid csrf token\n    at csrf (/app/node_modules/csurf/index.js:112:19)\n    at /app/src/server.js:174:3\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)\n    at /app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/app/node_modules/express/lib/router/index.js:280:10)\n    at cookieParser (/app/node_modules/cookie-parser/index.js:71:5)\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)","timestamp":"2025-10-17 11:44:53:4453","url":"/api/auth/refresh"}
+[2m2025-10-17T11:47:52Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]App medio-backend has excess capacity, autostopping machine 28715d4c671438. 1 out of 2 machines left running (region=iad, process group=app)
+[2m2025-10-17T11:47:52Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Sending signal SIGINT to main child process w/ PID 642
+[2m2025-10-17T11:47:52Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Main child exited with signal (with signal 'SIGINT', core dumped? false)
+[2m2025-10-17T11:47:52Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Starting clean up.
+[2m2025-10-17T11:47:52Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][  350.381273] reboot: Restarting system
+[2m2025-10-17T11:50:50Z[0m proxy[2874234fed42e8] [32miad[0m [[34minfo[0m]App medio-backend has excess capacity, autostopping machine 2874234fed42e8. 0 out of 1 machines left running (region=iad, process group=app)
+[2m2025-10-17T11:50:50Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Sending signal SIGINT to main child process w/ PID 643
+[2m2025-10-17T11:50:50Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Main child exited with signal (with signal 'SIGINT', core dumped? false)
+[2m2025-10-17T11:50:50Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Starting clean up.
+[2m2025-10-17T11:50:50Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][  524.003282] reboot: Restarting system
+[2m2025-10-17T11:53:20Z[0m proxy[2874234fed42e8] [32miad[0m [[34minfo[0m]Starting machine
+[2m2025-10-17T11:53:20Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]2025-10-17T11:53:20.839104142 [01K7RR7NA0B9ZMXQTKGWG13QRS:main] Running Firecracker v1.12.1
+[2m2025-10-17T11:53:20Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]2025-10-17T11:53:20.839271415 [01K7RR7NA0B9ZMXQTKGWG13QRS:main] Listening on API socket ("/fc.sock").
+[2m2025-10-17T11:53:20Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]Starting machine
+[2m2025-10-17T11:53:20Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025-10-17T11:53:20.608228334 [01K7RR7N9TJ47HMZNEP8FKWJM1:main] Running Firecracker v1.12.1
+[2m2025-10-17T11:53:20Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025-10-17T11:53:20.608360106 [01K7RR7N9TJ47HMZNEP8FKWJM1:main] Listening on API socket ("/fc.sock").
+[2m2025-10-17T11:53:20Z[0m proxy[28715d4c671438] [32miad[0m [[31merror[0m][PM11] machine was recently stopped and is unavailable to service request
+[2m2025-10-17T11:53:21Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Starting init (commit: 751b7bee)...
+[2m2025-10-17T11:53:21Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Preparing to run: `docker-entrypoint.sh node src/server.js` as nodejs
+[2m2025-10-17T11:53:21Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m [fly api proxy] listening at /.fly/api
+[2m2025-10-17T11:53:21Z[0m runner[28715d4c671438] [32miad[0m [[34minfo[0m]Machine started in 1.127s
+[2m2025-10-17T11:53:21Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine started in 1.241878748s
+[2m2025-10-17T11:53:21Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]2025/10/17 11:53:21 INFO SSH listening listen_address=[fdaa:2c:d077:a7b:2ff:79ac:56f8:2]:22
+[2m2025-10-17T11:53:22Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Starting init (commit: 751b7bee)...
+[2m2025-10-17T11:53:22Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m Preparing to run: `docker-entrypoint.sh node src/server.js` as nodejs
+[2m2025-10-17T11:53:22Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m INFO[0m [fly api proxy] listening at /.fly/api
+[2m2025-10-17T11:53:22Z[0m runner[2874234fed42e8] [32miad[0m [[34minfo[0m]Machine started in 1.587s
+[2m2025-10-17T11:53:22Z[0m proxy[2874234fed42e8] [32miad[0m [[34minfo[0m]machine started in 1.663085248s
+[2m2025-10-17T11:53:22Z[0m health[2874234fed42e8] [32miad[0m [[31merror[0m]Health check on port 5000 has failed. Your app is not responding properly. Services exposed on ports [80, 443] will have intermittent failures until the health check passes.
+[2m2025-10-17T11:53:22Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]2025/10/17 11:53:22 INFO SSH listening listen_address=[fdaa:2c:d077:a7b:1c5:db2e:33ba:2]:22
+[2m2025-10-17T11:53:22Z[0m health[28715d4c671438] [32miad[0m [[31merror[0m]Health check on port 5000 has failed. Your app is not responding properly. Services exposed on ports [80, 443] will have intermittent failures until the health check passes.
+[2m2025-10-17T11:53:23Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m]Sentry DSN not configured, error tracking disabled
+[2m2025-10-17T11:53:24Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m[32minfo[32m[39m: [32mServer is running on port 5000[39m {"timestamp":"2025-10-17 11:53:23:5323"}
+[2m2025-10-17T11:53:24Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine became reachable in 2.291729456s
+[2m2025-10-17T11:53:24Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine became reachable in 2.339777307s
+[2m2025-10-17T11:53:24Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][31m[31merror[31m[39m: [31minvalid csrf token[39m {"ip":"2a09:8280:1::9b:7665:0","method":"POST","stack":"ForbiddenError: invalid csrf token\n    at csrf (/app/node_modules/csurf/index.js:112:19)\n    at /app/src/server.js:174:3\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)\n    at /app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/app/node_modules/express/lib/router/index.js:280:10)\n    at cookieParser (/app/node_modules/cookie-parser/index.js:57:14)\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)","timestamp":"2025-10-17 11:53:24:5324","url":"/api/auth/login"}
+[2m2025-10-17T11:53:24Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine became reachable in 2.346961418s
+[2m2025-10-17T11:53:24Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][31m[31merror[31m[39m: [31minvalid csrf token[39m {"ip":"2a09:8280:1::9b:7665:0","method":"POST","stack":"ForbiddenError: invalid csrf token\n    at csrf (/app/node_modules/csurf/index.js:112:19)\n    at /app/src/server.js:174:3\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)\n    at /app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/app/node_modules/express/lib/router/index.js:280:10)\n    at cookieParser (/app/node_modules/cookie-parser/index.js:57:14)\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)","timestamp":"2025-10-17 11:53:24:5324","url":"/api/auth/login"}
+[2m2025-10-17T11:53:24Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][31m[31merror[31m[39m: [31minvalid csrf token[39m {"ip":"2a09:8280:1::9b:7665:0","method":"POST","stack":"ForbiddenError: invalid csrf token\n    at csrf (/app/node_modules/csurf/index.js:112:19)\n    at /app/src/server.js:174:3\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)\n    at /app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/app/node_modules/express/lib/router/index.js:280:10)\n    at cookieParser (/app/node_modules/cookie-parser/index.js:57:14)\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)","timestamp":"2025-10-17 11:53:24:5324","url":"/api/auth/login"}
+[2m2025-10-17T11:53:24Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine became reachable in 2.362749583s
+[2m2025-10-17T11:53:24Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][31m[31merror[31m[39m: [31minvalid csrf token[39m {"ip":"2a09:8280:1::9b:7665:0","method":"POST","stack":"ForbiddenError: invalid csrf token\n    at csrf (/app/node_modules/csurf/index.js:112:19)\n    at /app/src/server.js:174:3\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)\n    at /app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/app/node_modules/express/lib/router/index.js:280:10)\n    at cookieParser (/app/node_modules/cookie-parser/index.js:57:14)\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)","timestamp":"2025-10-17 11:53:24:5324","url":"/api/auth/login"}
+[2m2025-10-17T11:53:24Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine became reachable in 2.423039848s
+[2m2025-10-17T11:53:24Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][31m[31merror[31m[39m: [31minvalid csrf token[39m {"ip":"2a09:8280:1::9b:7665:0","method":"POST","stack":"ForbiddenError: invalid csrf token\n    at csrf (/app/node_modules/csurf/index.js:112:19)\n    at /app/src/server.js:174:3\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)\n    at /app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/app/node_modules/express/lib/router/index.js:280:10)\n    at cookieParser (/app/node_modules/cookie-parser/index.js:57:14)\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)","timestamp":"2025-10-17 11:53:24:5324","url":"/api/auth/login"}
+[2m2025-10-17T11:53:24Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine became reachable in 3.107900318s
+[2m2025-10-17T11:53:24Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine became reachable in 3.149911947s
+[2m2025-10-17T11:53:24Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]machine became reachable in 3.196980599s
+[2m2025-10-17T11:53:25Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m]Sentry DSN not configured, error tracking disabled
+[2m2025-10-17T11:53:25Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][32m[32minfo[32m[39m: [32mServer is running on port 5000[39m {"timestamp":"2025-10-17 11:53:25:5325"}
+[2m2025-10-17T11:53:25Z[0m proxy[2874234fed42e8] [32miad[0m [[34minfo[0m]machine became reachable in 3.370315495s
+[2m2025-10-17T11:53:25Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][31m[31merror[31m[39m: [31minvalid csrf token[39m {"ip":"2a09:8280:1::9b:7665:0","method":"POST","stack":"ForbiddenError: invalid csrf token\n    at csrf (/app/node_modules/csurf/index.js:112:19)\n    at /app/src/server.js:174:3\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)\n    at /app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/app/node_modules/express/lib/router/index.js:280:10)\n    at cookieParser (/app/node_modules/cookie-parser/index.js:57:14)\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)","timestamp":"2025-10-17 11:53:25:5325","url":"/api/auth/login"}
+[2m2025-10-17T11:53:26Z[0m proxy[2874234fed42e8] [32miad[0m [[34minfo[0m]machine became reachable in 3.62673695s
+[2m2025-10-17T11:53:26Z[0m app[2874234fed42e8] [32miad[0m [[34minfo[0m][31m[31merror[31m[39m: [31minvalid csrf token[39m {"ip":"2a09:8280:1::9b:7665:0","method":"POST","stack":"ForbiddenError: invalid csrf token\n    at csrf (/app/node_modules/csurf/index.js:112:19)\n    at /app/src/server.js:174:3\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)\n    at /app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/app/node_modules/express/lib/router/index.js:280:10)\n    at cookieParser (/app/node_modules/cookie-parser/index.js:57:14)\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)","timestamp":"2025-10-17 11:53:26:5326","url":"/api/auth/login"}
+[2m2025-10-17T11:53:28Z[0m health[2874234fed42e8] [32miad[0m [[34minfo[0m]Health check on port 5000 is now passing.
+[2m2025-10-17T11:53:31Z[0m health[28715d4c671438] [32miad[0m [[34minfo[0m]Health check on port 5000 is now passing.
+[2m2025-10-17T11:53:45Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][31m[31merror[31m[39m: [31minvalid csrf token[39m {"ip":"66.241.124.111","method":"POST","stack":"ForbiddenError: invalid csrf token\n    at csrf (/app/node_modules/csurf/index.js:112:19)\n    at /app/src/server.js:174:3\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)\n    at /app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/app/node_modules/express/lib/router/index.js:280:10)\n    at cookieParser (/app/node_modules/cookie-parser/index.js:57:14)\n    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/app/node_modules/express/lib/router/index.js:328:13)","timestamp":"2025-10-17 11:53:45:5345","url":"/api/auth/login"}
+[2m2025-10-17T12:00:23Z[0m proxy[28715d4c671438] [32miad[0m [[34minfo[0m]App medio-backend has excess capacity, autostopping machine 28715d4c671438. 1 out of 2 machines left running (region=iad, process group=app)
+[2m2025-10-17T12:00:23Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Sending signal SIGINT to main child process w/ PID 645
+[2m2025-10-17T12:00:24Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Main child exited with signal (with signal 'SIGINT', core dumped? false)
+[2m2025-10-17T12:00:24Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][32m INFO[0m Starting clean up.
+[2m2025-10-17T12:00:24Z[0m app[28715d4c671438] [32miad[0m [[34minfo[0m][  423.485187] reboot: Restarting system

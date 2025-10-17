@@ -1,0 +1,127 @@
+﻿{
+    "SC009Validation":  {
+                            "Pass":  false,
+                            "Status":  "FAIL"
+                        },
+    "Configuration":  {
+                          "BaseUrl":  "https://medio-backend.fly.dev",
+                          "ConcurrentRequests":  10,
+                          "TestAccount":  "test+deploy20251017b@example.com"
+                      },
+    "Timestamp":  "2025-10-17 13:48:48",
+    "DetailedResults":  [
+                            {
+                                "Duration":  27.6978,
+                                "Error":  "Ungültiger URI: Der Hostname konnte nicht analysiert werden.",
+                                "AttemptNumber":  1,
+                                "StatusCode":  null,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "3b377bce-f577-406c-9bf5-2adc39a7cd7b",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  22.2851,
+                                "Error":  "Ungültiger URI: Der Hostname konnte nicht analysiert werden.",
+                                "AttemptNumber":  2,
+                                "StatusCode":  null,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "7cb186c5-0f57-407f-b1c1-d2eb6298c90b",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  22.8714,
+                                "Error":  "Ungültiger URI: Der Hostname konnte nicht analysiert werden.",
+                                "AttemptNumber":  3,
+                                "StatusCode":  null,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "8b8b7460-85db-4439-8065-353952de8f0e",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  17.3047,
+                                "Error":  "Ungültiger URI: Der Hostname konnte nicht analysiert werden.",
+                                "AttemptNumber":  4,
+                                "StatusCode":  null,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "cd002feb-2170-4029-8c38-b44fb21f4b56",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  20.2939,
+                                "Error":  "Ungültiger URI: Der Hostname konnte nicht analysiert werden.",
+                                "AttemptNumber":  5,
+                                "StatusCode":  null,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "76dc3597-20db-4d21-b31d-3151b28633fc",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  24.8827,
+                                "Error":  "Ungültiger URI: Der Hostname konnte nicht analysiert werden.",
+                                "AttemptNumber":  6,
+                                "StatusCode":  null,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "059c2b38-a3c9-4fa7-be94-78a7d8940d99",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  26.451,
+                                "Error":  "Ungültiger URI: Der Hostname konnte nicht analysiert werden.",
+                                "AttemptNumber":  7,
+                                "StatusCode":  null,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "bd2c7183-8656-4842-a699-c32837e40517",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  52.752100000000006,
+                                "Error":  "Ungültiger URI: Der Hostname konnte nicht analysiert werden.",
+                                "AttemptNumber":  8,
+                                "StatusCode":  null,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "8e482f4d-107a-44d5-8ad9-1b7008455713",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  35.4472,
+                                "Error":  "Ungültiger URI: Der Hostname konnte nicht analysiert werden.",
+                                "AttemptNumber":  9,
+                                "StatusCode":  null,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "44e1f18e-1010-4e6b-a6c7-5f84fb3c5495",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  22.334500000000002,
+                                "Error":  "Ungültiger URI: Der Hostname konnte nicht analysiert werden.",
+                                "AttemptNumber":  10,
+                                "StatusCode":  null,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "c4a3a569-43ea-4abe-9329-1956f4e91e11",
+                                "PSShowComputerName":  false
+                            }
+                        ],
+    "TestName":  "SC-009: 10 Concurrent Login Attempts",
+    "Results":  {
+                    "SuccessRate":  0,
+                    "SuccessfulRequests":  0,
+                    "FailedRequests":  10,
+                    "TotalRequests":  10
+                },
+    "PerformanceMetrics":  {
+                               "MinDurationMs":  17.3,
+                               "AverageDurationMs":  27.23,
+                               "MaxDurationMs":  52.75,
+                               "TotalDurationSec":  1.6914604
+                           }
+}

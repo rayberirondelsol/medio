@@ -1,0 +1,1 @@
+{"status":"healthy","timestamp":"2025-10-17T11:42:15.160Z","uptime":11.362207132,"environment":"production","services":{"database":"healthy","sentry":"not configured"}}

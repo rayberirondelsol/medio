@@ -1,0 +1,127 @@
+﻿{
+    "SC009Validation":  {
+                            "Pass":  false,
+                            "Status":  "FAIL"
+                        },
+    "Configuration":  {
+                          "BaseUrl":  "https://medio-backend.fly.dev",
+                          "ConcurrentRequests":  10,
+                          "TestAccount":  "test+deploy20251017b@example.com"
+                      },
+    "Timestamp":  "2025-10-17 13:49:31",
+    "DetailedResults":  [
+                            {
+                                "Duration":  913.291,
+                                "Error":  null,
+                                "AttemptNumber":  1,
+                                "StatusCode":  200,
+                                "Success":  true,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "bd9f8168-5b10-468e-a0f4-a67032fec107",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  566.227,
+                                "Error":  null,
+                                "AttemptNumber":  2,
+                                "StatusCode":  200,
+                                "Success":  true,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "fe54ab5c-533c-4430-8f6b-a4d1735affc5",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  707.3046,
+                                "Error":  null,
+                                "AttemptNumber":  3,
+                                "StatusCode":  200,
+                                "Success":  true,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "c362bfe9-44c9-494d-bb4e-c2e83229f103",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  1696.0337000000002,
+                                "Error":  null,
+                                "AttemptNumber":  4,
+                                "StatusCode":  200,
+                                "Success":  true,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "8127ef3a-5278-426e-be92-4bee7a6d04a1",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  431.4776,
+                                "Error":  "Der Remoteserver hat einen Fehler zurückgegeben: (429) Too Many Requests.",
+                                "AttemptNumber":  5,
+                                "StatusCode":  429,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "17500077-ed66-4452-9ede-d40fc052aba1",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  506.58840000000004,
+                                "Error":  "Der Remoteserver hat einen Fehler zurückgegeben: (429) Too Many Requests.",
+                                "AttemptNumber":  6,
+                                "StatusCode":  429,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "92081893-b080-4ec9-9f50-8a198ab6e37f",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  439.65970000000004,
+                                "Error":  "Der Remoteserver hat einen Fehler zurückgegeben: (429) Too Many Requests.",
+                                "AttemptNumber":  7,
+                                "StatusCode":  429,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "4db9710a-2bb5-45a6-86f5-61adad54b836",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  391.61350000000004,
+                                "Error":  "Der Remoteserver hat einen Fehler zurückgegeben: (429) Too Many Requests.",
+                                "AttemptNumber":  8,
+                                "StatusCode":  429,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "77f45325-dc5a-4a18-9faa-8f052e005821",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  373.135,
+                                "Error":  "Der Remoteserver hat einen Fehler zurückgegeben: (429) Too Many Requests.",
+                                "AttemptNumber":  9,
+                                "StatusCode":  429,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "f025c198-e451-4cfd-b148-4ecd91c83e09",
+                                "PSShowComputerName":  false
+                            },
+                            {
+                                "Duration":  586.7981,
+                                "Error":  "Der Remoteserver hat einen Fehler zurückgegeben: (429) Too Many Requests.",
+                                "AttemptNumber":  10,
+                                "StatusCode":  429,
+                                "Success":  false,
+                                "PSComputerName":  "localhost",
+                                "RunspaceId":  "f8cfa18f-679b-4ea0-b59f-9bb677646980",
+                                "PSShowComputerName":  false
+                            }
+                        ],
+    "TestName":  "SC-009: 10 Concurrent Login Attempts",
+    "Results":  {
+                    "SuccessRate":  40,
+                    "SuccessfulRequests":  4,
+                    "FailedRequests":  6,
+                    "TotalRequests":  10
+                },
+    "PerformanceMetrics":  {
+                               "MinDurationMs":  373.14,
+                               "AverageDurationMs":  661.21,
+                               "MaxDurationMs":  1696.03,
+                               "TotalDurationSec":  8.6759772
+                           }
+}
