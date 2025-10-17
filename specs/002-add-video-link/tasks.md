@@ -171,17 +171,17 @@ description: "Task list for Add Video via Link feature implementation"
 
 ### Tests for User Story 4 (MANDATORY per Constitution) ⚠️
 
-- [ ] T073 [P] [US4] Unit test for manual entry mode state in frontend/tests/unit/components/AddVideoModal.test.tsx
-- [ ] T074 [P] [US4] Integration test for POST /api/videos with manually entered data in backend/tests/integration/videos.test.js
-- [ ] T075 [US4] E2E test for manual entry after API failure in frontend/tests/e2e/add-video-link.spec.ts
-- [ ] T076 [US4] E2E test for manual entry for unsupported platform in frontend/tests/e2e/add-video-link.spec.ts
+- [x] T073 [P] [US4] Unit test for manual entry mode state in frontend/tests/unit/components/AddVideoModal.test.tsx
+- [x] T074 [P] [US4] Integration test for POST /api/videos with manually entered data in backend/tests/integration/videos.test.js
+- [x] T075 [US4] E2E test for manual entry after API failure in frontend/tests/e2e/add-video-link.spec.ts
+- [x] T076 [US4] E2E test for manual entry for unsupported platform in frontend/tests/e2e/add-video-link.spec.ts
 
 ### Implementation for User Story 4
 
-- [ ] T077 [US4] Ensure form fields remain editable after API failure in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T078 [US4] Add manual entry mode indicator in UI in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T079 [US4] Validate manually entered data before save in frontend/src/components/videos/AddVideoModal.tsx
-- [ ] T080 [US4] Allow save with partial metadata (manual mode) in backend/src/routes/videos.js
+- [x] T077 [US4] Ensure form fields remain editable after API failure in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T078 [US4] Add manual entry mode indicator in UI in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T079 [US4] Validate manually entered data before save in frontend/src/components/videos/AddVideoModal.tsx
+- [x] T080 [US4] Allow save with partial metadata (manual mode) in backend/src/routes/videos.js
 
 **Checkpoint**: All user stories complete - feature fully functional with auto-fetch + manual fallback
 

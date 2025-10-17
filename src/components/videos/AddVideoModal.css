@@ -166,6 +166,29 @@
   margin-bottom: 1rem;
 }
 
+/* T078: Manual Entry Mode Indicator */
+.manual-entry-indicator {
+  padding: 0.875rem 1rem;
+  background-color: var(--color-warning-bg, #fef3c7);
+  color: var(--color-warning-dark, #92400e);
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  border-left: 4px solid var(--color-warning, #f59e0b);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.manual-entry-indicator strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.manual-entry-indicator p {
+  margin: 0;
+}
+
 /* Error Message */
 .error-message {
   padding: 0.875rem 1rem;

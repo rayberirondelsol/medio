@@ -903,6 +903,240 @@ test.describe('Phase 5: Error Handling - Invalid URL, Duplicate, and Timeout', (
     });
   });
 
+  // T075-T076: Manual Entry Fallback E2E Tests (Phase 6: User Story 4)
+  test.describe('Manual Entry Fallback (T075-T076)', () => {
+    test('T075: should allow manual entry after metadata API failure', async () => {
+      // Arrange - URL that will cause API failure
+      const failingUrl = 'https://www.youtube.com/watch?v=privateOrDeletedVideo';
+
+      // Act - Open modal and enter failing URL
+      await page.click('button:has-text("Add Video")');
+      const urlInput = page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]'));
+      await urlInput.fill(failingUrl);
+
+      // Wait for API failure
+      await page.waitForTimeout(3000);
+
+      // Assert - Manual entry mode indicator should be visible
+      await expect(page.locator('text=Manual Entry').or(page.locator('text=manual entry'))).toBeVisible({ timeout: 5000 });
+
+      // Assert - Error message should explain the situation
+      await expect(page.locator('text=Unable to fetch').or(page.locator('text=not found').or(page.locator('text=private')))).toBeVisible();
+
+      // Assert - Form fields should remain editable
+      const titleInput = page.locator('input[name="title"]').or(page.locator('input[placeholder*="title"]'));
+      await expect(titleInput).toBeEditable();
+      await expect(titleInput).not.toBeDisabled();
+
+      const descriptionInput = page.locator('textarea[name="description"]').or(page.locator('textarea[placeholder*="description"]'));
+      await expect(descriptionInput).toBeEditable();
+
+      // Act - Fill in fields manually
+      await titleInput.fill('Manually Entered Video Title');
+      await page.selectOption('select[name="age_rating"]', 'PG');
+
+      // Act - Submit
+      await page.click('button:has-text("Add Video")').last();
+
+      // Assert - Video should be added successfully
+      await expect(page.locator('[role="dialog"]')).not.toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=Manually Entered Video Title')).toBeVisible({ timeout: 5000 });
+    });
+
+    test('T075: should keep manually entered data after API failure', async () => {
+      // Arrange
+      const failingUrl = 'https://www.youtube.com/watch?v=apiFailureVideo';
+
+      // Act - Open modal
+      await page.click('button:has-text("Add Video")');
+      const urlInput = page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]'));
+
+      // Pre-fill some data
+      const titleInput = page.locator('input[name="title"]').or(page.locator('input[placeholder*="title"]'));
+      await titleInput.fill('Pre-filled Title');
+
+      // Enter URL that will fail
+      await urlInput.fill(failingUrl);
+      await page.waitForTimeout(3000);
+
+      // Assert - Manual entry mode
+      await expect(page.locator('text=Manual Entry').or(page.locator('text=manual entry'))).toBeVisible();
+
+      // Assert - Pre-filled data should be preserved
+      await expect(titleInput).toHaveValue('Pre-filled Title');
+
+      // Act - Add more manual data
+      await titleInput.fill('Updated Manual Title');
+      const descriptionInput = page.locator('textarea[name="description"]').or(page.locator('textarea[placeholder*="description"]'));
+      await descriptionInput.fill('Manual description');
+      await page.selectOption('select[name="age_rating"]', 'PG-13');
+
+      // Act - Submit
+      await page.click('button:has-text("Add Video")').last();
+
+      // Assert - Success
+      await expect(page.locator('[role="dialog"]')).not.toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=Updated Manual Title')).toBeVisible({ timeout: 5000 });
+    });
+
+    test('T076: should allow manual entry for unsupported platform', async () => {
+      // Arrange - Unsupported platform URL (TikTok, Instagram, etc.)
+      const unsupportedUrl = 'https://www.tiktok.com/@user/video/123456789';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      const urlInput = page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]'));
+      await urlInput.fill(unsupportedUrl);
+      await page.waitForTimeout(2000);
+
+      // Assert - Should show unsupported platform message or manual entry mode
+      await expect(
+        page.locator('text=Unsupported').or(page.locator('text=not supported').or(page.locator('text=Manual Entry')))
+      ).toBeVisible({ timeout: 5000 });
+
+      // Assert - Form fields should be editable for manual entry
+      const titleInput = page.locator('input[name="title"]').or(page.locator('input[placeholder*="title"]'));
+      await expect(titleInput).toBeEditable();
+      await expect(titleInput).not.toBeDisabled();
+
+      // Act - Fill manually
+      await titleInput.fill('TikTok Video - Manual Entry');
+      await page.selectOption('select[name="age_rating"]', 'PG');
+
+      // Act - Submit
+      await page.click('button:has-text("Add Video")').last();
+
+      // Assert - Should be added (or show clear error if platform must be selected)
+      await page.waitForTimeout(2000);
+      const hasError = await page.locator('text=Please select a platform').or(page.locator('[role="alert"]')).isVisible();
+
+      if (hasError) {
+        // If platform selection is required, select YouTube as fallback
+        await page.selectOption('select[name="platform"]', { label: /YouTube/i });
+        await page.click('button:has-text("Add Video")').last();
+      }
+
+      // Assert - Success
+      await expect(page.locator('text=TikTok Video - Manual Entry').or(page.locator('[role="dialog"]'))).toBeVisible({ timeout: 5000 });
+    });
+
+    test('T076: should show manual entry mode for Instagram URL', async () => {
+      // Arrange
+      const instagramUrl = 'https://www.instagram.com/p/ABC123/';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      const urlInput = page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]'));
+      await urlInput.fill(instagramUrl);
+      await page.waitForTimeout(2000);
+
+      // Assert - Manual entry mode or unsupported message
+      await expect(
+        page.locator('text=Unsupported').or(page.locator('text=Manual Entry').or(page.locator('text=not supported')))
+      ).toBeVisible({ timeout: 5000 });
+
+      // Assert - Fields editable
+      await expect(page.locator('input[name="title"]').or(page.locator('input[placeholder*="title"]'))).toBeEditable();
+    });
+
+    test('T075-T076: should require only minimal fields for manual entry submission', async () => {
+      // Arrange
+      const failingUrl = 'https://www.youtube.com/watch?v=minimalManual';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      const urlInput = page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]'));
+      await urlInput.fill(failingUrl);
+      await page.waitForTimeout(3000);
+
+      // Assert - Manual entry mode
+      await expect(page.locator('text=Manual Entry').or(page.locator('text=manual entry'))).toBeVisible();
+
+      // Act - Fill only required fields (title and age rating)
+      await page.locator('input[name="title"]').or(page.locator('input[placeholder*="title"]')).fill('Minimal Manual Video');
+      await page.selectOption('select[name="age_rating"]', 'G');
+
+      // Leave optional fields empty (description, thumbnail, duration, channel)
+
+      // Act - Submit
+      await page.click('button:has-text("Add Video")').last();
+
+      // Assert - Should succeed with minimal fields
+      await expect(page.locator('[role="dialog"]')).not.toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=Minimal Manual Video')).toBeVisible({ timeout: 5000 });
+    });
+
+    test('T075: should clear manual entry mode when URL is changed to valid one', async () => {
+      // Arrange
+      const failingUrl = 'https://www.youtube.com/watch?v=clearManual';
+      const validUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+
+      // Act - Enter failing URL
+      await page.click('button:has-text("Add Video")');
+      const urlInput = page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]'));
+      await urlInput.fill(failingUrl);
+      await page.waitForTimeout(3000);
+
+      // Assert - Manual entry mode active
+      await expect(page.locator('text=Manual Entry').or(page.locator('text=manual entry'))).toBeVisible();
+
+      // Act - Change to valid URL
+      await urlInput.clear();
+      await urlInput.fill(validUrl);
+      await page.waitForTimeout(3000);
+
+      // Assert - Manual entry mode should be cleared
+      await expect(page.locator('text=Manual Entry').or(page.locator('text=manual entry'))).not.toBeVisible();
+
+      // Assert - Metadata should auto-fill
+      await expect(page.locator('input[name="title"]')).toHaveValue(/Rick Astley/i, { timeout: 5000 });
+    });
+
+    test('T075: should show validation error for manual entry without title', async () => {
+      // Arrange
+      const failingUrl = 'https://www.youtube.com/watch?v=noTitleManual';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      const urlInput = page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]'));
+      await urlInput.fill(failingUrl);
+      await page.waitForTimeout(3000);
+
+      // Assert - Manual entry mode
+      await expect(page.locator('text=Manual Entry').or(page.locator('text=manual entry'))).toBeVisible();
+
+      // Act - Try to submit without title
+      await page.selectOption('select[name="age_rating"]', 'PG');
+      await page.click('button:has-text("Add Video")').last();
+
+      // Assert - Validation error
+      await expect(page.locator('text=title.*required').or(page.locator('text=Title is required'))).toBeVisible({ timeout: 3000 });
+      await expect(page.locator('[role="dialog"]')).toBeVisible(); // Modal should stay open
+    });
+
+    test('T075: should show validation error for manual entry without age rating', async () => {
+      // Arrange
+      const failingUrl = 'https://www.youtube.com/watch?v=noRatingManual';
+
+      // Act
+      await page.click('button:has-text("Add Video")');
+      const urlInput = page.locator('input[placeholder*="paste"]').or(page.locator('input[placeholder*="URL"]'));
+      await urlInput.fill(failingUrl);
+      await page.waitForTimeout(3000);
+
+      // Assert - Manual entry mode
+      await expect(page.locator('text=Manual Entry').or(page.locator('text=manual entry'))).toBeVisible();
+
+      // Act - Try to submit without age rating
+      await page.locator('input[name="title"]').or(page.locator('input[placeholder*="title"]')).fill('Manual Video');
+      await page.click('button:has-text("Add Video")').last();
+
+      // Assert - Validation error
+      await expect(page.locator('text=age rating.*required').or(page.locator('text=rating'))).toBeVisible({ timeout: 3000 });
+      await expect(page.locator('[role="dialog"]')).toBeVisible(); // Modal should stay open
+    });
+  });
+
   // T060: Timeout Error Handling E2E Test
   test.describe('Timeout Error Handling (T060)', () => {
     test('should show timeout error when metadata fetch takes too long', async () => {

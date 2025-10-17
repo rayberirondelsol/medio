@@ -54,6 +54,7 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
   const [errorTitle, setErrorTitle] = useState<string | null>(null);
   const [errorActionable, setErrorActionable] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [isManualEntryMode, setIsManualEntryMode] = useState(false); // T078: Manual entry mode indicator
 
   // Track which fields have been manually edited by the user
   const [dirtyFields, setDirtyFields] = useState<FieldDirtyState>({
@@ -127,6 +128,7 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
     setErrorTitle(null);
     setErrorActionable(null);
     setValidationError(null);
+    setIsManualEntryMode(false); // T078: Clear manual entry mode when URL changes
 
     // Detect platform from URL
     const platform = detectPlatform(url);
@@ -143,6 +145,9 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
 
       // Trigger metadata fetch
       fetchMetadata(url, platform);
+    } else if (url.trim()) {
+      // T076: Unsupported platform - enter manual entry mode
+      setIsManualEntryMode(true);
     }
   }, [platforms]);
 
@@ -205,6 +210,9 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
         setErrorTitle(formattedError.title);
         setError(formattedError.message);
         setErrorActionable(formattedError.actionable);
+
+        // T077, T078: Enter manual entry mode on API failure
+        setIsManualEntryMode(true);
       }
     } finally {
       setIsLoadingMetadata(false);
@@ -355,6 +363,7 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
     setErrorTitle(null);
     setErrorActionable(null);
     setValidationError(null);
+    setIsManualEntryMode(false); // T078: Reset manual entry mode
   };
 
   /**
@@ -388,6 +397,14 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
         </div>
 
         <form onSubmit={handleSubmit} className="add-video-form">
+          {/* T078: Manual Entry Mode Indicator */}
+          {isManualEntryMode && (
+            <div className="manual-entry-indicator" role="status">
+              <strong>Manual Entry Mode</strong>
+              <p>Automatic metadata could not be fetched. Please enter video information manually.</p>
+            </div>
+          )}
+
           {/* Enhanced Error display (T065-T069) */}
           {(error || validationError) && (
             <div className="error-message" role="alert">

@@ -708,4 +708,237 @@ describe('POST /api/videos', () => {
       });
     });
   });
+
+  // T074: Manual Entry - Integration Tests
+  describe('Manual Entry Mode (T074)', () => {
+    it('should accept video with manually entered data (minimal fields)', async () => {
+      // Arrange - Simulate manual entry with only required fields
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=manualMinimal',
+        external_id: 'manualMinimal',
+        title: 'Manually Entered Video Title',
+        age_rating: 'all_ages'
+        // No thumbnail_url, duration_seconds, description, or channel_name
+      };
+
+      // Act
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert
+      expect(response.status).toBe(201);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toMatchObject({
+        title: videoData.title,
+        video_url: videoData.video_url,
+        age_rating: videoData.age_rating
+      });
+
+      // Verify optional fields are null or undefined
+      expect(response.body.data.thumbnail_url).toBeNull();
+      expect(response.body.data.duration_seconds).toBeNull();
+      expect(response.body.data.description).toBeNull();
+    });
+
+    it('should accept video with manually entered data (all fields)', async () => {
+      // Arrange - Manual entry with all fields filled
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=manualFull',
+        external_id: 'manualFull',
+        title: 'Complete Manual Entry',
+        description: 'Manually entered description',
+        thumbnail_url: 'https://example.com/manual-thumb.jpg',
+        duration_seconds: 300,
+        channel_name: 'Manual Channel Name',
+        age_rating: '6+'
+      };
+
+      // Act
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert
+      expect(response.status).toBe(201);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toMatchObject({
+        title: videoData.title,
+        description: videoData.description,
+        thumbnail_url: videoData.thumbnail_url,
+        duration_seconds: videoData.duration_seconds,
+        channel_name: videoData.channel_name,
+        age_rating: videoData.age_rating
+      });
+    });
+
+    it('should accept video without thumbnail_url (manual entry)', async () => {
+      // Arrange
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=noThumbnail',
+        external_id: 'noThumbnail',
+        title: 'Video Without Thumbnail',
+        age_rating: 'PG'
+      };
+
+      // Act
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert
+      expect(response.status).toBe(201);
+      expect(response.body.data.thumbnail_url).toBeNull();
+    });
+
+    it('should accept video without duration_seconds (manual entry)', async () => {
+      // Arrange
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=noDuration',
+        external_id: 'noDuration',
+        title: 'Video Without Duration',
+        age_rating: 'PG-13'
+      };
+
+      // Act
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert
+      expect(response.status).toBe(201);
+      expect(response.body.data.duration_seconds).toBeNull();
+    });
+
+    it('should accept video without description (manual entry)', async () => {
+      // Arrange
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=noDescription',
+        external_id: 'noDescription',
+        title: 'Video Without Description',
+        age_rating: 'R'
+      };
+
+      // Act
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert
+      expect(response.status).toBe(201);
+      expect(response.body.data.description).toBeNull();
+    });
+
+    it('should still require title for manual entry', async () => {
+      // Arrange
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=manualNoTitle',
+        external_id: 'manualNoTitle',
+        age_rating: 'all_ages'
+        // Missing title
+      };
+
+      // Act
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert
+      expect(response.status).toBe(400);
+      expect(response.body.error).toMatch(/title.*required/i);
+    });
+
+    it('should still require age_rating for manual entry', async () => {
+      // Arrange
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=manualNoRating',
+        external_id: 'manualNoRating',
+        title: 'Manual Entry Without Rating'
+        // Missing age_rating
+      };
+
+      // Act
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert
+      expect(response.status).toBe(400);
+      expect(response.body.error).toMatch(/age rating.*required/i);
+    });
+
+    it('should validate manually entered data (invalid age rating)', async () => {
+      // Arrange
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=invalidRating',
+        external_id: 'invalidRating',
+        title: 'Video with Invalid Rating',
+        age_rating: 'INVALID'
+      };
+
+      // Act
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert
+      expect(response.status).toBe(400);
+      expect(response.body.error).toMatch(/invalid age rating/i);
+    });
+
+    it('should persist manually entered data to database correctly', async () => {
+      // Arrange
+      const videoData = {
+        platform_id: testPlatformId,
+        video_url: 'https://www.youtube.com/watch?v=manualPersist',
+        external_id: 'manualPersist',
+        title: 'Manual Persistence Test',
+        description: 'Testing DB persistence',
+        age_rating: 'PG'
+      };
+
+      // Act
+      const response = await request(app)
+        .post('/api/videos')
+        .send(videoData)
+        .set('Authorization', 'Bearer valid-test-token')
+        .set('Content-Type', 'application/json');
+
+      // Assert - Check database directly
+      const dbResult = await db.query(
+        'SELECT * FROM videos WHERE external_id = $1',
+        [videoData.external_id]
+      );
+
+      expect(dbResult.rows).toHaveLength(1);
+      expect(dbResult.rows[0].title).toBe(videoData.title);
+      expect(dbResult.rows[0].description).toBe(videoData.description);
+      expect(dbResult.rows[0].thumbnail_url).toBeNull();
+      expect(dbResult.rows[0].age_rating).toBe(videoData.age_rating);
+    });
+  });
 });
