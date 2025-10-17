@@ -136,10 +136,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // CSRF protection setup
+// Note: secure MUST be true when sameSite is 'none' (required by modern browsers)
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: true, // Required for sameSite: 'none'
     sameSite: 'none'
   }
 });
