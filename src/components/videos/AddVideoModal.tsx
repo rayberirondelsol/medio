@@ -83,6 +83,7 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
       setDetectedPlatform(null);
       setError(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.videoUrl]);
 
   // Cleanup: Cancel any pending requests on unmount (T029)
@@ -149,6 +150,7 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
       // T076: Unsupported platform - enter manual entry mode
       setIsManualEntryMode(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [platforms]);
 
   /**
@@ -387,10 +389,10 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
   }
 
   return (
-    <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={handleClose} role="presentation">
+      <div className="modal-content" onClick={(e) => e.stopPropagation()} role="dialog" aria-labelledby="add-video-title" aria-modal="true">
         <div className="modal-header">
-          <h2>Add Video via Link</h2>
+          <h2 id="add-video-title">Add Video via Link</h2>
           <button
             className="modal-close-btn"
             onClick={handleClose}

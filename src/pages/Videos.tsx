@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Layout from '../components/Layout';
 import LazyImage from '../components/LazyImage';
+import AddVideoModal from '../components/videos/AddVideoModal';
+import VideoFormErrorBoundary from '../components/videos/VideoFormErrorBoundary';
 import { useLoading } from '../contexts/LoadingContext';
 import { createRateLimiterUtils } from '../utils/rateLimiter';
 import { RATE_LIMITS } from '../constants/rateLimits';
@@ -32,17 +34,9 @@ const Videos: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const { startLoading, stopLoading, isLoading } = useLoading();
-  const deleteRateLimiter = createRateLimiterUtils({ 
+  const deleteRateLimiter = createRateLimiterUtils({
     ...RATE_LIMITS.VIDEO_DELETE,
-    key: 'video-delete' 
-  });
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    platform_id: '',
-    platform_video_id: '',
-    thumbnail_url: '',
-    age_rating: ''
+    key: 'video-delete'
   });
 
   const platforms = [
@@ -68,19 +62,9 @@ const Videos: React.FC = () => {
     fetchVideos();
   }, [fetchVideos]);
 
-  const handleAddVideo = async (e: React.FormEvent) => {
-    e.preventDefault();
-    startLoading('addVideo');
-    try {
-      const response = await axios.post(`${API_URL}/videos`, formData);
-      setVideos([response.data, ...videos]);
-      setShowAddModal(false);
-      resetForm();
-    } catch (error) {
-      console.error('Error adding video:', error);
-    } finally {
-      stopLoading('addVideo');
-    }
+  const handleVideoAdded = () => {
+    // Refresh videos list after adding a new video
+    fetchVideos();
   };
 
   const handleDeleteVideo = async (id: string) => {
@@ -101,22 +85,6 @@ const Videos: React.FC = () => {
         stopLoading('deleteVideo');
       }
     }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      title: '',
-      description: '',
-      platform_id: '',
-      platform_video_id: '',
-      thumbnail_url: '',
-      age_rating: ''
-    });
-  };
-
-  const extractYouTubeId = (url: string) => {
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
-    return match ? match[1] : url;
   };
 
   const getPlatformIcon = (platformName: string) => {
@@ -191,90 +159,13 @@ const Videos: React.FC = () => {
           </div>
         )}
 
-        {showAddModal && (
-          <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
-            <div className="modal" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2>Add New Video</h2>
-                <button className="close-btn" onClick={() => setShowAddModal(false)}>
-                  ×
-                </button>
-              </div>
-              <form onSubmit={handleAddVideo} className="modal-form">
-                <div className="form-group">
-                  <label>Title</label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Platform</label>
-                  <select
-                    value={formData.platform_id}
-                    onChange={(e) => setFormData({...formData, platform_id: e.target.value})}
-                    required
-                  >
-                    <option value="">Select a platform</option>
-                    {platforms.map(platform => (
-                      <option key={platform.id} value={platform.id}>
-                        {platform.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>Video URL/ID</label>
-                  <input
-                    type="text"
-                    value={formData.platform_video_id}
-                    onChange={(e) => setFormData({
-                      ...formData, 
-                      platform_video_id: extractYouTubeId(e.target.value)
-                    })}
-                    placeholder="YouTube URL or video ID"
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Description (optional)</label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    rows={3}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Age Rating (optional)</label>
-                  <select
-                    value={formData.age_rating}
-                    onChange={(e) => setFormData({...formData, age_rating: e.target.value})}
-                  >
-                    <option value="">No rating</option>
-                    <option value="G">G - General</option>
-                    <option value="PG">PG - Parental Guidance</option>
-                    <option value="PG-13">PG-13</option>
-                  </select>
-                </div>
-
-                <div className="modal-actions">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowAddModal(false)}>
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    Add Video
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+        <VideoFormErrorBoundary>
+          <AddVideoModal
+            isOpen={showAddModal}
+            onClose={() => setShowAddModal(false)}
+            onVideoAdded={handleVideoAdded}
+          />
+        </VideoFormErrorBoundary>
       </div>
     </Layout>
   );
