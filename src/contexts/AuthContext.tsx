@@ -34,20 +34,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Try to restore user from localStorage (not token - using httpOnly cookies)
-    const storedUser = localStorage.getItem('user');
-    
-    if (storedUser) {
+    const verifyAuth = async () => {
       try {
-        setUser(JSON.parse(storedUser));
+        const apiUrl = getApiUrl();
+
+        // First try to verify with backend using httpOnly cookie
+        try {
+          const response = await axiosInstance.get(`${apiUrl}/auth/me`, {
+            timeout: 5000
+          });
+
+          if (response.data.authenticated && response.data.user) {
+            setUser(response.data.user);
+            // Ensure localStorage is up to date with verified user data
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+            setIsLoading(false);
+            return;
+          }
+        } catch (authCheckError) {
+          // If auth check fails (401), clear localStorage
+          if (axios.isAxiosError(authCheckError) && authCheckError.response?.status === 401) {
+            localStorage.removeItem('user');
+            setUser(null);
+            setIsLoading(false);
+            return;
+          }
+          // If it's a network error or other issue, continue to check localStorage
+          console.debug('Auth verification failed:', authCheckError);
+        }
+
+        // Fallback: Check localStorage if server check failed or timed out
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          try {
+            setUser(JSON.parse(storedUser));
+          } catch (error) {
+            console.error('Failed to parse stored user:', error);
+            localStorage.removeItem('user');
+          }
+        }
+
+        setIsLoading(false);
       } catch (error) {
-        console.error('Failed to parse stored user:', error);
-        localStorage.removeItem('user');
+        console.error('Auth provider initialization error:', error);
+        setIsLoading(false);
       }
-    }
-    
-    setIsLoading(false);
-    
+    };
+
+    verifyAuth();
+
     // Cleanup on unmount
     return () => {
       RequestManager.cancelAllRequests();
