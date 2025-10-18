@@ -291,13 +291,17 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
     setError(null);
 
     try {
-      // Extract video ID for backend
+      // Find the selected platform name from the platforms array
+      const selectedPlatform = platforms.find(p => p.id === selectedPlatformId);
+      const platformName = selectedPlatform?.name.toLowerCase();
+
+      // Extract video ID for backend based on selected platform
       let videoId: string | null = null;
-      if (detectedPlatform === 'youtube') {
+      if (platformName === 'youtube') {
         videoId = extractYouTubeVideoId(formData.videoUrl);
-      } else if (detectedPlatform === 'vimeo') {
+      } else if (platformName === 'vimeo') {
         videoId = extractVimeoVideoId(formData.videoUrl);
-      } else if (detectedPlatform === 'dailymotion') {
+      } else if (platformName === 'dailymotion') {
         videoId = extractDailymotionVideoId(formData.videoUrl);
       }
 

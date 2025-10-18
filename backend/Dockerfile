@@ -10,7 +10,9 @@ WORKDIR /app
 COPY --chown=nodejs:nodejs package*.json ./
 
 # Install dependencies as root (needed for some native modules)
-RUN npm ci --only=production
+# Use production-only install for production, full install for development
+ARG NODE_ENV=production
+RUN if [ "$NODE_ENV" = "development" ]; then npm ci; else npm ci --only=production; fi
 
 # Copy source code with correct ownership
 COPY --chown=nodejs:nodejs . .
