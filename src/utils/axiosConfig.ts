@@ -85,6 +85,23 @@ axiosInstance.interceptors.response.use(
     }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Skip refresh attempt for /auth/me endpoint (checking auth status shouldn't trigger refresh)
+      const isAuthMeRequest = originalRequest.url?.includes('/auth/me');
+      if (isAuthMeRequest) {
+        return Promise.reject(error);
+      }
+
+      // Check if refresh token cookie exists before attempting refresh
+      const hasRefreshToken = document.cookie.split(';').some(cookie =>
+        cookie.trim().startsWith('refreshToken=')
+      );
+
+      if (!hasRefreshToken) {
+        // No refresh token available, redirect to login
+        window.location.href = '/login';
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
 
       try {
