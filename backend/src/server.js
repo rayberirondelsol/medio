@@ -160,11 +160,13 @@ const csrfExcludePaths = [
   '/api/sessions/heartbeat/public',
   '/api/nfc/scan/public',
   '/api/health',
+  '/api/auth/refresh',  // Refresh endpoint is called by axios interceptor without CSRF token
   '/api/v1/sessions/start/public',
   '/api/v1/sessions/end/public',
   '/api/v1/sessions/heartbeat/public',
   '/api/v1/nfc/scan/public',
-  '/api/v1/health'
+  '/api/v1/health',
+  '/api/v1/auth/refresh'  // Versioned refresh endpoint
 ];
 
 // Conditional CSRF middleware
