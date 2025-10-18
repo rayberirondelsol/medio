@@ -32,7 +32,7 @@ router.get('/', authenticateToken, async (req, res) => {
       requiresAuth: !platform.is_active // For now, use is_active as inverse of requiresAuth
     }));
 
-    res.json({ platforms });
+    res.json(platforms);
   } catch (error) {
     console.error('Error fetching platforms:', error);
     res.status(500).json({

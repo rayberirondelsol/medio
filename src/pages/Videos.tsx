@@ -8,7 +8,7 @@ import { createRateLimiterUtils } from '../utils/rateLimiter';
 import { RATE_LIMITS } from '../constants/rateLimits';
 import { FiPlus, FiEdit2, FiTrash2, FiLink, FiYoutube } from 'react-icons/fi';
 import { SiNetflix, SiPrime } from 'react-icons/si';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosConfig';
 import { resolveApiBaseUrlOrDefault } from '../utils/runtimeConfig';
 import './Videos.css';
 
@@ -33,6 +33,7 @@ const LinkIcon = FiLink as React.ElementType;
 const Videos: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [videosFetchError, setVideosFetchError] = useState<string | null>(null);
   const { startLoading, stopLoading, isLoading } = useLoading();
   const deleteRateLimiter = createRateLimiterUtils({
     ...RATE_LIMITS.VIDEO_DELETE,
@@ -48,15 +49,21 @@ const Videos: React.FC = () => {
 
   const fetchVideos = useCallback(async () => {
     startLoading('videos');
+    setVideosFetchError(null);
     try {
-      const response = await axios.get(`${API_URL}/videos`);
+      const response = await axiosInstance.get(`${API_URL}/videos`);
       setVideos(response.data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching videos:', error);
+      setVideosFetchError(
+        error.response?.data?.message ||
+        error.message ||
+        'Failed to load videos'
+      );
     } finally {
       stopLoading('videos');
     }
-  }, [setVideos, startLoading, stopLoading]);
+  }, [startLoading, stopLoading]);
 
   useEffect(() => {
     fetchVideos();
@@ -77,10 +84,11 @@ const Videos: React.FC = () => {
       
       startLoading('deleteVideo');
       try {
-        await axios.delete(`${API_URL}/videos/${id}`);
+        await axiosInstance.delete(`${API_URL}/videos/${id}`);
         setVideos(videos.filter(v => v.id !== id));
       } catch (error) {
         console.error('Error deleting video:', error);
+        alert('Failed to delete video. Please try again.');
       } finally {
         stopLoading('deleteVideo');
       }
@@ -106,7 +114,15 @@ const Videos: React.FC = () => {
           </button>
         </div>
 
-        {isLoading('videos') ? (
+        {videosFetchError ? (
+          <div className="error-state">
+            <h2>Error Loading Videos</h2>
+            <p>{videosFetchError}</p>
+            <button className="btn btn-primary" onClick={fetchVideos}>
+              Try Again
+            </button>
+          </div>
+        ) : isLoading('videos') ? (
           <div className="loading">Loading videos...</div>
         ) : videos.length === 0 ? (
           <div className="empty-state">
