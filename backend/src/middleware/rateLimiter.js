@@ -99,8 +99,42 @@ const authRateLimiter = rateLimit({
   }
 });
 
+/**
+ * Rate limiter for token refresh endpoint
+ *
+ * Limits: 20 requests per 15 minutes per IP
+ * - More lenient than auth endpoints (login/register)
+ * - Allows legitimate token refresh during normal usage
+ * - Still prevents abuse from malicious actors
+ */
+const refreshRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // Limit each IP to 20 refresh requests per windowMs
+  message: {
+    error: 'Too many token refresh requests from this IP, please try again in 15 minutes.',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    if (process.env.NODE_ENV === 'test') {
+      return true;
+    }
+    return false;
+  },
+  handler: (req, res) => {
+    res.status(429).json({
+      error: 'Too many token refresh requests from this IP, please try again in 15 minutes.',
+      retryAfter: '15 minutes',
+      limit: 20,
+      windowMs: 15 * 60 * 1000
+    });
+  }
+});
+
 module.exports = {
   metadataRateLimiter,
   generalRateLimiter,
-  authRateLimiter
+  authRateLimiter,
+  refreshRateLimiter
 };

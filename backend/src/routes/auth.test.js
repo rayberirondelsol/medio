@@ -1,5 +1,6 @@
 const request = require('supertest');
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const authRoutes = require('./auth');
 const pool = require('../db/pool');
 const bcrypt = require('bcryptjs');
@@ -13,6 +14,7 @@ jest.mock('jsonwebtoken');
 // Setup express app for testing
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 
 describe('Auth Routes', () => {
@@ -75,7 +77,7 @@ describe('Auth Routes', () => {
         });
 
       expect(response.status).toBe(409);
-      expect(response.body.message).toBe('Email already registered');
+      expect(response.body.message).toBe('User already exists');
     });
   });
 
@@ -138,6 +140,125 @@ describe('Auth Routes', () => {
 
       expect(response.status).toBe(401);
       expect(response.body.message).toBe('Invalid credentials');
+    });
+  });
+
+  describe('POST /api/auth/refresh', () => {
+    it('should refresh access token with valid refresh token', async () => {
+      const mockUser = {
+        id: 'user-123',
+        email: 'test@example.com',
+        name: 'Test User'
+      };
+
+      // Mock refresh token verification
+      jwt.verify.mockReturnValueOnce({
+        id: 'user-123',
+        jti: 'refresh-jti',
+        type: 'refresh',
+        exp: Date.now() / 1000 + 3600
+      });
+
+      // Mock blacklist check (token not blacklisted)
+      pool.query.mockResolvedValueOnce({ rows: [] });
+
+      // Mock user lookup
+      pool.query.mockResolvedValueOnce({ rows: [mockUser] });
+
+      // Mock new access token generation
+      jwt.sign.mockReturnValueOnce('new-access-token');
+
+      const response = await request(app)
+        .post('/api/auth/refresh')
+        .set('Cookie', ['refreshToken=valid-refresh-token']);
+
+      expect(response.status).toBe(200);
+      expect(response.body.message).toBe('Access token refreshed successfully');
+      expect(response.body).toHaveProperty('token');
+      expect(jwt.verify).toHaveBeenCalled();
+      expect(pool.query).toHaveBeenCalledTimes(2); // Blacklist check + user lookup
+    });
+
+    it('should reject refresh with missing refresh token', async () => {
+      const response = await request(app)
+        .post('/api/auth/refresh');
+
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe('Refresh token required');
+    });
+
+    it('should reject refresh with invalid token type', async () => {
+      // Mock access token instead of refresh token
+      jwt.verify.mockReturnValueOnce({
+        id: 'user-123',
+        jti: 'access-jti',
+        type: 'access', // Wrong type
+        exp: Date.now() / 1000 + 3600
+      });
+
+      const response = await request(app)
+        .post('/api/auth/refresh')
+        .set('Cookie', ['refreshToken=access-token']);
+
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe('Invalid token type');
+    });
+
+    it('should reject refresh with blacklisted token', async () => {
+      jwt.verify.mockReturnValueOnce({
+        id: 'user-123',
+        jti: 'blacklisted-jti',
+        type: 'refresh',
+        exp: Date.now() / 1000 + 3600
+      });
+
+      // Mock blacklist check (token IS blacklisted)
+      pool.query.mockResolvedValueOnce({ rows: [{ id: 1 }] });
+
+      const response = await request(app)
+        .post('/api/auth/refresh')
+        .set('Cookie', ['refreshToken=blacklisted-token']);
+
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe('Refresh token has been revoked');
+    });
+
+    it('should reject refresh with expired token', async () => {
+      jwt.verify.mockImplementationOnce(() => {
+        const error = new Error('Token expired');
+        error.name = 'TokenExpiredError';
+        throw error;
+      });
+
+      const response = await request(app)
+        .post('/api/auth/refresh')
+        .set('Cookie', ['refreshToken=expired-token']);
+
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe('Refresh token has expired');
+      expect(response.body.requiresLogin).toBe(true);
+    });
+
+    it('should reject refresh when user not found', async () => {
+      jwt.verify.mockReturnValueOnce({
+        id: 'deleted-user-123',
+        jti: 'refresh-jti',
+        type: 'refresh',
+        exp: Date.now() / 1000 + 3600
+      });
+
+      // Mock blacklist check (not blacklisted)
+      pool.query.mockResolvedValueOnce({ rows: [] });
+
+      // Mock user lookup (user not found)
+      pool.query.mockResolvedValueOnce({ rows: [] });
+
+      const response = await request(app)
+        .post('/api/auth/refresh')
+        .set('Cookie', ['refreshToken=valid-token-deleted-user']);
+
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe('User not found');
     });
   });
 });

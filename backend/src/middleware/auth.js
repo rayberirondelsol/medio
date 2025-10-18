@@ -51,15 +51,60 @@ const authenticateToken = async (req, res, next) => {
 
 const generateToken = (user) => {
   const jti = crypto.randomBytes(16).toString('hex');
-  
+
   return jwt.sign(
-    { 
-      id: user.id, 
+    {
+      id: user.id,
       email: user.email,
       jti: jti
     },
     JWT_SECRET,
-    { 
+    {
+      expiresIn: '7d',
+      issuer: 'medio-platform',
+      audience: 'medio-users'
+    }
+  );
+};
+
+/**
+ * Generate access token (short-lived, 15 minutes)
+ * Used for API authentication
+ */
+const generateAccessToken = (user) => {
+  const jti = crypto.randomBytes(16).toString('hex');
+
+  return jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+      jti: jti,
+      type: 'access'
+    },
+    JWT_SECRET,
+    {
+      expiresIn: '15m',
+      issuer: 'medio-platform',
+      audience: 'medio-users'
+    }
+  );
+};
+
+/**
+ * Generate refresh token (long-lived, 7 days)
+ * Used to obtain new access tokens
+ */
+const generateRefreshToken = (user) => {
+  const jti = crypto.randomBytes(16).toString('hex');
+
+  return jwt.sign(
+    {
+      id: user.id,
+      jti: jti,
+      type: 'refresh'
+    },
+    JWT_SECRET,
+    {
       expiresIn: '7d',
       issuer: 'medio-platform',
       audience: 'medio-users'
@@ -69,5 +114,7 @@ const generateToken = (user) => {
 
 module.exports = {
   authenticateToken,
-  generateToken
+  generateToken,
+  generateAccessToken,
+  generateRefreshToken
 };

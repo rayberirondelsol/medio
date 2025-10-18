@@ -124,6 +124,8 @@ const publicEndpointLimiter = rateLimit({
 app.use('/api/', limiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
+app.use('/api/auth/refresh', limiter); // Use general limiter for refresh endpoint (20 req/15min via interceptor)
+app.use('/api/v1/auth/refresh', limiter); // Apply to versioned endpoint too
 
 // Apply rate limiting to public endpoints
 app.use('/api/sessions/start/public', publicEndpointLimiter);

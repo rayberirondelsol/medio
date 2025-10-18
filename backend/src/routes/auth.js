@@ -2,8 +2,9 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const pool = require('../db/pool');
-const { generateToken } = require('../middleware/auth');
+const { generateToken, generateAccessToken, generateRefreshToken } = require('../middleware/auth');
 const logger = require('../utils/logger');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -15,9 +16,23 @@ const setAuthCookie = (res, token) => {
     httpOnly: true,
     secure: isProduction, // HTTPS only in production
     sameSite: isProduction ? 'none' : 'lax', // 'none' requires Secure; 'lax' is safer for development
+    maxAge: 15 * 60 * 1000, // 15 minutes (access token)
+    path: '/',
+    domain: isProduction ? process.env.COOKIE_DOMAIN : undefined
+  });
+};
+
+// Helper function to set refresh token cookie
+const setRefreshCookie = (res, token) => {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  res.cookie('refreshToken', token, {
+    httpOnly: true,
+    secure: isProduction, // HTTPS only in production
+    sameSite: isProduction ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     path: '/',
-    domain: isProduction ? process.env.COOKIE_DOMAIN : undefined // Add explicit domain in production if set
+    domain: isProduction ? process.env.COOKIE_DOMAIN : undefined
   });
 };
 
@@ -91,10 +106,14 @@ router.post('/register',
       );
 
       const user = result.rows[0];
-      const token = generateToken(user);
 
-      // Set secure httpOnly cookie
-      setAuthCookie(res, token);
+      // Generate both access and refresh tokens
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
+
+      // Set secure httpOnly cookies
+      setAuthCookie(res, accessToken);
+      setRefreshCookie(res, refreshToken);
 
       res.status(201).json({
         user: {
@@ -103,7 +122,7 @@ router.post('/register',
           name: user.name
         },
         // Still send token for backward compatibility, but prefer cookie
-        token
+        token: accessToken
       });
     } catch (error) {
       logger.error('Registration error:', error);
@@ -145,10 +164,13 @@ router.post('/login',
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
-      const token = generateToken(user);
+      // Generate both access and refresh tokens
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
 
-      // Set secure httpOnly cookie
-      setAuthCookie(res, token);
+      // Set secure httpOnly cookies
+      setAuthCookie(res, accessToken);
+      setRefreshCookie(res, refreshToken);
 
       res.json({
         user: {
@@ -157,7 +179,7 @@ router.post('/login',
           name: user.name
         },
         // Still send token for backward compatibility, but prefer cookie
-        token
+        token: accessToken
       });
     } catch (error) {
       logger.error('Login error:', error);
@@ -234,19 +256,96 @@ router.get('/me', async (req, res) => {
   }
 });
 
+// Refresh token endpoint
+router.post('/refresh', async (req, res) => {
+  try {
+    // Get refresh token from cookie
+    const refreshToken = req.cookies?.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: 'Refresh token required' });
+    }
+
+    // Verify the refresh token
+    const JWT_SECRET = process.env.JWT_SECRET;
+
+    try {
+      const decoded = jwt.verify(refreshToken, JWT_SECRET);
+
+      // Verify token type
+      if (decoded.type !== 'refresh') {
+        return res.status(401).json({ message: 'Invalid token type' });
+      }
+
+      // Check if token is blacklisted
+      if (decoded.jti) {
+        const blacklistCheck = await pool.query(
+          'SELECT id FROM token_blacklist WHERE token_jti = $1',
+          [decoded.jti]
+        );
+
+        if (blacklistCheck.rows.length > 0) {
+          res.clearCookie('authToken');
+          res.clearCookie('refreshToken');
+          return res.status(401).json({ message: 'Refresh token has been revoked' });
+        }
+      }
+
+      // Get fresh user data from database
+      const userResult = await pool.query(
+        'SELECT id, email, name FROM users WHERE id = $1',
+        [decoded.id]
+      );
+
+      if (userResult.rows.length === 0) {
+        res.clearCookie('authToken');
+        res.clearCookie('refreshToken');
+        return res.status(401).json({ message: 'User not found' });
+      }
+
+      const user = userResult.rows[0];
+
+      // Generate new access token
+      const newAccessToken = generateAccessToken(user);
+
+      // Set new access token cookie
+      setAuthCookie(res, newAccessToken);
+
+      res.json({
+        message: 'Access token refreshed successfully',
+        token: newAccessToken
+      });
+    } catch (err) {
+      res.clearCookie('authToken');
+      res.clearCookie('refreshToken');
+
+      if (err.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: 'Refresh token has expired', requiresLogin: true });
+      }
+      return res.status(401).json({ message: 'Invalid refresh token', requiresLogin: true });
+    }
+  } catch (error) {
+    logger.error('Token refresh error:', error);
+    res.status(500).json({ message: 'Token refresh failed' });
+  }
+});
+
 // Logout endpoint with token invalidation
 router.post('/logout', async (req, res) => {
   try {
-    // Get token from cookie or header
-    let token = req.cookies?.authToken;
-    if (!token) {
+    // Get tokens from cookies or headers
+    let accessToken = req.cookies?.authToken;
+    let refreshToken = req.cookies?.refreshToken;
+
+    if (!accessToken) {
       const authHeader = req.headers['authorization'];
-      token = authHeader && authHeader.split(' ')[1];
+      accessToken = authHeader && authHeader.split(' ')[1];
     }
 
-    if (token) {
-      // Decode token to get JTI and expiry
-      const jwt = require('jsonwebtoken');
+    // Blacklist both access and refresh tokens
+    const tokensToBlacklist = [accessToken, refreshToken].filter(Boolean);
+
+    for (const token of tokensToBlacklist) {
       const decoded = jwt.decode(token);
 
       if (decoded && decoded.jti) {
@@ -259,13 +358,15 @@ router.post('/logout', async (req, res) => {
       }
     }
 
-    // Clear the cookie
+    // Clear both cookies
     res.clearCookie('authToken');
+    res.clearCookie('refreshToken');
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
-    // Log error but still clear cookie and return success
+    // Log error but still clear cookies and return success
     logger.error('Logout error:', error);
     res.clearCookie('authToken');
+    res.clearCookie('refreshToken');
     res.json({ message: 'Logged out successfully' });
   }
 });
