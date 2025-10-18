@@ -11,6 +11,7 @@ primary_region = 'iad'
 
 [env]
   NODE_ENV = 'production'
+  REACT_APP_API_URL = 'https://medio-backend.fly.dev/api'
 
 [http_service]
   internal_port = 8080
