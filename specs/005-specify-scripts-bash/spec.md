@@ -92,6 +92,8 @@ Eltern können ihre registrierten Chips verwalten: Liste aller Chips anzeigen, D
 - **FR-013**: System MUST provide DELETE /api/nfc/chips/:chipId endpoint to permanently delete chips with cascading deletion of associated video mappings
 - **FR-014**: System MUST log all NFC registration errors to Sentry with contextual metadata (user_id, chip_uid, error_type, platform, timestamp)
 - **FR-015**: System MUST return identical error messages for duplicate chip registrations regardless of ownership to prevent UID enumeration attacks
+- **FR-016**: System MUST enforce a maximum limit of 20 NFC chips per parent account
+- **FR-017**: System MUST return HTTP 403 Forbidden with error message "Maximum chip limit reached (20 chips)" when parent attempts to register more than 20 chips
 
 ### Key Entities *(include if feature involves data)*
 
@@ -164,6 +166,13 @@ Register a new NFC chip for the authenticated parent.
       "location": "body"
     }
   ]
+}
+```
+
+- **403 Forbidden** (Maximum chip limit reached):
+```json
+{
+  "message": "Maximum chip limit reached (20 chips)"
 }
 ```
 
@@ -341,6 +350,8 @@ When a chip is deleted from `nfc_chips`, all mappings referencing that chip are 
 - **NFR-018**: NFC scan button MUST only appear on devices with `NDEFReader` support (no false advertising)
 - **NFR-019**: Chip deletion MUST require confirmation modal to prevent accidental deletion
 - **NFR-020**: Duplicate registration error MUST suggest manual override option if applicable
+- **NFR-021**: POST /api/nfc/chips endpoint MUST implement rate limiting at 10 requests per 15 minutes per user to prevent abuse
+- **NFR-022**: DELETE /api/nfc/chips/:chipId endpoint MUST implement rate limiting at 20 requests per 15 minutes per user to prevent abuse
 
 ---
 
@@ -433,7 +444,16 @@ When a chip is deleted from `nfc_chips`, all mappings referencing that chip are 
    - Verifies error message "NFC chip already registered" displayed
    - Form remains open for correction
 
-3. **NFC Scan Registration** (mocked on non-Android devices):
+3. **Cross-User Duplicate Registration** (CRITICAL for global uniqueness validation):
+   - User A logs in and registers chip with UID "04:5A:B2:C3:D4:E5:F6"
+   - User A logs out
+   - User B logs in and attempts to register same UID "04:5A:B2:C3:D4:E5:F6"
+   - Verifies error message "NFC chip already registered" displayed (identical to same-user duplicate)
+   - Verifies no ownership information leaked in error message
+   - Verifies HTTP 409 Conflict response
+   - User B cannot see User A's chip in their chip list
+
+4. **NFC Scan Registration** (mocked on non-Android devices):
    - Mock `NDEFReader` if not available
    - User clicks "Scan NFC Chip" button
    - Simulates scan returning UID "04:7B:C3:D4:E5:F6:08"
@@ -442,7 +462,7 @@ When a chip is deleted from `nfc_chips`, all mappings referencing that chip are 
    - Clicks "Save"
    - Verifies chip appears in list
 
-4. **Chip Deletion Workflow**:
+5. **Chip Deletion Workflow**:
    - User registers 2 chips
    - Clicks delete button on first chip
    - Confirms deletion in modal
@@ -450,12 +470,12 @@ When a chip is deleted from `nfc_chips`, all mappings referencing that chip are 
    - Refreshes page and verifies chip still deleted
    - Verifies second chip still present
 
-5. **Validation Errors**:
+6. **Validation Errors**:
    - Attempt to submit with empty label → displays error
    - Attempt to submit with invalid chip_uid "ZZZZZ" → displays error
    - Attempt to submit with too-short UID "04:5A" → displays error
 
-6. **NFC Button Visibility**:
+7. **NFC Button Visibility**:
    - On non-NFC device (desktop, iOS): Scan button hidden
    - On NFC device (Chrome 89+ Android): Scan button visible
 
