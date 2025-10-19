@@ -47,6 +47,7 @@ const fetchCsrfToken = async (): Promise<string | null> => {
 };
 
 const axiosInstance = axios.create({
+  baseURL: resolveApiBaseUrl(),
   withCredentials: true,
   timeout: 30000,
 });

@@ -1,4 +1,4 @@
-import apiClient from '../config/api';
+import apiClient from '../utils/axiosConfig';
 
 export interface Platform {
   id: string;
