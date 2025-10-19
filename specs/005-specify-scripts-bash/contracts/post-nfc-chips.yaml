@@ -1,0 +1,269 @@
+openapi: 3.0.3
+info:
+  title: NFC Chip Registration API
+  description: Register a new NFC chip for the authenticated parent
+  version: 1.0.0
+
+paths:
+  /api/nfc/chips:
+    post:
+      summary: Register new NFC chip
+      description: |
+        Registers a new NFC chip for the authenticated parent account. The chip UID must be globally unique across all users.
+        Maximum 20 chips per parent account.
+      operationId: registerNFCChip
+      tags:
+        - NFC Chips
+      security:
+        - cookieAuth: []
+        - csrfToken: []
+      parameters:
+        - in: header
+          name: X-CSRF-Token
+          required: true
+          schema:
+            type: string
+          description: CSRF token for mutation protection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - chip_uid
+                - label
+              properties:
+                chip_uid:
+                  type: string
+                  description: |
+                    NFC chip UID in hexadecimal format. Can be with or without colons/spaces/hyphens.
+                    Must be 4-10 bytes (8-20 hex characters after removing separators).
+                    Backend will normalize to uppercase with colons (e.g., "04:5A:B2:C3:D4:E5:F6").
+                  example: "04:5A:B2:C3:D4:E5:F6"
+                  pattern: '^[0-9A-Fa-f\s:-]+$'
+                  minLength: 8
+                  maxLength: 30
+                label:
+                  type: string
+                  description: |
+                    Friendly name for the chip (e.g., "Ben's Chip").
+                    Must be 1-50 characters. Only alphanumeric, spaces, hyphens, and apostrophes allowed.
+                  example: "Ben's Chip"
+                  pattern: '^[a-zA-Z0-9\s\-'']+$'
+                  minLength: 1
+                  maxLength: 50
+            examples:
+              withColons:
+                summary: UID with colons
+                value:
+                  chip_uid: "04:5A:B2:C3:D4:E5:F6"
+                  label: "Ben's Chip"
+              withoutColons:
+                summary: UID without separators
+                value:
+                  chip_uid: "045AB2C3D4E5F6"
+                  label: "Lisa's Chip"
+              withSpaces:
+                summary: UID with spaces
+                value:
+                  chip_uid: "04 5A B2 C3 D4 E5 F6"
+                  label: "Test Chip-2"
+
+      responses:
+        '201':
+          description: NFC chip registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NFCChip'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                user_id: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+                chip_uid: "04:5A:B2:C3:D4:E5:F6"
+                label: "Ben's Chip"
+                created_at: "2025-10-19T12:34:56.789Z"
+
+        '400':
+          description: Validation error - invalid chip_uid or label format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                invalidUID:
+                  summary: Invalid chip UID format
+                  value:
+                    errors:
+                      - msg: "NFC UID must be between 4-10 bytes (8-20 hex characters)"
+                        param: "chip_uid"
+                        location: "body"
+                emptyLabel:
+                  summary: Empty label
+                  value:
+                    errors:
+                      - msg: "Label is required"
+                        param: "label"
+                        location: "body"
+                labelTooLong:
+                  summary: Label exceeds 50 characters
+                  value:
+                    errors:
+                      - msg: "Label must be 1-50 characters"
+                        param: "label"
+                        location: "body"
+                invalidCharacters:
+                  summary: Invalid characters in label
+                  value:
+                    errors:
+                      - msg: "Label can only contain letters, numbers, spaces, hyphens, and apostrophes"
+                        param: "label"
+                        location: "body"
+
+        '401':
+          description: Unauthorized - missing or invalid authentication token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Authentication required"
+
+        '403':
+          description: Forbidden - maximum chip limit reached (20 chips)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Maximum chip limit reached (20 chips)"
+
+        '409':
+          description: |
+            Conflict - chip UID already registered.
+            Note: Identical message returned regardless of whether chip is owned by current user or another user (prevents UID enumeration).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "NFC chip already registered"
+
+        '429':
+          description: Too many requests - rate limit exceeded (10 requests per 15 minutes)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+              example:
+                error: "Too many chip registration attempts"
+                retryAfter: "2025-10-19T12:50:00.000Z"
+
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Failed to register NFC chip"
+
+      x-rate-limit:
+        limit: 10
+        window: 15 minutes
+        key: user_id
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+      description: JWT token stored in httpOnly cookie
+    csrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+      description: CSRF token for mutation protection
+
+  schemas:
+    NFCChip:
+      type: object
+      required:
+        - id
+        - user_id
+        - chip_uid
+        - label
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique chip record identifier
+        user_id:
+          type: string
+          format: uuid
+          description: Parent account that owns the chip
+        chip_uid:
+          type: string
+          description: Normalized NFC chip UID (uppercase hex with colons)
+          example: "04:5A:B2:C3:D4:E5:F6"
+          pattern: '^[0-9A-F]{2}(:[0-9A-F]{2})+$'
+        label:
+          type: string
+          description: Friendly name assigned by parent
+          example: "Ben's Chip"
+          minLength: 1
+          maxLength: 50
+        created_at:
+          type: string
+          format: date-time
+          description: Registration timestamp (ISO 8601)
+
+    ValidationError:
+      type: object
+      required:
+        - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+              - msg
+              - param
+              - location
+            properties:
+              msg:
+                type: string
+                description: Human-readable error message
+              param:
+                type: string
+                description: Field that failed validation
+              location:
+                type: string
+                enum: [body, query, params, headers]
+                description: Location of the invalid parameter
+
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Human-readable error message
+
+    RateLimitError:
+      type: object
+      required:
+        - error
+        - retryAfter
+      properties:
+        error:
+          type: string
+          description: Error message
+        retryAfter:
+          type: string
+          format: date-time
+          description: Timestamp when rate limit resets

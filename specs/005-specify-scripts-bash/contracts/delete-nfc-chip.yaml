@@ -1,0 +1,149 @@
+openapi: 3.0.3
+info:
+  title: NFC Chip Deletion API
+  description: Delete a registered NFC chip and cascade delete associated video mappings
+  version: 1.0.0
+
+paths:
+  /api/nfc/chips/{chipId}:
+    delete:
+      summary: Delete NFC chip
+      description: |
+        Permanently deletes an NFC chip and all associated video mappings (CASCADE deletion).
+        Only the chip owner can delete the chip.
+
+        **Edge Case - Active Sessions**: When a chip is deleted while a child is using it in an active Kids Mode session:
+        - Option A (Recommended): Deletion proceeds. Active session continues until timeout. Child cannot rescan.
+        - Option B (Stricter): Returns 409 Conflict if active session detected.
+
+        Implementation uses Option A for better parent UX.
+      operationId: deleteNFCChip
+      tags:
+        - NFC Chips
+      security:
+        - cookieAuth: []
+        - csrfToken: []
+      parameters:
+        - in: path
+          name: chipId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: UUID of the chip to delete
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        - in: header
+          name: X-CSRF-Token
+          required: true
+          schema:
+            type: string
+          description: CSRF token for mutation protection
+
+      responses:
+        '200':
+          description: NFC chip deleted successfully (including cascade deletion of video mappings)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+              example:
+                message: "NFC chip deleted successfully"
+
+        '401':
+          description: Unauthorized - missing or invalid authentication token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Authentication required"
+
+        '404':
+          description: |
+            Not Found - chip does not exist OR chip is not owned by the authenticated user.
+            Note: Identical message for both cases to prevent ownership enumeration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "NFC chip not found"
+
+        '429':
+          description: Too many requests - rate limit exceeded (20 requests per 15 minutes)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+              example:
+                error: "Too many deletion requests"
+                retryAfter: "2025-10-19T12:50:00.000Z"
+
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Failed to delete NFC chip"
+
+      x-rate-limit:
+        limit: 20
+        window: 15 minutes
+        key: user_id
+
+      x-cascade-behavior:
+        description: |
+          Deleting a chip triggers CASCADE deletion of related records:
+          - All video_nfc_mappings where nfc_chip_id = {chipId}
+
+          Database ensures atomicity via foreign key constraint:
+          FOREIGN KEY (nfc_chip_id) REFERENCES nfc_chips(id) ON DELETE CASCADE
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+      description: JWT token stored in httpOnly cookie
+    csrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+      description: CSRF token for mutation protection
+
+  schemas:
+    SuccessMessage:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Success message
+          example: "NFC chip deleted successfully"
+
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Human-readable error message
+
+    RateLimitError:
+      type: object
+      required:
+        - error
+        - retryAfter
+      properties:
+        error:
+          type: string
+          description: Error message
+        retryAfter:
+          type: string
+          format: date-time
+          description: Timestamp when rate limit resets
