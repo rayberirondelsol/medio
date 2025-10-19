@@ -21,6 +21,7 @@ export enum ErrorType {
   API_QUOTA_EXCEEDED = 'API_QUOTA_EXCEEDED',
   API_AUTH_ERROR = 'API_AUTH_ERROR',
   API_RATE_LIMIT = 'API_RATE_LIMIT',
+  SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE',
 
   // Network Errors
   TIMEOUT = 'TIMEOUT',
@@ -91,6 +92,11 @@ function detectErrorType(error: Error | null): ErrorType {
   // API rate limit
   if (message.includes('rate limit')) {
     return ErrorType.API_RATE_LIMIT;
+  }
+
+  // Service unavailable (503) - check before API key errors
+  if (message.includes('service unavailable') || message.includes('temporarily unavailable') || message.includes('503')) {
+    return ErrorType.SERVICE_UNAVAILABLE;
   }
 
   // API key errors
@@ -216,6 +222,12 @@ export function formatErrorMessage(
       message: 'Our video service has reached its daily limit.',
       actionable: 'Please try again in a few hours or tomorrow.',
       type: ErrorType.API_QUOTA_EXCEEDED
+    },
+    [ErrorType.SERVICE_UNAVAILABLE]: {
+      title: 'Service Temporarily Unavailable',
+      message: 'The video metadata service is currently unavailable. You can still add the video by filling out the form manually.',
+      actionable: 'Fill in the video details manually and try automatic fetching again later.',
+      type: ErrorType.SERVICE_UNAVAILABLE
     },
     [ErrorType.API_AUTH_ERROR]: {
       title: 'Service Configuration Error',

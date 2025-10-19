@@ -48,14 +48,42 @@ router.get('/metadata', metadataRateLimiter, authenticateToken, async (req, res)
       });
     }
 
+    // Validate API keys are configured for the requested platform
+    const platformLower = platform.toLowerCase();
+    if (platformLower === 'youtube') {
+      const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+      if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === 'your_youtube_api_key_here') {
+        return res.status(503).json({
+          success: false,
+          error: 'YouTube metadata service is temporarily unavailable. Please try again later or add the video manually.',
+          code: 'SERVICE_UNAVAILABLE',
+          details: process.env.NODE_ENV === 'development'
+            ? 'YouTube API key is not configured. Set YOUTUBE_API_KEY in environment variables.'
+            : undefined
+        });
+      }
+    } else if (platformLower === 'vimeo') {
+      const VIMEO_ACCESS_TOKEN = process.env.VIMEO_ACCESS_TOKEN;
+      if (!VIMEO_ACCESS_TOKEN || VIMEO_ACCESS_TOKEN === 'your_vimeo_access_token_here') {
+        return res.status(503).json({
+          success: false,
+          error: 'Vimeo metadata service is temporarily unavailable. Please try again later or add the video manually.',
+          code: 'SERVICE_UNAVAILABLE',
+          details: process.env.NODE_ENV === 'development'
+            ? 'Vimeo access token is not configured. Set VIMEO_ACCESS_TOKEN in environment variables.'
+            : undefined
+        });
+      }
+    }
+
     // Fetch metadata from the appropriate service
     let metadata;
 
-    if (platform.toLowerCase() === 'youtube') {
+    if (platformLower === 'youtube') {
       metadata = await youtubeService.fetchVideoMetadata(videoId);
-    } else if (platform.toLowerCase() === 'vimeo') {
+    } else if (platformLower === 'vimeo') {
       metadata = await vimeoService.fetchVideoMetadata(videoId);
-    } else if (platform.toLowerCase() === 'dailymotion') {
+    } else if (platformLower === 'dailymotion') {
       metadata = await dailymotionService.fetchVideoMetadata(videoId);
     }
 
