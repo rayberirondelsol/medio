@@ -52,7 +52,10 @@ const Videos: React.FC = () => {
     setVideosFetchError(null);
     try {
       const response = await axiosInstance.get(`${API_URL}/videos`);
-      setVideos(response.data);
+      // Backend returns {data: [...], pagination: {...}}
+      // Extract the videos array from response.data.data
+      const videosData = response.data.data || response.data || [];
+      setVideos(Array.isArray(videosData) ? videosData : []);
     } catch (error: any) {
       console.error('Error fetching videos:', error);
       setVideosFetchError(
