@@ -33,7 +33,7 @@ export type AgeRating = 'G' | 'PG' | 'PG-13' | 'R';
  */
 export interface CreateVideoRequest {
   platform_id: string; // UUID
-  video_id: string;
+  platform_video_id: string; // Video ID from the platform (e.g., "dQw4w9WgXcQ" for YouTube)
   video_url: string;
   title: string;
   description?: string;

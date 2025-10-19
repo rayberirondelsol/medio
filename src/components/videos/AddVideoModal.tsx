@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createVideo } from '../../services/videoService';
 import { getPlatforms } from '../../services/platformService';
 import { AgeRating, CreateVideoRequest, Platform } from '../../types/video';
+import { extractVideoId } from '../../utils/videoIdExtractor';
 import './AddVideoModal.css';
 
 interface AddVideoModalProps {
@@ -147,9 +148,19 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
     setError(null);
 
     try {
+      // Find the selected platform to extract video ID
+      const selectedPlatform = platforms.find(p => p.id === selectedPlatformId);
+      const platformName = selectedPlatform?.name || '';
+
+      // Extract video ID from URL
+      const videoId = extractVideoId(formData.videoUrl, platformName);
+      if (!videoId) {
+        throw new Error('Unable to extract video ID from URL. Please check the URL format.');
+      }
+
       const videoData: CreateVideoRequest = {
         platform_id: selectedPlatformId,
-        video_id: formData.videoUrl, // Use full URL as video_id for manual entry
+        platform_video_id: videoId, // Extracted video ID (e.g., "dQw4w9WgXcQ")
         video_url: formData.videoUrl,
         title: formData.title,
         description: formData.description || undefined,
