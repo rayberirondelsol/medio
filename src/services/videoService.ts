@@ -57,6 +57,9 @@ export async function fetchVideoMetadata(
         throw new Error('Video not found. Please check the URL and try again.');
       } else if (status === 429) {
         throw new Error('Too many requests. Please wait a moment and try again.');
+      } else if (status === 503) {
+        // Service unavailable - use backend's message which is more specific
+        throw new Error(message || 'Service temporarily unavailable. Please try again later or enter details manually.');
       } else if (status >= 500) {
         throw new Error('Server error while fetching metadata. Please try again later or enter details manually.');
       } else if (message) {
