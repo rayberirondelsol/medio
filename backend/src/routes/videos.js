@@ -59,7 +59,8 @@ router.post('/',
     body('platform_video_id').notEmpty().trim().escape(),
     body('video_url').optional().isURL(),
     body('duration_seconds').optional().isInt({ min: 1 }),
-    body('age_rating').optional().isIn(['G', 'PG', 'PG-13', 'R'])
+    body('age_rating').optional().isIn(['G', 'PG', 'PG-13', 'R']),
+    body('channel_name').optional().trim().escape()
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -67,7 +68,7 @@ router.post('/',
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating } = req.body;
+    const { title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating, channel_name } = req.body;
 
     try {
       // T008: Validate that platform_id exists in platforms table
@@ -109,10 +110,10 @@ router.post('/',
 
       // Insert the video
       const result = await pool.query(`
-        INSERT INTO videos (user_id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        INSERT INTO videos (user_id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating, channel_name)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *
-      `, [req.user.id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating]);
+      `, [req.user.id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating, channel_name]);
 
       res.status(201).json(result.rows[0]);
     } catch (error) {
