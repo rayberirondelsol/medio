@@ -12,9 +12,12 @@ const router = express.Router();
  *
  * Frontend should cache this response for the session duration to minimize requests.
  *
+ * Note: This endpoint is public (no auth required) because platform information
+ * is needed by the Add Video modal, which may be opened before full authentication.
+ *
  * @returns {Object} { platforms: Array<{ id: UUID, name: string, requiresAuth: boolean }> }
  */
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT

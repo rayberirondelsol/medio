@@ -102,19 +102,29 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ isOpen, onClose, onVideoA
     setIsLoadingPlatforms(true);
     try {
       const platformList = await getPlatforms();
-      setPlatforms(platformList);
 
-      // Auto-select YouTube if it's the only platform or first platform
-      if (platformList.length > 0) {
-        const youtubePlatform = platformList.find(p => p.name.toLowerCase() === 'youtube');
-        if (youtubePlatform) {
-          setSelectedPlatformId(youtubePlatform.id);
-        } else {
-          setSelectedPlatformId(platformList[0].id);
+      // Ensure platformList is an array before setting state
+      if (Array.isArray(platformList)) {
+        setPlatforms(platformList);
+
+        // Auto-select YouTube if it's the only platform or first platform
+        if (platformList.length > 0) {
+          const youtubePlatform = platformList.find(p => p.name.toLowerCase() === 'youtube');
+          if (youtubePlatform) {
+            setSelectedPlatformId(youtubePlatform.id);
+          } else {
+            setSelectedPlatformId(platformList[0].id);
+          }
         }
+      } else {
+        console.error('getPlatforms returned non-array:', platformList);
+        setError('Invalid platform data received. Please try again.');
+        setPlatforms([]); // Ensure platforms is always an array
       }
     } catch (err: any) {
+      console.error('Error loading platforms:', err);
       setError(err.message || 'Failed to load platforms');
+      setPlatforms([]); // Ensure platforms is always an array even on error
     } finally {
       setIsLoadingPlatforms(false);
     }
