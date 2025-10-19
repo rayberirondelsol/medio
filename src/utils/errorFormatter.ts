@@ -330,7 +330,7 @@ export function formatAxiosError(error: any): FormattedError {
     if (status === 503) {
       return formatErrorMessage(
         new Error(data.error || 'Service unavailable'),
-        ErrorType.API_QUOTA_EXCEEDED
+        ErrorType.SERVICE_UNAVAILABLE
       );
     }
 
