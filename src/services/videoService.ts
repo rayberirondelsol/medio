@@ -1,4 +1,4 @@
-import apiClient from '../config/api';
+import apiClient from '../utils/axiosConfig';
 import { VideoMetadata, CreateVideoRequest, CreateVideoResponse } from '../types/video';
 
 /**
