@@ -101,7 +101,7 @@ describe('detectPlatform', () => {
   });
 
   describe('Non-YouTube URLs', () => {
-    it('should return null for Vimeo URLs', () => {
+    it('should detect Vimeo URLs', () => {
       // Arrange
       const url = 'https://vimeo.com/123456789';
 
@@ -109,7 +109,7 @@ describe('detectPlatform', () => {
       const result = detectPlatform(url);
 
       // Assert
-      expect(result).toBeNull();
+      expect(result).toBe('vimeo');
     });
 
     it('should return null for generic video URLs', () => {
@@ -236,11 +236,10 @@ describe('detectPlatform', () => {
     });
   });
 
-  describe('Future Platform Support', () => {
-    // These tests are placeholders for future platform support
-    // Currently they should return null, but can be updated when platforms are added
+  describe('Multi-Platform Support', () => {
+    // Tests for currently supported platforms beyond YouTube
 
-    it('should return null for Vimeo (not yet supported)', () => {
+    it('should detect Vimeo URLs', () => {
       // Arrange
       const url = 'https://vimeo.com/123456789';
 
@@ -248,23 +247,23 @@ describe('detectPlatform', () => {
       const result = detectPlatform(url);
 
       // Assert
-      expect(result).toBeNull();
+      expect(result).toBe('vimeo');
     });
 
-    it('should return null for Twitch (not yet supported)', () => {
+    it('should detect Dailymotion URLs', () => {
       // Arrange
-      const url = 'https://www.twitch.tv/videos/123456789';
+      const url = 'https://www.dailymotion.com/video/x123456';
 
       // Act
       const result = detectPlatform(url);
 
       // Assert
-      expect(result).toBeNull();
+      expect(result).toBe('dailymotion');
     });
 
-    it('should return null for Dailymotion (not yet supported)', () => {
+    it('should return null for Twitch (not yet supported)', () => {
       // Arrange
-      const url = 'https://www.dailymotion.com/video/x123456';
+      const url = 'https://www.twitch.tv/videos/123456789';
 
       // Act
       const result = detectPlatform(url);
