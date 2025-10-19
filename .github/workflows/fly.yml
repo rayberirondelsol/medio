@@ -1,3 +1,14 @@
+# Deployment Workflow: Frontend Only (medio-react-app)
+#
+# This workflow deploys the FRONTEND React app to Fly.io.
+# Backend (medio-backend) requires MANUAL deployment: cd backend && flyctl deploy
+#
+# See: specs/003-specify-scripts-bash/DEPLOYMENT.md for full deployment guide
+#
+# Triggered by: Push to master/main branches
+# Deploys to: medio-react-app.fly.dev
+# Duration: ~5-7 minutes
+
 name: Deploy to Fly.io
 
 on:
@@ -42,3 +53,30 @@ jobs:
         run: |
           sleep 10
           curl -f https://medio-react-app.fly.dev || echo "Health check failed - site may still be starting up"
+
+      - name: Verify deployment
+        run: |
+          echo "🔍 Verifying deployment cache headers..."
+
+          # Test 1: Check index.html cache headers
+          CACHE_HEADER=$(curl -sI https://medio-react-app.fly.dev/index.html | grep -i "cache-control")
+          echo "index.html cache header: $CACHE_HEADER"
+
+          if echo "$CACHE_HEADER" | grep -qi "no-cache"; then
+            echo "✅ index.html has no-cache headers"
+          else
+            echo "❌ FAIL: index.html missing no-cache headers"
+            echo "Expected: Cache-Control: no-cache, no-store, must-revalidate"
+            exit 1
+          fi
+
+          # Test 2: Verify site loads
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://medio-react-app.fly.dev)
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Frontend returns HTTP 200"
+          else
+            echo "❌ FAIL: Frontend returned HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "✅ Deployment verification passed"

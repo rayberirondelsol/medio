@@ -87,3 +87,65 @@ This is a React TypeScript application created with Create React App. It's a sta
 - ✅ Error Resilience: Error boundaries + graceful fallbacks
 - ✅ Context-Driven Architecture: React Context API only
 - ✅ Child Safety: Age rating required, parental control integration points
+
+---
+
+### Fix Video Modal Deployment and Functionality (003-specify-scripts-bash) - 2025-10-19
+
+**Status**: ✅ Implementation Complete (Phases 1-6)
+**Spec**: `specs/003-specify-scripts-bash/spec.md`
+**Plan**: `specs/003-specify-scripts-bash/plan.md`
+**Tasks**: `specs/003-specify-scripts-bash/tasks.md`
+**Documentation**: `specs/003-specify-scripts-bash/DEPLOYMENT.md`
+
+**What it fixes**:
+- **Deployment Cache-Busting**: nginx configuration to prevent browsers from caching index.html after deployments
+- **Sentry Error Logging**: Production error tracking for ErrorBoundary crashes with React component stack
+- **Deployment Documentation**: Comprehensive guide for Fly.io dual-app deployment process
+
+**Root Cause Identified**:
+- nginx.conf line 30-34 cached ALL static files (including index.html) for 1 year with immutable headers
+- index.html had NO explicit cache-control block, inheriting aggressive caching
+- Result: Users continued seeing old JavaScript even after successful deployments
+
+**Solution Implemented**:
+- Added `location = /index.html` block BEFORE static assets block in nginx.conf
+- Cache headers: `Cache-Control: no-cache, no-store, must-revalidate`
+- Preserved security headers (X-Frame-Options, X-Content-Type-Options, etc.)
+- Static assets (JS/CSS with content hashes) continue to cache for 1 year with immutable headers
+
+**Key Files Modified**:
+- `nginx.conf`: Added index.html no-cache block (lines 29-45)
+- `src/components/common/ErrorBoundary.tsx`: Enabled Sentry.captureException for production errors
+- `.github/workflows/fly.yml`: Added deployment verification step checking cache headers
+- `.gitignore`: Added .env to prevent accidental commit of secrets
+
+**New Files Created**:
+- **Tests**: `tests/e2e/test-deployment-cache-headers.spec.js` (Playwright E2E)
+- **Tests**: `src/components/__tests__/ErrorBoundary.test.tsx` (Jest unit tests with Sentry mocking)
+- **Scripts**: `specs/003-specify-scripts-bash/contracts/deployment-verification.sh` (bash verification script)
+- **Documentation**: `specs/003-specify-scripts-bash/DEPLOYMENT.md` (comprehensive deployment guide)
+- **Contracts**: `specs/003-specify-scripts-bash/contracts/nginx-cache-headers.conf` (reference config)
+- **Contracts**: `specs/003-specify-scripts-bash/contracts/error-boundary-sentry.tsx` (reference implementation)
+
+**Deployment Architecture (Fly.io)**:
+- **medio-react-app** (Frontend): Auto-deploys via GitHub Actions on `master` branch push (~5-7 min)
+- **medio-backend** (Backend): Manual deployment via `cd backend && flyctl deploy --remote-only` (~2-3 min)
+- **Deployment Order**: Backend FIRST (if API changes), then Frontend (to avoid errors)
+- **Rollback**: Git revert (frontend) or `flyctl rollback` (backend)
+
+**Verification Steps**:
+1. Run deployment verification script: `bash specs/003-specify-scripts-bash/contracts/deployment-verification.sh`
+2. Check cache headers: `curl -I https://medio-react-app.fly.dev/index.html | grep -i cache-control`
+3. GitHub Actions deployment verification (automated in CI/CD)
+
+**Manual Tasks Pending**:
+- T010: Deploy to production and verify cache-busting works end-to-end
+- T013: Verify Sentry integration with manual error test in production
+- T017: Test coordinated deployment following DEPLOYMENT.md guide
+
+**Constitution Compliance**: ✅ All 6 principles met
+- ✅ Test-First Development (TDD): E2E and unit tests written BEFORE implementation
+- ✅ Error Resilience: ErrorBoundary with Sentry integration for production monitoring
+- ✅ Docker-First Development: nginx.conf changes tested via Docker build
+- ✅ Documentation: Comprehensive DEPLOYMENT.md with troubleshooting

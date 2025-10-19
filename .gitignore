@@ -30,3 +30,11 @@ yarn-error.log*
 .env.ionos
 deploy.tar.gz
 *.backup
+
+# Environment files (added for security)
+.env
+
+# Temporary test files and debugging artifacts (root directory only)
+/*.png
+/test-*.spec.js
+cookies.txt
