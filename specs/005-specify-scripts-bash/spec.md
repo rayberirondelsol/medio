@@ -72,6 +72,11 @@ Eltern können ihre registrierten Chips verwalten: Liste aller Chips anzeigen, D
 - Was geschieht wenn die Chip-ID ein unerwartetes Format hat?
 - Wie verhält sich die App wenn während des NFC-Scans die Netzwerkverbindung verloren geht?
 - Was passiert wenn ein Elternteil versucht mehr als die maximal erlaubte Anzahl Chips zu registrieren?
+- **NFC Permission Denied**: Was passiert wenn der Benutzer die NFC-Berechtigung verweigert?
+- **NFC Disabled**: Was geschieht wenn NFC auf dem Gerät deaktiviert ist?
+- **Rapid Double-Scan**: Wie verhält sich das System bei versehentlichem mehrfachem Scannen desselben Chips innerhalb kurzer Zeit?
+- **Invalid Tag Format**: Was passiert wenn ein gescannter Tag kein gültiges NFC-UID-Format hat?
+- **DELETE with Active Session**: Was geschieht wenn ein Chip gelöscht wird während ein Kind ihn gerade für eine aktive Kids Mode Session verwendet?
 
 ## Requirements *(mandatory)*
 
@@ -86,9 +91,9 @@ Eltern können ihre registrierten Chips verwalten: Liste aller Chips anzeigen, D
 - **FR-007**: System MUST detect NFC capability of device and show scan button only when supported
 - **FR-008**: System MUST allow parents to scan NFC chips using Web NFC API on supported devices
 - **FR-009**: System MUST auto-fill Chip-ID field when NFC chip is scanned successfully
-- **FR-010**: System MUST validate Chip-ID format (hexadecimal format with colons like "04:5A:B2:C3:D4:E5:F6", 4 to 10 bytes / 8-20 hex characters)
+- **FR-010**: System MUST validate Chip-ID format (hexadecimal format with colons like "04:5A:B2:C3:D4:E5:F6"). Validation MUST accept 8-20 hex characters AFTER removing colons, spaces, and hyphens. Backend MUST normalize to uppercase with colon separators before storage. Accepted input examples: "04:5A:B2:C3:D4:E5:F6" (with colons), "045ab2c3d4e5f6" (lowercase), "04 5A B2 C3 D4 E5 F6" (spaces), "04-5A-B2-C3-D4-E5-F6" (hyphens)
 - **FR-011**: System MUST ensure each chip_uid is globally unique across ALL parent accounts (enforced via database UNIQUE constraint on nfc_chips.chip_uid column). When a duplicate registration is attempted, return HTTP 409 with identical error message regardless of ownership.
-- **FR-012**: System MUST validate that friendly name is not empty and within reasonable length limits (1-50 characters)
+- **FR-012**: System MUST validate that friendly name is not empty and between 1-50 characters (trimmed). System MUST sanitize labels by HTML entity encoding to prevent XSS attacks. Allowed characters: alphanumeric (a-z, A-Z, 0-9), spaces, hyphens (-), apostrophes ('). Any attempt to submit empty/whitespace-only names or names exceeding 50 characters MUST return HTTP 400
 - **FR-013**: System MUST provide DELETE /api/nfc/chips/:chipId endpoint to permanently delete chips with cascading deletion of associated video mappings
 - **FR-014**: System MUST log all NFC registration errors to Sentry with contextual metadata (user_id, chip_uid, error_type, platform, timestamp)
 - **FR-015**: System MUST return identical error messages for duplicate chip registrations regardless of ownership to prevent UID enumeration attacks
@@ -130,6 +135,10 @@ Eltern können ihre registrierten Chips verwalten: Liste aller Chips anzeigen, D
 Register a new NFC chip for the authenticated parent.
 
 **Authentication**: Required (JWT token via httpOnly cookie)
+
+**CSRF Protection**: Required (X-CSRF-Token header - NFR-024)
+
+**Rate Limiting**: 10 requests per 15 minutes per user (NFR-021)
 
 **Request Body**:
 ```json
@@ -198,6 +207,8 @@ Retrieve all NFC chips registered by the authenticated parent.
 
 **Authentication**: Required (JWT token via httpOnly cookie)
 
+**Rate Limiting**: 60 requests per 15 minutes per user (NFR-023)
+
 **Query Parameters**: None
 
 **Success Response (200 OK)**:
@@ -243,6 +254,10 @@ Permanently delete an NFC chip and cascade delete all associated video mappings.
 
 **Authentication**: Required (JWT token via httpOnly cookie)
 
+**CSRF Protection**: Required (X-CSRF-Token header - NFR-024)
+
+**Rate Limiting**: 20 requests per 15 minutes per user (NFR-022)
+
 **URL Parameters**:
 - `chipId`: UUID of the chip to delete
 
@@ -272,6 +287,13 @@ Permanently delete an NFC chip and cascade delete all associated video mappings.
 **Database Behavior**:
 - Deletes chip record from `nfc_chips` table
 - CASCADE deletes all records in `video_nfc_mappings` table where `nfc_chip_id` matches deleted chip
+
+**Active Session Behavior** (Edge Case):
+When a chip is deleted while a child is using it in an active Kids Mode session:
+- **Option A (Recommended)**: Allow deletion to proceed. Active session continues until natural timeout (30-120s heartbeat failure). Child experiences session end but no immediate disruption.
+- **Option B (Stricter)**: Return HTTP 409 Conflict with message "Cannot delete chip: currently in use" if active session detected. Parent must wait for session to end.
+
+**Implementation Decision Required**: Specification leaves this choice to implementation phase based on UX testing. Document chosen approach in implementation plan.
 
 ---
 
@@ -332,7 +354,7 @@ When a chip is deleted from `nfc_chips`, all mappings referencing that chip are 
 - **NFR-006**: All chip endpoints MUST require JWT authentication (except public scan endpoints)
 - **NFR-007**: Server-side MUST normalize chip_uid before database insertion to prevent case-sensitivity bypass
 - **NFR-008**: Server-side MUST validate chip_uid format to reject malformed input (prevent injection attacks)
-- **NFR-009**: Duplicate chip registration MUST return identical error messages regardless of ownership (prevent UID enumeration)
+- **NFR-009**: Duplicate chip registration MUST return identical error messages regardless of ownership (prevent UID enumeration). Response time MUST be consistent (±50ms) whether chip is owned by current user or another user to prevent timing attacks. Consider adding random delay (0-100ms) to mask database query time differences
 - **NFR-010**: All NFC registration errors MUST be logged to Sentry with user_id, chip_uid (truncated), error_type for security monitoring
 - **NFR-011**: DELETE endpoint MUST verify chip ownership before deletion (user can only delete their own chips)
 
@@ -352,6 +374,8 @@ When a chip is deleted from `nfc_chips`, all mappings referencing that chip are 
 - **NFR-020**: Duplicate registration error MUST suggest manual override option if applicable
 - **NFR-021**: POST /api/nfc/chips endpoint MUST implement rate limiting at 10 requests per 15 minutes per user to prevent abuse
 - **NFR-022**: DELETE /api/nfc/chips/:chipId endpoint MUST implement rate limiting at 20 requests per 15 minutes per user to prevent abuse
+- **NFR-023**: GET /api/nfc/chips endpoint MUST implement rate limiting at 60 requests per 15 minutes per user to prevent enumeration attacks
+- **NFR-024**: All POST and DELETE endpoints MUST require CSRF token validation via X-CSRF-Token header to prevent cross-site request forgery attacks
 
 ---
 
@@ -478,6 +502,17 @@ When a chip is deleted from `nfc_chips`, all mappings referencing that chip are 
 7. **NFC Button Visibility**:
    - On non-NFC device (desktop, iOS): Scan button hidden
    - On NFC device (Chrome 89+ Android): Scan button visible
+
+8. **Maximum Chip Limit Enforcement** (CRITICAL for abuse prevention):
+   - User logs in as parent
+   - Registers 20 chips successfully (via API or manual registration loop)
+   - Verifies all 20 chips appear in chip list
+   - Attempts to register 21st chip with valid UID and label
+   - Verifies error message "Maximum chip limit reached (20 chips)" displayed
+   - Verifies HTTP 403 Forbidden response
+   - Verifies chip list still contains exactly 20 chips
+   - Deletes one chip
+   - Verifies registration of new chip now succeeds (back to 20 chips)
 
 ---
 
