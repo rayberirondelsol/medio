@@ -88,7 +88,11 @@ router.post('/chips',
     } catch (error) {
       if (error.code === '23505') { // Unique violation
         // FR-015: Identical error message regardless of ownership (prevents UID enumeration)
-        return res.status(409).json({ message: 'NFC chip already registered' });
+        // NFR-009: Add random delay (0-100ms) to prevent timing attacks
+        const delay = Math.floor(Math.random() * 100);
+        return setTimeout(() => {
+          res.status(409).json({ message: 'NFC chip already registered' });
+        }, delay);
       }
 
       // FR-014: Log error to Sentry with contextual metadata

@@ -290,10 +290,21 @@ Permanently delete an NFC chip and cascade delete all associated video mappings.
 
 **Active Session Behavior** (Edge Case):
 When a chip is deleted while a child is using it in an active Kids Mode session:
-- **Option A (Recommended)**: Allow deletion to proceed. Active session continues until natural timeout (30-120s heartbeat failure). Child experiences session end but no immediate disruption.
-- **Option B (Stricter)**: Return HTTP 409 Conflict with message "Cannot delete chip: currently in use" if active session detected. Parent must wait for session to end.
 
-**Implementation Decision Required**: Specification leaves this choice to implementation phase based on UX testing. Document chosen approach in implementation plan.
+**✅ IMPLEMENTED DECISION: Option A (Recommended)**
+- Deletion proceeds immediately without checking for active sessions
+- Active Kids Mode session continues until natural timeout (30-120s heartbeat failure)
+- Child experiences graceful session end but no immediate disruption
+- Simpler implementation: no need to track active sessions during deletion
+- Better UX: Parents don't need to wait for unknown session timeouts
+- Better security: Prevents information leakage about when chips are in use
+- Aligns with eventual consistency pattern (session cleanup happens naturally)
+
+**Rationale**: Option A was chosen for:
+1. **Simpler Implementation**: No need to track active sessions
+2. **Better Parent UX**: No waiting for session end
+3. **Security**: No information leakage about chip usage
+4. **Consistency**: Aligns with eventual consistency (session cleanup is natural)
 
 ---
 
