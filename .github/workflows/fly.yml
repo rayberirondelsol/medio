@@ -1,13 +1,15 @@
-# Deployment Workflow: Frontend Only (medio-react-app)
+# Deployment Workflow: Backend + Frontend (medio-backend + medio-react-app)
 #
-# This workflow deploys the FRONTEND React app to Fly.io.
-# Backend (medio-backend) requires MANUAL deployment: cd backend && flyctl deploy
+# This workflow deploys BOTH backend and frontend to Fly.io.
+# Backend deploys FIRST to ensure API endpoints are available before frontend.
 #
 # See: specs/003-specify-scripts-bash/DEPLOYMENT.md for full deployment guide
 #
 # Triggered by: Push to master/main branches
-# Deploys to: medio-react-app.fly.dev
-# Duration: ~5-7 minutes
+# Deploys to: 
+#   - Backend: medio-backend.fly.dev/api
+#   - Frontend: medio-react-app.fly.dev
+# Duration: ~7-10 minutes (backend + frontend in sequence)
 
 name: Deploy to Fly.io
 
@@ -17,10 +19,79 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
-    name: Deploy to Fly.io
+  # ============================================
+  # JOB 1: BACKEND DEPLOYMENT
+  # ============================================
+  deploy-backend:
+    name: Deploy Backend to Fly.io
     runs-on: ubuntu-latest
-    concurrency: deploy-group
+    concurrency: deploy-backend-group
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci --legacy-peer-deps
+
+      - name: Run backend tests
+        working-directory: backend
+        run: npm test -- --ci --coverage --watchAll=false
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy Backend to Fly.io
+        working-directory: backend
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Backend Health check
+        run: |
+          sleep 10
+          curl -f https://medio-backend.fly.dev/api/health || echo "Backend health check failed - site may still be starting up"
+
+      - name: Verify backend deployment
+        run: |
+          echo "🔍 Verifying backend deployment..."
+
+          # Test 1: Check /api/health endpoint
+          HEALTH_STATUS=$(curl -s https://medio-backend.fly.dev/api/health | grep -o '"status":"healthy"')
+          if [ -n "$HEALTH_STATUS" ]; then
+            echo "✅ Backend health check passed"
+          else
+            echo "❌ FAIL: Backend health check failed"
+            exit 1
+          fi
+
+          # Test 2: Check /api/platforms endpoint
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://medio-backend.fly.dev/api/platforms)
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Backend /api/platforms returns HTTP 200"
+          else
+            echo "❌ FAIL: Backend returned HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "✅ Backend deployment verification passed"
+
+  # ============================================
+  # JOB 2: FRONTEND DEPLOYMENT
+  # ============================================
+  deploy-frontend:
+    name: Deploy Frontend to Fly.io
+    runs-on: ubuntu-latest
+    needs: deploy-backend  # Wait for backend to finish first
+    concurrency: deploy-frontend-group
 
     steps:
       - name: Checkout code
@@ -44,19 +115,19 @@ jobs:
       - name: Setup flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Deploy to Fly.io
+      - name: Deploy Frontend to Fly.io
         run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: Health check
+      - name: Frontend Health check
         run: |
           sleep 10
-          curl -f https://medio-react-app.fly.dev || echo "Health check failed - site may still be starting up"
+          curl -f https://medio-react-app.fly.dev || echo "Frontend health check failed - site may still be starting up"
 
-      - name: Verify deployment
+      - name: Verify frontend deployment
         run: |
-          echo "🔍 Verifying deployment cache headers..."
+          echo "🔍 Verifying frontend deployment..."
 
           # Test 1: Check index.html cache headers
           CACHE_HEADER=$(curl -sI https://medio-react-app.fly.dev/index.html | grep -i "cache-control")
@@ -79,4 +150,4 @@ jobs:
             exit 1
           fi
 
-          echo "✅ Deployment verification passed"
+          echo "✅ Frontend deployment verification passed"
