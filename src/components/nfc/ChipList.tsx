@@ -17,8 +17,8 @@ const ChipList: React.FC = () => {
     if (!chipToDelete) return;
 
     try {
-      setDeletingChipId(chipToDelete.chip_id);
-      await deleteChip(chipToDelete.chip_id);
+      setDeletingChipId(chipToDelete.id);
+      await deleteChip(chipToDelete.id);
     } catch (error) {
       console.error('Fehler beim Löschen des Chips:', error);
     } finally {
@@ -34,18 +34,18 @@ const ChipList: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="chip-list-loading">Lade NFC-Chips...</div>;
+    return <div className="chip-list-loading" role="status" aria-live="polite">Lade NFC-Chips...</div>;
   }
 
   if (!chips || chips.length === 0) {
-    return <div className="chip-list-empty">Keine NFC-Chips registriert</div>;
+    return <div className="chip-list-empty" role="status">Keine NFC-Chips registriert</div>;
   }
 
   return (
     <div className="chip-list">
       <ul className="chip-list-items">
         {chips.map((chip) => (
-          <li key={chip.chip_id} className="chip-list-item">
+          <li key={chip.id} className="chip-list-item">
             <div className="chip-info">
               <div className="chip-label">{chip.label}</div>
               <div className="chip-uid">{chip.chip_uid}</div>
@@ -53,29 +53,32 @@ const ChipList: React.FC = () => {
             <button
               className="chip-delete-button"
               onClick={() => handleDeleteClick(chip)}
-              disabled={deletingChipId === chip.chip_id}
+              disabled={deletingChipId === chip.id}
+              aria-label={`Chip ${chip.label} löschen`}
             >
-              {deletingChipId === chip.chip_id ? 'Wird gelöscht...' : 'Löschen'}
+              {deletingChipId === chip.id ? 'Wird gelöscht...' : 'Löschen'}
             </button>
           </li>
         ))}
       </ul>
 
       {showConfirmModal && chipToDelete && (
-        <div className="modal-overlay">
+        <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
           <div className="modal-content">
-            <h3>Chip löschen</h3>
+            <h3 id="modal-title">Chip löschen</h3>
             <p>Chip '{chipToDelete.label}' wirklich löschen?</p>
             <div className="modal-actions">
               <button
                 className="modal-button modal-cancel"
                 onClick={handleCancelDelete}
+                aria-label="Löschen abbrechen"
               >
                 Abbrechen
               </button>
               <button
                 className="modal-button modal-confirm"
                 onClick={handleConfirmDelete}
+                aria-label={`Chip ${chipToDelete.label} löschen`}
               >
                 Löschen
               </button>

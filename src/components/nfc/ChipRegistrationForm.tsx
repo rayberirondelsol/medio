@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNFCChips } from '../../contexts/NFCChipContext';
 import { validateChipUID, validateLabel } from '../../utils/nfcValidation';
+import NFCScanButton from './NFCScanButton';
 
 interface FormErrors {
   chipUid: string | null;
@@ -15,6 +16,11 @@ const ChipRegistrationForm: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const { registerChip } = useNFCChips();
+
+  const handleNFCScan = (scannedChipUid: string) => {
+    setChipUid(scannedChipUid);
+    setErrors({ ...errors, chipUid: null });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,6 +66,7 @@ const ChipRegistrationForm: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="chipUid">Chip-ID</label>
+          <NFCScanButton onScan={handleNFCScan} disabled={isSubmitting} />
           <input
             id="chipUid"
             type="text"
@@ -68,9 +75,11 @@ const ChipRegistrationForm: React.FC = () => {
             placeholder="04:5A:B2:C3:D4:E5:F6"
             className={errors.chipUid ? 'error' : ''}
             disabled={isSubmitting}
+            aria-invalid={!!errors.chipUid}
+            aria-describedby={errors.chipUid ? 'chipUid-error' : undefined}
           />
           {errors.chipUid && (
-            <div className="error-message">{errors.chipUid}</div>
+            <div id="chipUid-error" className="error-message" role="alert" aria-live="polite">{errors.chipUid}</div>
           )}
         </div>
 
@@ -85,9 +94,11 @@ const ChipRegistrationForm: React.FC = () => {
             maxLength={50}
             className={errors.label ? 'error' : ''}
             disabled={isSubmitting}
+            aria-invalid={!!errors.label}
+            aria-describedby={errors.label ? 'label-error' : undefined}
           />
           {errors.label && (
-            <div className="error-message">{errors.label}</div>
+            <div id="label-error" className="error-message" role="alert" aria-live="polite">{errors.label}</div>
           )}
         </div>
 
@@ -100,7 +111,7 @@ const ChipRegistrationForm: React.FC = () => {
         </button>
 
         {successMessage && (
-          <div className="success-message">{successMessage}</div>
+          <div className="success-message" role="status" aria-live="polite">{successMessage}</div>
         )}
       </form>
     </div>
