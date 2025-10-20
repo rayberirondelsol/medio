@@ -104,7 +104,11 @@ router.post('/chips',
         }
       });
 
-      console.error('Error registering NFC chip:', error);
+      console.error('Error registering NFC chip:', {
+        code: error.code,
+        message: error.message,
+        user_id: req.user?.id
+      });
       res.status(500).json({ message: 'Failed to register NFC chip' });
     }
   }
@@ -344,7 +348,12 @@ router.delete('/chips/:chipId',
         }
       });
 
-      console.error('Error deleting NFC chip:', error);
+      console.error('Error deleting NFC chip:', {
+        code: error.code,
+        message: error.message,
+        user_id: req.user?.id,
+        chip_id: chipId
+      });
       res.status(500).json({ message: 'Failed to delete NFC chip' });
     }
   }
