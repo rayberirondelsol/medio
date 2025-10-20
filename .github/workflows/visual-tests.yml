@@ -13,6 +13,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: medio_test
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: medio_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     strategy:
       fail-fast: false
       matrix:
@@ -48,6 +63,13 @@ jobs:
         run: |
           cd backend
           cp .env.example .env
+          # Override with test database credentials
+          echo "DB_HOST=localhost" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "DB_NAME=medio_test" >> .env
+          echo "DB_USER=medio_test" >> .env
+          echo "DB_PASSWORD=test_password" >> .env
+          # DATABASE_URL is already commented out in .env.example
           npm run migrate
 
       - name: Run visual tests
