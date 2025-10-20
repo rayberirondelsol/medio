@@ -143,58 +143,234 @@ Get current authenticated user.
 #### GET `/nfc/chips`
 Get all NFC chips for authenticated user. **Requires authentication.**
 
-**Response:** `200 OK`
+**Rate Limit:** 60 requests per 15 minutes per user
+
+**Headers:**
+- `Authorization: Bearer <token>` OR `Cookie: authToken=<token>`
+
+**Response (200 OK):**
 ```json
 [
   {
-    "id": "uuid",
-    "chip_uid": "04:E1:5C:32:B9:65:80",
-    "label": "Blue Chip",
-    "created_at": "2024-01-01T00:00:00Z"
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "chip_uid": "04:5A:B2:C3:D4:E5:F6",
+    "label": "Ben's Chip",
+    "created_at": "2025-10-19T12:34:56.789Z"
+  },
+  {
+    "id": "660e8400-e29b-41d4-a716-446655440001",
+    "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "chip_uid": "04:7B:C3:D4:E5:F6:08",
+    "label": "Lisa's Chip",
+    "created_at": "2025-10-19T13:45:12.345Z"
   }
 ]
 ```
 
+**Error Response (401 Unauthorized):**
+```json
+{
+  "message": "Authentication required"
+}
+```
+
+**Error Response (429 Too Many Requests):**
+```json
+{
+  "error": "Too many requests",
+  "retryAfter": "2025-10-19T12:50:00.000Z"
+}
+```
+
+**Error Response (500 Internal Server Error):**
+```json
+{
+  "message": "Failed to fetch NFC chips"
+}
+```
+
+---
+
 #### POST `/nfc/chips`
-Register a new NFC chip. **Requires authentication.**
+Register a new NFC chip. **Requires authentication and CSRF token.**
+
+**Rate Limit:** 10 requests per 15 minutes per user
+**Chip Limit:** Maximum 20 chips per parent account
+
+**Headers:**
+- `Authorization: Bearer <token>` OR `Cookie: authToken=<token>`
+- `X-CSRF-Token: <csrf-token>` (Required)
+- `Content-Type: application/json`
 
 **Request Body:**
 ```json
 {
-  "chip_uid": "04:E1:5C:32:B9:65:80",
-  "label": "Blue Chip"
+  "chip_uid": "04:5A:B2:C3:D4:E5:F6",
+  "label": "Ben's Chip"
 }
 ```
+
+**Field Validation:**
+- `chip_uid`:
+  - Must be hexadecimal (with or without colons/spaces/hyphens)
+  - Length: 4-10 bytes (8-20 hex characters after normalization)
+  - Backend normalizes to uppercase with colons (e.g., "04:5A:B2:C3:D4:E5:F6")
+  - Examples: "045AB2C3D4E5F6", "04:5A:B2:C3:D4:E5:F6", "04 5A B2 C3 D4 E5 F6"
+- `label`:
+  - Length: 1-50 characters
+  - Allowed: letters, numbers, spaces, hyphens, apostrophes
+  - Pattern: `^[a-zA-Z0-9\s\-']+$`
 
 **Response (201 Created):**
 ```json
 {
-  "id": 1,
-  "chip_uid": "04:E1:5C:32:B9:65:80",
-  "label": "Blue Chip",
-  "user_id": 1,
-  "created_at": "2024-01-14T12:00:00Z"
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "user_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+  "chip_uid": "04:5A:B2:C3:D4:E5:F6",
+  "label": "Ben's Chip",
+  "created_at": "2025-10-19T12:34:56.789Z"
 }
 ```
 
-**Error Response (400 Bad Request):**
+**Error Response (400 Bad Request - Invalid UID):**
 ```json
 {
   "errors": [
     {
-      "msg": "Invalid NFC UID format",
-      "path": "chip_uid"
+      "msg": "NFC UID must be between 4-10 bytes (8-20 hex characters)",
+      "param": "chip_uid",
+      "location": "body"
     }
   ]
 }
 ```
 
-**Error Response (409 Conflict):**
+**Error Response (400 Bad Request - Invalid Label):**
+```json
+{
+  "errors": [
+    {
+      "msg": "Label can only contain letters, numbers, spaces, hyphens, and apostrophes",
+      "param": "label",
+      "location": "body"
+    }
+  ]
+}
+```
+
+**Error Response (401 Unauthorized):**
+```json
+{
+  "message": "Authentication required"
+}
+```
+
+**Error Response (403 Forbidden - Chip Limit Reached):**
+```json
+{
+  "message": "Maximum chip limit reached (20 chips)"
+}
+```
+
+**Error Response (403 Forbidden - Invalid CSRF Token):**
+```json
+{
+  "message": "Invalid CSRF token"
+}
+```
+
+**Error Response (409 Conflict - Duplicate UID):**
 ```json
 {
   "message": "NFC chip already registered"
 }
 ```
+Note: Identical message returned whether chip is owned by current user or another user (prevents UID enumeration attack).
+
+**Error Response (429 Too Many Requests):**
+```json
+{
+  "error": "Too many chip registration attempts",
+  "retryAfter": "2025-10-19T12:50:00.000Z"
+}
+```
+
+**Error Response (500 Internal Server Error):**
+```json
+{
+  "message": "Failed to register NFC chip"
+}
+```
+
+---
+
+#### DELETE `/nfc/chips/:chipId`
+Delete NFC chip and cascade delete associated video mappings. **Requires authentication and CSRF token.**
+
+**Rate Limit:** 20 requests per 15 minutes per user
+
+**Headers:**
+- `Authorization: Bearer <token>` OR `Cookie: authToken=<token>`
+- `X-CSRF-Token: <csrf-token>` (Required)
+
+**URL Parameters:**
+- `chipId` (UUID): ID of the chip to delete
+
+**Response (200 OK):**
+```json
+{
+  "message": "NFC chip deleted successfully"
+}
+```
+
+**Error Response (401 Unauthorized):**
+```json
+{
+  "message": "Authentication required"
+}
+```
+
+**Error Response (403 Forbidden - Invalid CSRF Token):**
+```json
+{
+  "message": "Invalid CSRF token"
+}
+```
+
+**Error Response (404 Not Found):**
+```json
+{
+  "message": "NFC chip not found"
+}
+```
+Note: Identical message for "chip doesn't exist" and "chip not owned by user" (prevents ownership enumeration).
+
+**Error Response (429 Too Many Requests):**
+```json
+{
+  "error": "Too many deletion requests",
+  "retryAfter": "2025-10-19T12:50:00.000Z"
+}
+```
+
+**Error Response (500 Internal Server Error):**
+```json
+{
+  "message": "Failed to delete NFC chip"
+}
+```
+
+**Cascade Deletion Behavior:**
+Deleting a chip triggers CASCADE deletion of:
+- All `video_nfc_mappings` where `nfc_chip_id = chipId`
+
+Database ensures atomicity via foreign key constraint:
+```sql
+FOREIGN KEY (nfc_chip_id) REFERENCES nfc_chips(id) ON DELETE CASCADE
+```
+
+---
 
 #### POST `/nfc/scan/public`
 Scan NFC chip (public endpoint for kids mode). **No authentication required.**

@@ -2,11 +2,19 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const pool = require('../db/pool');
 const { authenticateToken } = require('../middleware/auth');
+const { validateChipLimit } = require('../middleware/chipLimitValidator');
+const {
+  nfcChipRegistrationLimiter,
+  nfcChipDeletionLimiter,
+  nfcChipListingLimiter
+} = require('../middleware/rateLimiter');
+const Sentry = require('@sentry/node');
 
 const router = express.Router();
 
 // Get all NFC chips for a user
-router.get('/chips', authenticateToken, async (req, res) => {
+// NFR-023: Rate limited to 60 requests per 15 minutes per user
+router.get('/chips', authenticateToken, nfcChipListingLimiter, async (req, res) => {
   try {
     const result = await pool.query(
       'SELECT * FROM nfc_chips WHERE user_id = $1 ORDER BY created_at DESC',
@@ -46,11 +54,19 @@ const normalizeNFCUID = (uid) => {
 };
 
 // Register a new NFC chip
+// NFR-021: Rate limited to 10 requests per 15 minutes per user
+// FR-016/FR-017: Enforce 20 chip limit per user
 router.post('/chips',
   authenticateToken,
+  nfcChipRegistrationLimiter,
+  validateChipLimit,
   [
     body('chip_uid').notEmpty().trim().escape().custom(validateNFCUID),
     body('label').notEmpty().trim().escape()
+      .isLength({ min: 1, max: 50 })
+      .withMessage('Label must be 1-50 characters')
+      .matches(/^[a-zA-Z0-9\s\-']+$/)
+      .withMessage('Label can only contain letters, numbers, spaces, hyphens, and apostrophes')
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -71,9 +87,32 @@ router.post('/chips',
       res.status(201).json(result.rows[0]);
     } catch (error) {
       if (error.code === '23505') { // Unique violation
-        return res.status(409).json({ message: 'NFC chip already registered' });
+        // FR-015: Identical error message regardless of ownership (prevents UID enumeration)
+        // NFR-009: Add random delay (0-100ms) to prevent timing attacks
+        const delay = Math.floor(Math.random() * 100);
+        return setTimeout(() => {
+          res.status(409).json({ message: 'NFC chip already registered' });
+        }, delay);
       }
-      console.error('Error registering NFC chip:', error);
+
+      // FR-014: Log error to Sentry with contextual metadata
+      Sentry.captureException(error, {
+        tags: {
+          feature: 'nfc-chip-registration',
+          endpoint: 'POST /api/nfc/chips'
+        },
+        extra: {
+          user_id: req.user?.id,
+          chip_uid_prefix: normalizedUID?.substring(0, 8), // Only log first 8 chars
+          label_length: label?.length
+        }
+      });
+
+      console.error('Error registering NFC chip:', {
+        code: error.code,
+        message: error.message,
+        user_id: req.user?.id
+      });
       res.status(500).json({ message: 'Failed to register NFC chip' });
     }
   }
@@ -276,5 +315,52 @@ router.delete('/map/:mappingId', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Failed to remove NFC mapping' });
   }
 });
+
+// Delete NFC chip
+// NFR-022: Rate limited to 20 requests per 15 minutes per user
+// T007: Implements DELETE /api/nfc/chips/:chipId endpoint with ownership verification
+router.delete('/chips/:chipId',
+  authenticateToken,
+  nfcChipDeletionLimiter,
+  async (req, res) => {
+    const { chipId } = req.params;
+
+    try {
+      // Delete chip with ownership verification
+      // CASCADE deletion will automatically remove associated video_nfc_mappings
+      const result = await pool.query(
+        'DELETE FROM nfc_chips WHERE id = $1 AND user_id = $2 RETURNING id',
+        [chipId, req.user.id]
+      );
+
+      if (result.rows.length === 0) {
+        // NFR-009: Identical error message for "not found" and "not owned" (prevents ownership enumeration)
+        return res.status(404).json({ message: 'NFC chip not found' });
+      }
+
+      res.json({ message: 'NFC chip deleted successfully' });
+    } catch (error) {
+      // FR-014: Log deletion errors to Sentry
+      Sentry.captureException(error, {
+        tags: {
+          feature: 'nfc-chip-deletion',
+          endpoint: 'DELETE /api/nfc/chips/:chipId'
+        },
+        extra: {
+          user_id: req.user?.id,
+          chip_id: chipId
+        }
+      });
+
+      console.error('Error deleting NFC chip:', {
+        code: error.code,
+        message: error.message,
+        user_id: req.user?.id,
+        chip_id: chipId
+      });
+      res.status(500).json({ message: 'Failed to delete NFC chip' });
+    }
+  }
+);
 
 module.exports = router;
