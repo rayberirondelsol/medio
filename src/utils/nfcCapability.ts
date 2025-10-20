@@ -7,7 +7,7 @@
 /**
  * Type guard for NDEFReader availability
  */
-export function hasNDEFReader(window: Window): window is Window & { NDEFReader: typeof NDEFReader } {
+export function hasNDEFReader(window: Window): window is Window & { NDEFReader: any } {
   return 'NDEFReader' in window;
 }
 

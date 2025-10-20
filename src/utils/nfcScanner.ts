@@ -42,18 +42,10 @@ interface NDEFReadingEvent extends Event {
   message: NDEFMessage;
 }
 
-interface NDEFReader {
+interface NDEFReaderInterface {
   onreading: ((event: NDEFReadingEvent) => void) | null;
   onreadingerror: ((event: Event) => void) | null;
   scan: (options?: { signal?: AbortSignal }) => Promise<void>;
-}
-
-declare global {
-  interface Window {
-    NDEFReader?: {
-      new (): NDEFReader;
-    };
-  }
 }
 
 /**
@@ -139,7 +131,7 @@ export async function scanNFCChip(): Promise<string> {
 
   try {
     // Create NDEFReader instance
-    const NDEFReaderClass = window.NDEFReader;
+    const NDEFReaderClass = (window as any).NDEFReader;
     if (!NDEFReaderClass) {
       throw new NFCError(
         'NDEFReader nicht verfügbar.',
@@ -147,7 +139,7 @@ export async function scanNFCChip(): Promise<string> {
       );
     }
 
-    const reader = new NDEFReaderClass();
+    const reader = new NDEFReaderClass() as NDEFReaderInterface;
 
     // Create promise that resolves when chip is scanned
     const scanPromise = new Promise<string>((resolve, reject) => {
