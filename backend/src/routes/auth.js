@@ -17,8 +17,8 @@ const setAuthCookie = (res, token) => {
     secure: isProduction, // HTTPS only in production
     sameSite: isProduction ? 'none' : 'lax', // 'none' requires Secure; 'lax' is safer for development
     maxAge: 15 * 60 * 1000, // 15 minutes (access token)
-    path: '/',
-    domain: isProduction ? process.env.COOKIE_DOMAIN : undefined
+    path: '/'
+    // domain option removed for cross-origin security - cookies only valid for backend domain
   });
 };
 
@@ -31,8 +31,8 @@ const setRefreshCookie = (res, token) => {
     secure: isProduction, // HTTPS only in production
     sameSite: isProduction ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    path: '/',
-    domain: isProduction ? process.env.COOKIE_DOMAIN : undefined
+    path: '/'
+    // domain option removed for cross-origin security - cookies only valid for backend domain
   });
 };
 
