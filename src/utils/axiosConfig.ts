@@ -23,10 +23,8 @@ const fetchCsrfToken = async (): Promise<string | null> => {
     return csrfRequest;
   }
 
-  const apiUrl = resolveApiBaseUrl();
-  if (!apiUrl) {
-    return null;
-  }
+  // Use empty string for proxy mode (relative URLs)
+  const apiUrl = resolveApiBaseUrl() ?? '';
 
   csrfRequest = axios
     .get(`${apiUrl}/csrf-token`, { withCredentials: true })
@@ -47,7 +45,7 @@ const fetchCsrfToken = async (): Promise<string | null> => {
 };
 
 const axiosInstance = axios.create({
-  baseURL: resolveApiBaseUrl(),
+  baseURL: resolveApiBaseUrl() ?? '',  // Use empty string for proxy mode (relative URLs)
   withCredentials: true,
   timeout: 30000,
 });
@@ -106,11 +104,10 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const apiUrl = resolveApiBaseUrl();
-        if (apiUrl) {
-          await axios.post(`${apiUrl}/auth/refresh`, {}, { withCredentials: true });
-          return axiosInstance(originalRequest);
-        }
+        // Use empty string for proxy mode (relative URLs)
+        const apiUrl = resolveApiBaseUrl() ?? '';
+        await axios.post(`${apiUrl}/auth/refresh`, {}, { withCredentials: true });
+        return axiosInstance(originalRequest);
       } catch (refreshError) {
         window.location.href = '/login';
         return Promise.reject(refreshError);
