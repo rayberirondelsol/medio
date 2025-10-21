@@ -84,6 +84,11 @@ const csrfExcludePaths = [
 
 1. `8b77d22` - "fix: prevent /auth/me from triggering unnecessary refresh attempts"
 2. `8a7e9ab` - "fix: exclude /auth/refresh from CSRF protection"
+3. `340ced8` - "fix: Videos page loading and API response format issues"
+   - Videos.tsx using axiosInstance instead of plain axios
+   - Enhanced error handling with "Try Again" button
+   - Platforms API returns array directly (not wrapped object)
+   - Added SESSION_PROGRESS.md, E2E test suite, create-test-user.js
 
 ---
 
