@@ -46,7 +46,17 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "plugins": ["unused-imports"],
+    "rules": {
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": [
+        "warn",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ]
+    }
   },
   "jest": {
     "transformIgnorePatterns": [
@@ -67,7 +77,9 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
-    "dotenv": "^17.2.2"
+    "dotenv": "^17.2.2",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-unused-imports": "^4.3.0"
   },
   "overrides": {
     "framer-motion": {
