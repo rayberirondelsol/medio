@@ -138,13 +138,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-// CSRF protection setup
-// Note: secure MUST be true when sameSite is 'none' (required by modern browsers)
+// CSRF protection setup with cross-domain support
+// For production cross-domain requests (frontend.fly.dev -> backend.fly.dev),
+// we use header-based CSRF validation instead of cookie domain matching
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
     secure: true, // Required for sameSite: 'none'
     sameSite: 'none'
+  },
+  value: (req) => {
+    // Priority: header > body parameter
+    // This allows cross-domain requests to send CSRF token via X-CSRF-Token header
+    return req.headers['x-csrf-token'] || req.body._csrf || req.query._csrf;
   }
 });
 
