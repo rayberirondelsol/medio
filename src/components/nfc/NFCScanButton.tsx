@@ -3,7 +3,7 @@
  * Provides NFC scanning functionality with visual feedback and error handling
  */
 
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { isNFCSupported } from '../../utils/nfcCapability';
 import { scanNFCChip, getNFCErrorMessage } from '../../utils/nfcScanner';
 import './NFCScanButton.css';

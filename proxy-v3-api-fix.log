@@ -1,0 +1,615 @@
+[dotenv@17.2.2] injecting env (1) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+[PROXY] Starting frontend server on port 8080
+[PROXY] Backend URL: http://localhost:5000
+[PROXY] __dirname: C:\Users\benja\projects\medio
+[PROXY] Build path: C:\Users\benja\projects\medio\build
+✓ Frontend server running on http://0.0.0.0:8080
+✓ Proxying /api/* requests to http://localhost:5000
+✓ Serving React app from /build directory
+✓ Health check available at http://localhost:8080/health
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+(node:17912) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: testCookie=testValue123
+[PROXY REQ] ✓ Forwarding cookies to backend: testCookie=testValue123
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=Za4vnX1tgkyWxvuZcEpWlIUS; Path=/; HttpOnly; Secure; SameSite=None
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=1ZpVLKsheaaRU_vSXTwQ2K6z; Path=/; HttpOnly; Secure; SameSite=None
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=1ZpVLKsheaaRU_vSXTwQ2K6z
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=1ZpVLKsheaaRU_vSXTwQ2K6z
+[PROXY REQ] CSRF Token: yXtIu69a-tFBIHVhcm15BVfvzoFSou9Ff3vo
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQzNWM0NzVlLTI4MTMtNGQxZS1hMWU0LTI0ZmIzNTRiMGZkMiIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ0NTA1NTAwLWVnaWlqc0BleGFtcGxlLmNvbSIsImp0aSI6IjExMzllNTViYWVlZmQyZDZjMmU4ZTVjMWI0NmE1ZDJkIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NDUwNiwiZXhwIjoxNzYxMDQ1NDA2LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.cYb7HsMcDcS7cMJGLstB1BNdmVGYQ9s2LSUc-eNEd-w; Max-Age=900; Domain=localhost; Path=/; Expires=Tue, 21 Oct 2025 11:16:46 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQzNWM0NzVlLTI4MTMtNGQxZS1hMWU0LTI0ZmIzNTRiMGZkMiIsImp0aSI6IjFlMmRlMTUwNjk3ZmNiZTdkODAyN2U3MWJkZjMwODlkIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDQ1MDYsImV4cCI6MTc2MTY0OTMwNiwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.NyIfCIzznSwk7piCgmW6Vavd_fCh0ZiggjiMwYRuwag; Max-Age=604800; Domain=localhost; Path=/; Expires=Tue, 28 Oct 2025 11:01:46 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=AiI4mMsIWHjVNCA0sWoobtNb; Path=/; HttpOnly; Secure; SameSite=None
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=AiI4mMsIWHjVNCA0sWoobtNb
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=AiI4mMsIWHjVNCA0sWoobtNb
+[PROXY REQ] CSRF Token: 7hM6yu1r-Lwl9qBf0SXtjDOFZiM6Cjh531S8
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJlMTFmLTZkYmUtNDFhNi1iNTMzLTA3NzU1MWJlOWMxZSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ0NTA3MDg4LWE3Nno3NUBleGFtcGxlLmNvbSIsImp0aSI6IjM3OGYyY2UxYzk0NTU1YzhiNGU2ZDQxOGRkY2RkMDBhIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NDUwOCwiZXhwIjoxNzYxMDQ1NDA4LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.YNHNxU5udhIVPN17HifxB1m3ZWUbqajVZQA_sbl041Q; Max-Age=900; Domain=localhost; Path=/; Expires=Tue, 21 Oct 2025 11:16:48 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJlMTFmLTZkYmUtNDFhNi1iNTMzLTA3NzU1MWJlOWMxZSIsImp0aSI6IjgzMTk1M2EzOWMzYWMxNzI2YjE4YzRiYWY4Y2M3ZWQwIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDQ1MDgsImV4cCI6MTc2MTY0OTMwOCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.BU3ObWgWoy8ICP3Rb-rdjCJNQUC5k2jXHLVauLDYqe8; Max-Age=604800; Domain=localhost; Path=/; Expires=Tue, 28 Oct 2025 11:01:48 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=AiI4mMsIWHjVNCA0sWoobtNb; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJlMTFmLTZkYmUtNDFhNi1iNTMzLTA3NzU1MWJlOWMxZSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ0NTA3MDg4LWE3Nno3NUBleGFtcGxlLmNvbSIsImp0aSI6IjM3OGYyY2UxYzk0NTU1YzhiNGU2ZDQxOGRkY2RkMDBhIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NDUwOCwiZXhwIjoxNzYxMDQ1NDA4LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.YNHNxU5udhIVPN17HifxB1m3ZWUbqajVZQA_sbl041Q; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJlMTFmLTZkYmUtNDFhNi1iNTMzLTA3NzU1MWJlOWMxZSIsImp0aSI6IjgzMTk1M2EzOWMzYWMxNzI2YjE4YzRiYWY4Y2M3ZWQwIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDQ1MDgsImV4cCI6MTc2MTY0OTMwOCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.BU3ObWgWoy8ICP3Rb-rdjCJNQUC5k2jXHLVauLDYqe8
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=AiI4mMsIWHjVNCA0sWoobtNb; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJlMTFmLTZkYmUtNDFhNi1iNTMzLTA3NzU1MWJlOWMxZSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ0NTA3MDg4LWE3Nno3NUBleGFtcGxlLmNvbSIsImp0aSI6IjM3OGYyY2UxYzk0NTU1YzhiNGU2ZDQxOGRkY2RkMDBhIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NDUwOCwiZXhwIjoxNzYxMDQ1NDA4LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.YNHNxU5udhIVPN17HifxB1m3ZWUbqajVZQA_sbl041Q; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJlMTFmLTZkYmUtNDFhNi1iNTMzLTA3NzU1MWJlOWMxZSIsImp0aSI6IjgzMTk1M2EzOWMzYWMxNzI2YjE4YzRiYWY4Y2M3ZWQwIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDQ1MDgsImV4cCI6MTc2MTY0OTMwOCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.BU3ObWgWoy8ICP3Rb-rdjCJNQUC5k2jXHLVauLDYqe8
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 429
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] POST /api/auth/register <- 429
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 429
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 429
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] POST /api/auth/register <- 429
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 429
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 429
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] POST /api/auth/register <- 429
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 429
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 429
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] POST /api/auth/register <- 429
+[MIDDLEWARE] /api middleware triggered for HEAD /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] HEAD /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] HEAD /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=zLN4VDNbPrpByhmQ2SwyB-Ai; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=4pV-6GYWnaxUdshG4Cyctxd8; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=4pV-6GYWnaxUdshG4Cyctxd8
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=4pV-6GYWnaxUdshG4Cyctxd8
+[PROXY REQ] CSRF Token: zSpejmYN-CvwZ2Pi6y9oDc2Q1LVDg1LjcN0g
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyM2MyNzc5LTBlOWEtNDRiYi1hODNkLWNjZjAzMDk0MmNhOCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDMyNjE5LTl5cG5pOUBleGFtcGxlLmNvbSIsImp0aSI6IjlhNjFlMGEyMmQ2ZDU3MjA2NjU2N2I1ZDA5YzI0ZGY5IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTAzMywiZXhwIjoxNzYxMDQ1OTMzLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.sK7E9etul0UCnOXDUEt5DwUimMTBOX3JSoFxsoD-MLw; Max-Age=900; Domain=localhost; Path=/; Expires=Tue, 21 Oct 2025 11:25:33 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyM2MyNzc5LTBlOWEtNDRiYi1hODNkLWNjZjAzMDk0MmNhOCIsImp0aSI6IjJmNzMwY2M5MTZhYjQ1NGY5MWY5YjY0OGRlNGMxMTk3IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwMzMsImV4cCI6MTc2MTY0OTgzMywiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.6WGZHhQen7xKPdidjxx2OG4lz-1Wu4d2RpTIYqfwB-w; Max-Age=604800; Domain=localhost; Path=/; Expires=Tue, 28 Oct 2025 11:10:33 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=DnIiWGCDGjO5o6wm4u6CXQeM; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=DnIiWGCDGjO5o6wm4u6CXQeM
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=DnIiWGCDGjO5o6wm4u6CXQeM
+[PROXY REQ] CSRF Token: JAu9MbSP-FOaMAqcw89FbsosmlSzTxdE6DZs
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk3YTBlODBlLTAxMmItNGM2Ni05YjcyLTdlMWIzZmM1ZTY0MSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDM0MTY1LWk3cGF2NEBleGFtcGxlLmNvbSIsImp0aSI6IjNkNGNjOWE0MDNjYWJhZTRjOWU2ZDgzZjk2MDA4NDgzIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTAzNSwiZXhwIjoxNzYxMDQ1OTM1LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.4OV0HLI7m5Ip9xyrcu5xt_7Sgs7NVyC8VYm8rYDWj94; Max-Age=900; Domain=localhost; Path=/; Expires=Tue, 21 Oct 2025 11:25:35 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk3YTBlODBlLTAxMmItNGM2Ni05YjcyLTdlMWIzZmM1ZTY0MSIsImp0aSI6IjJjNDI5YTE4YzYyMmYwYmFiYjRhMWY5NTkxZTFkZTQ0IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwMzUsImV4cCI6MTc2MTY0OTgzNSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.5y6kqB5YtPekoMJD71mLMirlTkj0rLdggv5ZdP3o3jU; Max-Age=604800; Domain=localhost; Path=/; Expires=Tue, 28 Oct 2025 11:10:35 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=DnIiWGCDGjO5o6wm4u6CXQeM; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk3YTBlODBlLTAxMmItNGM2Ni05YjcyLTdlMWIzZmM1ZTY0MSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDM0MTY1LWk3cGF2NEBleGFtcGxlLmNvbSIsImp0aSI6IjNkNGNjOWE0MDNjYWJhZTRjOWU2ZDgzZjk2MDA4NDgzIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTAzNSwiZXhwIjoxNzYxMDQ1OTM1LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.4OV0HLI7m5Ip9xyrcu5xt_7Sgs7NVyC8VYm8rYDWj94; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk3YTBlODBlLTAxMmItNGM2Ni05YjcyLTdlMWIzZmM1ZTY0MSIsImp0aSI6IjJjNDI5YTE4YzYyMmYwYmFiYjRhMWY5NTkxZTFkZTQ0IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwMzUsImV4cCI6MTc2MTY0OTgzNSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.5y6kqB5YtPekoMJD71mLMirlTkj0rLdggv5ZdP3o3jU
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=DnIiWGCDGjO5o6wm4u6CXQeM; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk3YTBlODBlLTAxMmItNGM2Ni05YjcyLTdlMWIzZmM1ZTY0MSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDM0MTY1LWk3cGF2NEBleGFtcGxlLmNvbSIsImp0aSI6IjNkNGNjOWE0MDNjYWJhZTRjOWU2ZDgzZjk2MDA4NDgzIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTAzNSwiZXhwIjoxNzYxMDQ1OTM1LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.4OV0HLI7m5Ip9xyrcu5xt_7Sgs7NVyC8VYm8rYDWj94; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk3YTBlODBlLTAxMmItNGM2Ni05YjcyLTdlMWIzZmM1ZTY0MSIsImp0aSI6IjJjNDI5YTE4YzYyMmYwYmFiYjRhMWY5NTkxZTFkZTQ0IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwMzUsImV4cCI6MTc2MTY0OTgzNSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.5y6kqB5YtPekoMJD71mLMirlTkj0rLdggv5ZdP3o3jU
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=8wmCV3zDAIClexr4DdAPIdVX; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=8wmCV3zDAIClexr4DdAPIdVX
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=8wmCV3zDAIClexr4DdAPIdVX
+[PROXY REQ] CSRF Token: 6Jetc71b-Lye65w2bTMyFezUd6LpSWb5wUdI
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE0YWNmYjk1LWJjMjgtNGJiMS04YzRjLTE5Y2I3NTVhNTBiYSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDM3MDEzLWJrY2poakBleGFtcGxlLmNvbSIsImp0aSI6IjcxM2Q2MmJjN2E1OTJmYWU0NWY3ZGM1ZjMzMTRkNzVmIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTAzNywiZXhwIjoxNzYxMDQ1OTM3LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.K8iw5qymRYXS798__9qylN6IZofZQd_NwbmDrp0igxk; Max-Age=900; Domain=localhost; Path=/; Expires=Tue, 21 Oct 2025 11:25:37 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE0YWNmYjk1LWJjMjgtNGJiMS04YzRjLTE5Y2I3NTVhNTBiYSIsImp0aSI6ImUyZTUyMDJiM2ExYTY3ZmExNzFmNzU4OTY2MGM1N2QxIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwMzcsImV4cCI6MTc2MTY0OTgzNywiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.01CjP_31_wRhYoorbiaXDYYJ44xWPbjRG2kJSB-AXFw; Max-Age=604800; Domain=localhost; Path=/; Expires=Tue, 28 Oct 2025 11:10:37 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=8wmCV3zDAIClexr4DdAPIdVX; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE0YWNmYjk1LWJjMjgtNGJiMS04YzRjLTE5Y2I3NTVhNTBiYSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDM3MDEzLWJrY2poakBleGFtcGxlLmNvbSIsImp0aSI6IjcxM2Q2MmJjN2E1OTJmYWU0NWY3ZGM1ZjMzMTRkNzVmIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTAzNywiZXhwIjoxNzYxMDQ1OTM3LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.K8iw5qymRYXS798__9qylN6IZofZQd_NwbmDrp0igxk; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE0YWNmYjk1LWJjMjgtNGJiMS04YzRjLTE5Y2I3NTVhNTBiYSIsImp0aSI6ImUyZTUyMDJiM2ExYTY3ZmExNzFmNzU4OTY2MGM1N2QxIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwMzcsImV4cCI6MTc2MTY0OTgzNywiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.01CjP_31_wRhYoorbiaXDYYJ44xWPbjRG2kJSB-AXFw
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=8wmCV3zDAIClexr4DdAPIdVX; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE0YWNmYjk1LWJjMjgtNGJiMS04YzRjLTE5Y2I3NTVhNTBiYSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDM3MDEzLWJrY2poakBleGFtcGxlLmNvbSIsImp0aSI6IjcxM2Q2MmJjN2E1OTJmYWU0NWY3ZGM1ZjMzMTRkNzVmIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTAzNywiZXhwIjoxNzYxMDQ1OTM3LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.K8iw5qymRYXS798__9qylN6IZofZQd_NwbmDrp0igxk; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE0YWNmYjk1LWJjMjgtNGJiMS04YzRjLTE5Y2I3NTVhNTBiYSIsImp0aSI6ImUyZTUyMDJiM2ExYTY3ZmExNzFmNzU4OTY2MGM1N2QxIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwMzcsImV4cCI6MTc2MTY0OTgzNywiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.01CjP_31_wRhYoorbiaXDYYJ44xWPbjRG2kJSB-AXFw
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=lXvWE2tXsGxGSyy1RgI_hWyf; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=lXvWE2tXsGxGSyy1RgI_hWyf
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=lXvWE2tXsGxGSyy1RgI_hWyf
+[PROXY REQ] CSRF Token: 3lFCcK3d-LQVwCgPFtyfJsrAD0vAUfDHywN8
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRkM2RkMDhhLTFhNDMtNGQ1Zi05ZDU4LWM4YmQwYjlmZTgwZSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDUwMDkxLW9iNzhqbkBleGFtcGxlLmNvbSIsImp0aSI6IjQyNTRkZTc0MDQ3MjFjODY5MjNkNmEyZTQzZmQ3YWRmIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTA1MSwiZXhwIjoxNzYxMDQ1OTUxLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.SCnCWrH9dH7EWRsFQGSFVTPpLEbAgugb2sgm3MFCepg; Max-Age=900; Domain=localhost; Path=/; Expires=Tue, 21 Oct 2025 11:25:51 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRkM2RkMDhhLTFhNDMtNGQ1Zi05ZDU4LWM4YmQwYjlmZTgwZSIsImp0aSI6IjZiOTM4Mjc2MTAwMDZkY2E2MDBlYzEzMWFhYjJhMGZmIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwNTEsImV4cCI6MTc2MTY0OTg1MSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.0eYA4dYrKj4GWEPI2ii73cVJpvevax6YCgoTNCwE_cY; Max-Age=604800; Domain=localhost; Path=/; Expires=Tue, 28 Oct 2025 11:10:51 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=oduWxHf_R8gTBpqPX9jXsccx; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=oduWxHf_R8gTBpqPX9jXsccx
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=oduWxHf_R8gTBpqPX9jXsccx
+[PROXY REQ] CSRF Token: TfOhTBBV-ZXsCuwg0qicz95uJjpXZdibFoWQ
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhiMTY5Nzg2LTU1NjYtNDM5NC1hMjI4LTFiMjA5Nzk0OWZkMSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDU0MzQwLXQ1OHE5bEBleGFtcGxlLmNvbSIsImp0aSI6IjAxZWE4YTlkYjRhYTEzZDYyM2Y4NmY5MDhmZDEwZjdjIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTA1NSwiZXhwIjoxNzYxMDQ1OTU1LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.QCw3Lz77OS_2xZCVjGWcMlaI2RORoHKChyyTfJb6Gsc; Max-Age=900; Domain=localhost; Path=/; Expires=Tue, 21 Oct 2025 11:25:55 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhiMTY5Nzg2LTU1NjYtNDM5NC1hMjI4LTFiMjA5Nzk0OWZkMSIsImp0aSI6IjRhYzBlMjRhZWQ5NGFkZDIzYTJkYjU1YTFhMmE3NWVkIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwNTUsImV4cCI6MTc2MTY0OTg1NSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.sFs_HneV3CZRw0e_wzo08Ngbau1-tgFjq0pLTsoLlNE; Max-Age=604800; Domain=localhost; Path=/; Expires=Tue, 28 Oct 2025 11:10:55 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=oduWxHf_R8gTBpqPX9jXsccx; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhiMTY5Nzg2LTU1NjYtNDM5NC1hMjI4LTFiMjA5Nzk0OWZkMSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDU0MzQwLXQ1OHE5bEBleGFtcGxlLmNvbSIsImp0aSI6IjAxZWE4YTlkYjRhYTEzZDYyM2Y4NmY5MDhmZDEwZjdjIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTA1NSwiZXhwIjoxNzYxMDQ1OTU1LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.QCw3Lz77OS_2xZCVjGWcMlaI2RORoHKChyyTfJb6Gsc; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhiMTY5Nzg2LTU1NjYtNDM5NC1hMjI4LTFiMjA5Nzk0OWZkMSIsImp0aSI6IjRhYzBlMjRhZWQ5NGFkZDIzYTJkYjU1YTFhMmE3NWVkIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwNTUsImV4cCI6MTc2MTY0OTg1NSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.sFs_HneV3CZRw0e_wzo08Ngbau1-tgFjq0pLTsoLlNE
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=oduWxHf_R8gTBpqPX9jXsccx; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhiMTY5Nzg2LTU1NjYtNDM5NC1hMjI4LTFiMjA5Nzk0OWZkMSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDU0MzQwLXQ1OHE5bEBleGFtcGxlLmNvbSIsImp0aSI6IjAxZWE4YTlkYjRhYTEzZDYyM2Y4NmY5MDhmZDEwZjdjIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTA1NSwiZXhwIjoxNzYxMDQ1OTU1LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.QCw3Lz77OS_2xZCVjGWcMlaI2RORoHKChyyTfJb6Gsc; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhiMTY5Nzg2LTU1NjYtNDM5NC1hMjI4LTFiMjA5Nzk0OWZkMSIsImp0aSI6IjRhYzBlMjRhZWQ5NGFkZDIzYTJkYjU1YTFhMmE3NWVkIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwNTUsImV4cCI6MTc2MTY0OTg1NSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.sFs_HneV3CZRw0e_wzo08Ngbau1-tgFjq0pLTsoLlNE
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=GX3NVkwYSa0KKsM989F6kkss; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=GX3NVkwYSa0KKsM989F6kkss
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=GX3NVkwYSa0KKsM989F6kkss
+[PROXY REQ] CSRF Token: fTAN70rg-D1joGNjaUFWFfAJhHfdwyim61uQ
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxYWIxNTZiLWY1YjYtNGQ0Mi04ZDNjLTEwY2YyNWZmMzVkYiIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDU3MzcxLWVwZjZtbEBleGFtcGxlLmNvbSIsImp0aSI6IjUxMTEyNmRiYThkYzdiYmQ1NTk0MmZjY2VhZGVkOWY4IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTA1OCwiZXhwIjoxNzYxMDQ1OTU4LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.Cys7SitIF79b869A0T4oYa2IkCtkKc-2Pmc17FcNSjw; Max-Age=900; Domain=localhost; Path=/; Expires=Tue, 21 Oct 2025 11:25:58 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxYWIxNTZiLWY1YjYtNGQ0Mi04ZDNjLTEwY2YyNWZmMzVkYiIsImp0aSI6IjM3NGE1ZTIzYWQzYjVhYTc3MmU2M2E0MDA4MzllZTFjIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwNTgsImV4cCI6MTc2MTY0OTg1OCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.tx4wdk65DZSd2SCH-j0Zs3aOkzT89X-uTxIif5tybIw; Max-Age=604800; Domain=localhost; Path=/; Expires=Tue, 28 Oct 2025 11:10:58 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=GX3NVkwYSa0KKsM989F6kkss; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxYWIxNTZiLWY1YjYtNGQ0Mi04ZDNjLTEwY2YyNWZmMzVkYiIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDU3MzcxLWVwZjZtbEBleGFtcGxlLmNvbSIsImp0aSI6IjUxMTEyNmRiYThkYzdiYmQ1NTk0MmZjY2VhZGVkOWY4IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTA1OCwiZXhwIjoxNzYxMDQ1OTU4LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.Cys7SitIF79b869A0T4oYa2IkCtkKc-2Pmc17FcNSjw; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxYWIxNTZiLWY1YjYtNGQ0Mi04ZDNjLTEwY2YyNWZmMzVkYiIsImp0aSI6IjM3NGE1ZTIzYWQzYjVhYTc3MmU2M2E0MDA4MzllZTFjIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwNTgsImV4cCI6MTc2MTY0OTg1OCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.tx4wdk65DZSd2SCH-j0Zs3aOkzT89X-uTxIif5tybIw
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=GX3NVkwYSa0KKsM989F6kkss; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxYWIxNTZiLWY1YjYtNGQ0Mi04ZDNjLTEwY2YyNWZmMzVkYiIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MDU3MzcxLWVwZjZtbEBleGFtcGxlLmNvbSIsImp0aSI6IjUxMTEyNmRiYThkYzdiYmQ1NTk0MmZjY2VhZGVkOWY4IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTA1OCwiZXhwIjoxNzYxMDQ1OTU4LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.Cys7SitIF79b869A0T4oYa2IkCtkKc-2Pmc17FcNSjw; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxYWIxNTZiLWY1YjYtNGQ0Mi04ZDNjLTEwY2YyNWZmMzVkYiIsImp0aSI6IjM3NGE1ZTIzYWQzYjVhYTc3MmU2M2E0MDA4MzllZTFjIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUwNTgsImV4cCI6MTc2MTY0OTg1OCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.tx4wdk65DZSd2SCH-j0Zs3aOkzT89X-uTxIif5tybIw
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=lNtsgNbMhCLCaTN-7qLVXpZ_; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=lNtsgNbMhCLCaTN-7qLVXpZ_
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=lNtsgNbMhCLCaTN-7qLVXpZ_
+[PROXY REQ] CSRF Token: 27uLeF0I-4DEuXcStdtWvZW3Gwni8zr_bMic
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNjZDMzM2RlLTlhNmYtNDVmOC1hMzE0LWQ1YjA4NDgxMTM3MCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjQ1NzIwLTFxYTRxdkBleGFtcGxlLmNvbSIsImp0aSI6IjkyNTA2YmM1MTQwODY5MWY0MDE4ODcwYTM4ZDkyM2ZjIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI0NiwiZXhwIjoxNzYxMDQ2MTQ2LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.DuGPI_fhdZiGeFoUW3pMWm7VvahLM8lUwELYwUFOkV4; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:29:06 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNjZDMzM2RlLTlhNmYtNDVmOC1hMzE0LWQ1YjA4NDgxMTM3MCIsImp0aSI6Ijg4ZmQxMmNkZDY3YTk3YjRlN2U2Y2I2YjM4ZmVlNGUwIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNDYsImV4cCI6MTc2MTY1MDA0NiwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.owpwG9rPt-M0XYr_7zBgjmFHhLklp0g7yNfCyLa2bUg; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:14:06 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=Pko3iksRbwdHjOZpq_079rqM; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=Pko3iksRbwdHjOZpq_079rqM
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=Pko3iksRbwdHjOZpq_079rqM
+[PROXY REQ] CSRF Token: P9YJSwdy-YHK8QrtyqKp8S7ytYKBmY9Hch9Q
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE4MGNkOWRhLTk4N2YtNGNmMi05YjRhLWE1NDQ4NGQzYjZkOCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjQ3MjM5LWdtY2tnckBleGFtcGxlLmNvbSIsImp0aSI6IjJmNzJkNDE1NjYyODJjOTA4NzU4MTIyYzJiZWIwMDcwIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI0OCwiZXhwIjoxNzYxMDQ2MTQ4LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.GvZVclM1liyjqWNUUevtAaUzZhPbVo6E_3uIYiTomiA; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:29:08 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE4MGNkOWRhLTk4N2YtNGNmMi05YjRhLWE1NDQ4NGQzYjZkOCIsImp0aSI6ImM3OTYzMzE2YjM2NGQ1OWY1ZDQ5M2U4MDJkZDE5Yjg4IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNDgsImV4cCI6MTc2MTY1MDA0OCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.QTVGA9NwBYR4S2cALYEYF7aZRjDOToaoI0dEbcHIypA; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:14:08 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=Pko3iksRbwdHjOZpq_079rqM; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE4MGNkOWRhLTk4N2YtNGNmMi05YjRhLWE1NDQ4NGQzYjZkOCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjQ3MjM5LWdtY2tnckBleGFtcGxlLmNvbSIsImp0aSI6IjJmNzJkNDE1NjYyODJjOTA4NzU4MTIyYzJiZWIwMDcwIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI0OCwiZXhwIjoxNzYxMDQ2MTQ4LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.GvZVclM1liyjqWNUUevtAaUzZhPbVo6E_3uIYiTomiA; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE4MGNkOWRhLTk4N2YtNGNmMi05YjRhLWE1NDQ4NGQzYjZkOCIsImp0aSI6ImM3OTYzMzE2YjM2NGQ1OWY1ZDQ5M2U4MDJkZDE5Yjg4IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNDgsImV4cCI6MTc2MTY1MDA0OCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.QTVGA9NwBYR4S2cALYEYF7aZRjDOToaoI0dEbcHIypA
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=Pko3iksRbwdHjOZpq_079rqM; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE4MGNkOWRhLTk4N2YtNGNmMi05YjRhLWE1NDQ4NGQzYjZkOCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjQ3MjM5LWdtY2tnckBleGFtcGxlLmNvbSIsImp0aSI6IjJmNzJkNDE1NjYyODJjOTA4NzU4MTIyYzJiZWIwMDcwIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI0OCwiZXhwIjoxNzYxMDQ2MTQ4LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.GvZVclM1liyjqWNUUevtAaUzZhPbVo6E_3uIYiTomiA; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE4MGNkOWRhLTk4N2YtNGNmMi05YjRhLWE1NDQ4NGQzYjZkOCIsImp0aSI6ImM3OTYzMzE2YjM2NGQ1OWY1ZDQ5M2U4MDJkZDE5Yjg4IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNDgsImV4cCI6MTc2MTY1MDA0OCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.QTVGA9NwBYR4S2cALYEYF7aZRjDOToaoI0dEbcHIypA
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=vMschl1wb0lVbOlAW1wYcFOI; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=vMschl1wb0lVbOlAW1wYcFOI
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=vMschl1wb0lVbOlAW1wYcFOI
+[PROXY REQ] CSRF Token: 6e8IutIg-gU2FuOHUsYgfrRzA7gD_KIqJ6Po
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImUwODJmMTgwLTkxNzAtNDI1NC04N2I1LTJiMTJiMTZiNmM3OCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjUwMTIxLTVsbmZzMkBleGFtcGxlLmNvbSIsImp0aSI6ImIzYzZiNDM5MTRmMmIzMGI1ZGNlMTZlNDY5NmFlYjE2IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI1MSwiZXhwIjoxNzYxMDQ2MTUxLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.cC_bCCEnsJKrRR1J94TqP_rh81u-hxIa2Jvjf2NMCbs; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:29:11 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImUwODJmMTgwLTkxNzAtNDI1NC04N2I1LTJiMTJiMTZiNmM3OCIsImp0aSI6ImM3MmJiYTU4OTVkYzA1OTE4NThkOGUyODc1OGE1M2E2IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNTEsImV4cCI6MTc2MTY1MDA1MSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.owIRxOsaDJKBX_aQspwPcEfl__w1yN9QJ6jegDojcK8; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:14:11 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=vMschl1wb0lVbOlAW1wYcFOI; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImUwODJmMTgwLTkxNzAtNDI1NC04N2I1LTJiMTJiMTZiNmM3OCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjUwMTIxLTVsbmZzMkBleGFtcGxlLmNvbSIsImp0aSI6ImIzYzZiNDM5MTRmMmIzMGI1ZGNlMTZlNDY5NmFlYjE2IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI1MSwiZXhwIjoxNzYxMDQ2MTUxLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.cC_bCCEnsJKrRR1J94TqP_rh81u-hxIa2Jvjf2NMCbs; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImUwODJmMTgwLTkxNzAtNDI1NC04N2I1LTJiMTJiMTZiNmM3OCIsImp0aSI6ImM3MmJiYTU4OTVkYzA1OTE4NThkOGUyODc1OGE1M2E2IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNTEsImV4cCI6MTc2MTY1MDA1MSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.owIRxOsaDJKBX_aQspwPcEfl__w1yN9QJ6jegDojcK8
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=vMschl1wb0lVbOlAW1wYcFOI; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImUwODJmMTgwLTkxNzAtNDI1NC04N2I1LTJiMTJiMTZiNmM3OCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjUwMTIxLTVsbmZzMkBleGFtcGxlLmNvbSIsImp0aSI6ImIzYzZiNDM5MTRmMmIzMGI1ZGNlMTZlNDY5NmFlYjE2IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI1MSwiZXhwIjoxNzYxMDQ2MTUxLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.cC_bCCEnsJKrRR1J94TqP_rh81u-hxIa2Jvjf2NMCbs; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImUwODJmMTgwLTkxNzAtNDI1NC04N2I1LTJiMTJiMTZiNmM3OCIsImp0aSI6ImM3MmJiYTU4OTVkYzA1OTE4NThkOGUyODc1OGE1M2E2IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNTEsImV4cCI6MTc2MTY1MDA1MSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.owIRxOsaDJKBX_aQspwPcEfl__w1yN9QJ6jegDojcK8
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=Vst8CU8jwnP0JxNcmg9KbVcX; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=Vst8CU8jwnP0JxNcmg9KbVcX
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=Vst8CU8jwnP0JxNcmg9KbVcX
+[PROXY REQ] CSRF Token: GEgjdJVw-mG5Y666zIswBkfIDMaqt9jxsxGA
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg1ZjU5ZDQ2LTMxMzEtNDE5Yy05MTMwLTdiMzEwYmIzNDBhYSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjYyODQ0LTQ1cG1yMkBleGFtcGxlLmNvbSIsImp0aSI6IjExY2IxZWU0M2M5ZGExYzgyMTE0MmUxZDU4NDdlZWY2IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI2MywiZXhwIjoxNzYxMDQ2MTYzLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.DBHMLHv1XS8rJQbwmNExDqStnhGTWagTF-WGkH32YgE; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:29:23 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg1ZjU5ZDQ2LTMxMzEtNDE5Yy05MTMwLTdiMzEwYmIzNDBhYSIsImp0aSI6IjAxNjFkMGRkZDJmM2I0MjAwMTlmZDBlMTc2ODZiM2U2IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNjMsImV4cCI6MTc2MTY1MDA2MywiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.6Nzdrhw6SuBaMdelLwLYhy5e76Xha3ESm9gLESxRI-4; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:14:23 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=ZLr0MQU-z9cpFi2JOIhIs0rb; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=ZLr0MQU-z9cpFi2JOIhIs0rb
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=ZLr0MQU-z9cpFi2JOIhIs0rb
+[PROXY REQ] CSRF Token: AaGKLAUG-5wDLc100aZJDiETrnef5yC3wxEs
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZkYjgxNWE5LTk4NmYtNDg0ZC05NWE5LWRmMzVmMmE4NWU5NCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjY2OTY3LTFxN3U3c0BleGFtcGxlLmNvbSIsImp0aSI6ImI4MWY3YThjOGI3YzJhMDI5Mjg0ZTliZTFhMmJkNjBkIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI2NywiZXhwIjoxNzYxMDQ2MTY3LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.E0rTYIc0EFamgZRvhhrv40LUFMJQCF-3-R4iLnhmLSE; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:29:27 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZkYjgxNWE5LTk4NmYtNDg0ZC05NWE5LWRmMzVmMmE4NWU5NCIsImp0aSI6IjNmZDc3MjY3MDRiNjE0NWRkYzZiODMwNWFlN2NlYzc1IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNjcsImV4cCI6MTc2MTY1MDA2NywiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9._7ZdDB6Pa9H60vGQTVLHrQZudvOiss2AHgupdPPkMe4; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:14:27 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=ZLr0MQU-z9cpFi2JOIhIs0rb; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZkYjgxNWE5LTk4NmYtNDg0ZC05NWE5LWRmMzVmMmE4NWU5NCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjY2OTY3LTFxN3U3c0BleGFtcGxlLmNvbSIsImp0aSI6ImI4MWY3YThjOGI3YzJhMDI5Mjg0ZTliZTFhMmJkNjBkIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI2NywiZXhwIjoxNzYxMDQ2MTY3LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.E0rTYIc0EFamgZRvhhrv40LUFMJQCF-3-R4iLnhmLSE; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZkYjgxNWE5LTk4NmYtNDg0ZC05NWE5LWRmMzVmMmE4NWU5NCIsImp0aSI6IjNmZDc3MjY3MDRiNjE0NWRkYzZiODMwNWFlN2NlYzc1IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNjcsImV4cCI6MTc2MTY1MDA2NywiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9._7ZdDB6Pa9H60vGQTVLHrQZudvOiss2AHgupdPPkMe4
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=ZLr0MQU-z9cpFi2JOIhIs0rb; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZkYjgxNWE5LTk4NmYtNDg0ZC05NWE5LWRmMzVmMmE4NWU5NCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjY2OTY3LTFxN3U3c0BleGFtcGxlLmNvbSIsImp0aSI6ImI4MWY3YThjOGI3YzJhMDI5Mjg0ZTliZTFhMmJkNjBkIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI2NywiZXhwIjoxNzYxMDQ2MTY3LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.E0rTYIc0EFamgZRvhhrv40LUFMJQCF-3-R4iLnhmLSE; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZkYjgxNWE5LTk4NmYtNDg0ZC05NWE5LWRmMzVmMmE4NWU5NCIsImp0aSI6IjNmZDc3MjY3MDRiNjE0NWRkYzZiODMwNWFlN2NlYzc1IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNjcsImV4cCI6MTc2MTY1MDA2NywiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9._7ZdDB6Pa9H60vGQTVLHrQZudvOiss2AHgupdPPkMe4
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=Dy5gpwkj55ZZGqeGEE0xGcsT; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=Dy5gpwkj55ZZGqeGEE0xGcsT
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=Dy5gpwkj55ZZGqeGEE0xGcsT
+[PROXY REQ] CSRF Token: KK029Gfv-ZJXHxYV-8MzPU1gxDzXb0jC6KIg
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIzNmZkODcwLTlkMzktNGU1NS1hZjVjLWEwMmEzY2UxNDBhNyIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjY5OTkyLW9tZDJ4OEBleGFtcGxlLmNvbSIsImp0aSI6ImYxNDM4YTI0MGZjZmE3ZWU0YjU5YzNkYTE1NjYzYTBhIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI3MCwiZXhwIjoxNzYxMDQ2MTcwLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.v3-eV_4HRMKMIMETwm1WDqrEbnlEnlnve2-SaDx4T28; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:29:30 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIzNmZkODcwLTlkMzktNGU1NS1hZjVjLWEwMmEzY2UxNDBhNyIsImp0aSI6IjBhZGUxMTljNDQzYTA0MDU5ZDNkODlhMTAzNGE0OTg2IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNzAsImV4cCI6MTc2MTY1MDA3MCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.sxOs0Noojem_oH-QhLw4F8BV7FC3ukc-qmXfwxzjs1I; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:14:30 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=Dy5gpwkj55ZZGqeGEE0xGcsT; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIzNmZkODcwLTlkMzktNGU1NS1hZjVjLWEwMmEzY2UxNDBhNyIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjY5OTkyLW9tZDJ4OEBleGFtcGxlLmNvbSIsImp0aSI6ImYxNDM4YTI0MGZjZmE3ZWU0YjU5YzNkYTE1NjYzYTBhIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI3MCwiZXhwIjoxNzYxMDQ2MTcwLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.v3-eV_4HRMKMIMETwm1WDqrEbnlEnlnve2-SaDx4T28; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIzNmZkODcwLTlkMzktNGU1NS1hZjVjLWEwMmEzY2UxNDBhNyIsImp0aSI6IjBhZGUxMTljNDQzYTA0MDU5ZDNkODlhMTAzNGE0OTg2IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNzAsImV4cCI6MTc2MTY1MDA3MCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.sxOs0Noojem_oH-QhLw4F8BV7FC3ukc-qmXfwxzjs1I
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=Dy5gpwkj55ZZGqeGEE0xGcsT; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIzNmZkODcwLTlkMzktNGU1NS1hZjVjLWEwMmEzY2UxNDBhNyIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1MjY5OTkyLW9tZDJ4OEBleGFtcGxlLmNvbSIsImp0aSI6ImYxNDM4YTI0MGZjZmE3ZWU0YjU5YzNkYTE1NjYzYTBhIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTI3MCwiZXhwIjoxNzYxMDQ2MTcwLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.v3-eV_4HRMKMIMETwm1WDqrEbnlEnlnve2-SaDx4T28; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIzNmZkODcwLTlkMzktNGU1NS1hZjVjLWEwMmEzY2UxNDBhNyIsImp0aSI6IjBhZGUxMTljNDQzYTA0MDU5ZDNkODlhMTAzNGE0OTg2IiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDUyNzAsImV4cCI6MTc2MTY1MDA3MCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.sxOs0Noojem_oH-QhLw4F8BV7FC3ukc-qmXfwxzjs1I
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for HEAD /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] HEAD /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] HEAD /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=errPcgGLqxWn6Bc7jtWnOgAG; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=GbBqAD_oPw7WCkeKBIrQbnHw; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=GbBqAD_oPw7WCkeKBIrQbnHw
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=GbBqAD_oPw7WCkeKBIrQbnHw
+[PROXY REQ] CSRF Token: xAeeYbjO-twdHvHi3RrVcgkHfue4gmWb-gEo
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE2NjRiZmRiLWQxYTktNDBmMy1hMTE1LWRjZjQ2NGNiOWM4ZiIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NDg2ODQwLWQ3cHZ2NUBleGFtcGxlLmNvbSIsImp0aSI6IjA3NWRjOWM0MjY4ODg5ZDgyZjQxZjFhZGQzODc4MDJmIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTQ4NywiZXhwIjoxNzYxMDQ2Mzg3LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.j0bT6y0l0dJXeqBQLwez_mw-i6j-JMd-KOnxUgaDHkU; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:33:07 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE2NjRiZmRiLWQxYTktNDBmMy1hMTE1LWRjZjQ2NGNiOWM4ZiIsImp0aSI6IjJjMzk1ODdiZGEyYjdkOTViN2EyM2RiMGRkNjgxYzhiIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU0ODcsImV4cCI6MTc2MTY1MDI4NywiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.Q7UZGt6Q4EU2VLWhE0oH8OEptWlToNkeI0dPxGFoeh8; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:18:07 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=eNqQT0q718IK4G74LQZGUAeE; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=eNqQT0q718IK4G74LQZGUAeE
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=eNqQT0q718IK4G74LQZGUAeE
+[PROXY REQ] CSRF Token: XDrz45E2-kKcgBPqv8mcfiAS1AbnWf3WStMU
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM0ZDE5YmU1LWZiMTctNDI0Zi1hYWFkLWMyNWIxZDEzMDVjNyIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NDg4MzQ4LXUwajJoZ0BleGFtcGxlLmNvbSIsImp0aSI6IjU2YmIyZTQ3ZmY3MmYzZTM0NWE4MjkzNzRmMGRjMjg1IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTQ4OSwiZXhwIjoxNzYxMDQ2Mzg5LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.guhZQCZrSupdeJymPEluM-w01lrnZik0uPSAmVeT150; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:33:09 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM0ZDE5YmU1LWZiMTctNDI0Zi1hYWFkLWMyNWIxZDEzMDVjNyIsImp0aSI6IjExZDkyNWZlZTExMDdmNGI1ZDY0YTQzOTk4MDdiNGJhIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU0ODksImV4cCI6MTc2MTY1MDI4OSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.SQUBHlvVf6cm964HBV6c4WMBOTSLaEwieYs0tK3b-Zo; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:18:09 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=eNqQT0q718IK4G74LQZGUAeE; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM0ZDE5YmU1LWZiMTctNDI0Zi1hYWFkLWMyNWIxZDEzMDVjNyIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NDg4MzQ4LXUwajJoZ0BleGFtcGxlLmNvbSIsImp0aSI6IjU2YmIyZTQ3ZmY3MmYzZTM0NWE4MjkzNzRmMGRjMjg1IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTQ4OSwiZXhwIjoxNzYxMDQ2Mzg5LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.guhZQCZrSupdeJymPEluM-w01lrnZik0uPSAmVeT150; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM0ZDE5YmU1LWZiMTctNDI0Zi1hYWFkLWMyNWIxZDEzMDVjNyIsImp0aSI6IjExZDkyNWZlZTExMDdmNGI1ZDY0YTQzOTk4MDdiNGJhIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU0ODksImV4cCI6MTc2MTY1MDI4OSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.SQUBHlvVf6cm964HBV6c4WMBOTSLaEwieYs0tK3b-Zo
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=eNqQT0q718IK4G74LQZGUAeE; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM0ZDE5YmU1LWZiMTctNDI0Zi1hYWFkLWMyNWIxZDEzMDVjNyIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NDg4MzQ4LXUwajJoZ0BleGFtcGxlLmNvbSIsImp0aSI6IjU2YmIyZTQ3ZmY3MmYzZTM0NWE4MjkzNzRmMGRjMjg1IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTQ4OSwiZXhwIjoxNzYxMDQ2Mzg5LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.guhZQCZrSupdeJymPEluM-w01lrnZik0uPSAmVeT150; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM0ZDE5YmU1LWZiMTctNDI0Zi1hYWFkLWMyNWIxZDEzMDVjNyIsImp0aSI6IjExZDkyNWZlZTExMDdmNGI1ZDY0YTQzOTk4MDdiNGJhIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU0ODksImV4cCI6MTc2MTY1MDI4OSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.SQUBHlvVf6cm964HBV6c4WMBOTSLaEwieYs0tK3b-Zo
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=hbaghbj43VPYYCVnbwT0jRQ2; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=hbaghbj43VPYYCVnbwT0jRQ2
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=hbaghbj43VPYYCVnbwT0jRQ2
+[PROXY REQ] CSRF Token: 3mYISaUD-9rHTsimn_2DTIS5n8KOsVjgIM5Q
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI2YjEzMjRlLWU5NDItNDM1OC1iZGFmLWI5Yjg4MjI5YWQ2YyIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NDkxMjE5LXFwYm82bkBleGFtcGxlLmNvbSIsImp0aSI6ImQwYTY5MTA1ZmY0YmI4MzI1MmI5ZDE3NmVlNGIxOGM4IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTQ5MiwiZXhwIjoxNzYxMDQ2MzkyLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.sGXYqMkYMkFfTV7yF2FFIhKBjSONnsS7ofImyZoaKPE; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:33:12 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI2YjEzMjRlLWU5NDItNDM1OC1iZGFmLWI5Yjg4MjI5YWQ2YyIsImp0aSI6IjM3MzVhYzdhNGFjZWQ3ODUzN2E3OGI2ZWI2NzlmMDcyIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU0OTIsImV4cCI6MTc2MTY1MDI5MiwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.DwPHqPiLldArAp1ayPU-FME-StFmgigNlXX2s5a91gk; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:18:12 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=hbaghbj43VPYYCVnbwT0jRQ2; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI2YjEzMjRlLWU5NDItNDM1OC1iZGFmLWI5Yjg4MjI5YWQ2YyIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NDkxMjE5LXFwYm82bkBleGFtcGxlLmNvbSIsImp0aSI6ImQwYTY5MTA1ZmY0YmI4MzI1MmI5ZDE3NmVlNGIxOGM4IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTQ5MiwiZXhwIjoxNzYxMDQ2MzkyLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.sGXYqMkYMkFfTV7yF2FFIhKBjSONnsS7ofImyZoaKPE; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI2YjEzMjRlLWU5NDItNDM1OC1iZGFmLWI5Yjg4MjI5YWQ2YyIsImp0aSI6IjM3MzVhYzdhNGFjZWQ3ODUzN2E3OGI2ZWI2NzlmMDcyIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU0OTIsImV4cCI6MTc2MTY1MDI5MiwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.DwPHqPiLldArAp1ayPU-FME-StFmgigNlXX2s5a91gk
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=hbaghbj43VPYYCVnbwT0jRQ2; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI2YjEzMjRlLWU5NDItNDM1OC1iZGFmLWI5Yjg4MjI5YWQ2YyIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NDkxMjE5LXFwYm82bkBleGFtcGxlLmNvbSIsImp0aSI6ImQwYTY5MTA1ZmY0YmI4MzI1MmI5ZDE3NmVlNGIxOGM4IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTQ5MiwiZXhwIjoxNzYxMDQ2MzkyLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.sGXYqMkYMkFfTV7yF2FFIhKBjSONnsS7ofImyZoaKPE; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI2YjEzMjRlLWU5NDItNDM1OC1iZGFmLWI5Yjg4MjI5YWQ2YyIsImp0aSI6IjM3MzVhYzdhNGFjZWQ3ODUzN2E3OGI2ZWI2NzlmMDcyIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU0OTIsImV4cCI6MTc2MTY1MDI5MiwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.DwPHqPiLldArAp1ayPU-FME-StFmgigNlXX2s5a91gk
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=n0hHgOlcp_dIt_9eeX4_hfG1; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=n0hHgOlcp_dIt_9eeX4_hfG1
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=n0hHgOlcp_dIt_9eeX4_hfG1
+[PROXY REQ] CSRF Token: fm0yzP1A--ys1C3uuFmm28wq2-23ySgG2r0o
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNlYjc0YzM2LWIxMWEtNDQyMi1iNzMzLTViMjRkMTQ5ZWM0YSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NTAzNzc5LXd4OTJtd0BleGFtcGxlLmNvbSIsImp0aSI6IjE2ZTYyY2FiOTVlODAwNWUyOWYwMzgzYzQ1NmFjMDI4IiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTUwNCwiZXhwIjoxNzYxMDQ2NDA0LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.NHvgxe-U1j3GUE7gYzpDQsBCXzJ8aPvuNvI1WXfjHC8; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:33:24 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNlYjc0YzM2LWIxMWEtNDQyMi1iNzMzLTViMjRkMTQ5ZWM0YSIsImp0aSI6Ijg4YjNhYTk1YjJkNmEwZmEwNTgzMThjMmY0N2I0NTllIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU1MDQsImV4cCI6MTc2MTY1MDMwNCwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.eMNLfKOBP0dYZeOZKigDKvTF2DiVHtgC0MwsBnPN58M; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:18:24 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=ehUAiRX4LbShCXsfOTNDSQYB; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=ehUAiRX4LbShCXsfOTNDSQYB
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=ehUAiRX4LbShCXsfOTNDSQYB
+[PROXY REQ] CSRF Token: rLg1BTS6-Lze9SvRCINz4e2nvIOP5G7Hq7Eg
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBlY2UyZGFmLTY0MWYtNDFiMi1hMmFhLWMzZmVjZmExMDQwMCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NTA4MTIxLWRleHVyNUBleGFtcGxlLmNvbSIsImp0aSI6IjE1OTMyNzkwNjMzZTI1M2YzODgzOWRkYWQxYWI1MWRiIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTUwOSwiZXhwIjoxNzYxMDQ2NDA5LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.ejCn3-oWISY9-Jv3ibZnS9Xr3STCFkuRgdA2ZNSJLLs; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:33:29 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBlY2UyZGFmLTY0MWYtNDFiMi1hMmFhLWMzZmVjZmExMDQwMCIsImp0aSI6IjEwNzZhODQ3YzBmM2IzMDkxY2E0ZDY5YjU4ODZmMDdjIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU1MDksImV4cCI6MTc2MTY1MDMwOSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.FMFopmr6IJ_KDsesQqgAeTezFj5wg-zTnehC8JajHJo; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:18:29 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=ehUAiRX4LbShCXsfOTNDSQYB; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBlY2UyZGFmLTY0MWYtNDFiMi1hMmFhLWMzZmVjZmExMDQwMCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NTA4MTIxLWRleHVyNUBleGFtcGxlLmNvbSIsImp0aSI6IjE1OTMyNzkwNjMzZTI1M2YzODgzOWRkYWQxYWI1MWRiIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTUwOSwiZXhwIjoxNzYxMDQ2NDA5LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.ejCn3-oWISY9-Jv3ibZnS9Xr3STCFkuRgdA2ZNSJLLs; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBlY2UyZGFmLTY0MWYtNDFiMi1hMmFhLWMzZmVjZmExMDQwMCIsImp0aSI6IjEwNzZhODQ3YzBmM2IzMDkxY2E0ZDY5YjU4ODZmMDdjIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU1MDksImV4cCI6MTc2MTY1MDMwOSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.FMFopmr6IJ_KDsesQqgAeTezFj5wg-zTnehC8JajHJo
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=ehUAiRX4LbShCXsfOTNDSQYB; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBlY2UyZGFmLTY0MWYtNDFiMi1hMmFhLWMzZmVjZmExMDQwMCIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NTA4MTIxLWRleHVyNUBleGFtcGxlLmNvbSIsImp0aSI6IjE1OTMyNzkwNjMzZTI1M2YzODgzOWRkYWQxYWI1MWRiIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTUwOSwiZXhwIjoxNzYxMDQ2NDA5LCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.ejCn3-oWISY9-Jv3ibZnS9Xr3STCFkuRgdA2ZNSJLLs; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBlY2UyZGFmLTY0MWYtNDFiMi1hMmFhLWMzZmVjZmExMDQwMCIsImp0aSI6IjEwNzZhODQ3YzBmM2IzMDkxY2E0ZDY5YjU4ODZmMDdjIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU1MDksImV4cCI6MTc2MTY1MDMwOSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.FMFopmr6IJ_KDsesQqgAeTezFj5wg-zTnehC8JajHJo
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/auth/me <- 401
+[MIDDLEWARE] /api middleware triggered for GET /csrf-token
+[PROXY] Rewriting path: /csrf-token -> /api/csrf-token
+[PROXY REQ] GET /api/csrf-token -> /api/csrf-token
+[PROXY REQ] Cookies in req.headers: NONE
+[PROXY REQ] ✗ NO COOKIES TO FORWARD
+[PROXY RES] GET /api/csrf-token <- 200
+[PROXY RES] Set-Cookie: _csrf=vbIQksqq9lZC8GeGrdT_tcLA; Domain=localhost; Path=/; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for POST /auth/register
+[PROXY] Rewriting path: /auth/register -> /api/auth/register
+[PROXY REQ] POST /api/auth/register -> /api/auth/register
+[PROXY REQ] Cookies in req.headers: _csrf=vbIQksqq9lZC8GeGrdT_tcLA
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=vbIQksqq9lZC8GeGrdT_tcLA
+[PROXY REQ] CSRF Token: NPdHfOp4-qH9daoJRXfVMZ3vqrvvYA9zPq3Q
+[PROXY RES] POST /api/auth/register <- 201
+[PROXY RES] Set-Cookie: authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQyMjU0MzU5LTEwMzItNGMyZS1hMGIyLTA1N2M4YTE1ODY3MSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NTEwOTg4LXpxNTJnM0BleGFtcGxlLmNvbSIsImp0aSI6IjYxMWVmZTY5OWJlODBmZmZjYzM5NWE4MTI3MmUwYTZlIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTUxMSwiZXhwIjoxNzYxMDQ2NDExLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.6-mFaK5g3AncpQgc8tzaDvCy-R26ERjIHeZRYR67cvs; Max-Age=900; Path=/; Expires=Tue, 21 Oct 2025 11:33:31 GMT; HttpOnly; SameSite=Lax,refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQyMjU0MzU5LTEwMzItNGMyZS1hMGIyLTA1N2M4YTE1ODY3MSIsImp0aSI6ImIwNjk2YjEwNDA4OWUyNzVkYjI5MWQ0YmNjY2NlNDBhIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU1MTEsImV4cCI6MTc2MTY1MDMxMSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.cFJk8RBumjjy1gsiyFSp-YJ35LZHrJp49t0PkJCErcY; Max-Age=604800; Path=/; Expires=Tue, 28 Oct 2025 11:18:31 GMT; HttpOnly; SameSite=Lax
+[MIDDLEWARE] /api middleware triggered for GET /auth/me
+[PROXY] Rewriting path: /auth/me -> /api/auth/me
+[PROXY REQ] GET /api/auth/me -> /api/auth/me
+[PROXY REQ] Cookies in req.headers: _csrf=vbIQksqq9lZC8GeGrdT_tcLA; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQyMjU0MzU5LTEwMzItNGMyZS1hMGIyLTA1N2M4YTE1ODY3MSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NTEwOTg4LXpxNTJnM0BleGFtcGxlLmNvbSIsImp0aSI6IjYxMWVmZTY5OWJlODBmZmZjYzM5NWE4MTI3MmUwYTZlIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTUxMSwiZXhwIjoxNzYxMDQ2NDExLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.6-mFaK5g3AncpQgc8tzaDvCy-R26ERjIHeZRYR67cvs; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQyMjU0MzU5LTEwMzItNGMyZS1hMGIyLTA1N2M4YTE1ODY3MSIsImp0aSI6ImIwNjk2YjEwNDA4OWUyNzVkYjI5MWQ0YmNjY2NlNDBhIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU1MTEsImV4cCI6MTc2MTY1MDMxMSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.cFJk8RBumjjy1gsiyFSp-YJ35LZHrJp49t0PkJCErcY
+[PROXY REQ] ✓ Forwarding cookies to backend: _csrf=vbIQksqq9lZC8GeGrdT_tcLA; authToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQyMjU0MzU5LTEwMzItNGMyZS1hMGIyLTA1N2M4YTE1ODY3MSIsImVtYWlsIjoicHJveHktdGVzdC0xNzYxMDQ1NTEwOTg4LXpxNTJnM0BleGFtcGxlLmNvbSIsImp0aSI6IjYxMWVmZTY5OWJlODBmZmZjYzM5NWE4MTI3MmUwYTZlIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc2MTA0NTUxMSwiZXhwIjoxNzYxMDQ2NDExLCJhdWQiOiJtZWRpby11c2VycyIsImlzcyI6Im1lZGlvLXBsYXRmb3JtIn0.6-mFaK5g3AncpQgc8tzaDvCy-R26ERjIHeZRYR67cvs; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQyMjU0MzU5LTEwMzItNGMyZS1hMGIyLTA1N2M4YTE1ODY3MSIsImp0aSI6ImIwNjk2YjEwNDA4OWUyNzVkYjI5MWQ0YmNjY2NlNDBhIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEwNDU1MTEsImV4cCI6MTc2MTY1MDMxMSwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.cFJk8RBumjjy1gsiyFSp-YJ35LZHrJp49t0PkJCErcY
+[PROXY RES] GET /api/auth/me <- 401
+[PROXY RES] Set-Cookie: authToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT

@@ -1,0 +1,95 @@
+
+Running 1 test using 1 worker
+
+Step 1: Navigating to production site...
+✓ Homepage loaded
+
+Step 2: Registering new user...
+✓ User registered: test-1760874261167@example.com
+
+Step 3: Verifying login...
+✓ User is logged in and on dashboard
+
+Step 4: Navigating to Videos page...
+✓ Videos page loaded
+  Initial video count: 0
+
+Step 5: Adding video...
+✓ Add Video modal opened
+  Filling form...
+  Current platform: ef72d232-9fac-45ef-8d9c-5c572d2b2668
+✓ Form filled with:
+    URL: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+    Platform: YouTube
+    Title: Test Video - baseURL Fix Verification
+    Description: Testing after baseURL fix
+    Age Rating: PG
+
+  Submitting form...
+  Clicked submit button via JavaScript
+
+Step 6: Verifying video was added...
+  API Call: POST https://medio-backend.fly.dev/api/videos -> 400
+  Request Data: {
+  "platform_id": "ef72d232-9fac-45ef-8d9c-5c572d2b2668",
+  "video_id": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  "video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  "title": "Test Video - baseURL Fix Verification",
+  "description": "Testing after baseURL fix",
+  "age_rating": "PG"
+}
+  Response: {
+  "errors": [
+    {
+      "type": "field",
+      "msg": "Invalid value",
+      "path": "platform_video_id",
+      "location": "body"
+    }
+  ]
+}
+⚠ Modal did not close in time, checking for errors...
+  Page content preview: You need to enable JavaScript to run this app.MedioDashboardVideosProfilesNFC ChipsSettingsDark ModeTest User 1760874261167test-1760874261167@example.comVideo Library Add VideoNo videos yetAdd your fi...
+✓ Modal closed or detached
+
+  Checking for video in library...
+  Video count after adding: 0
+  ✘  1 [chromium] › tests\test-final-video-workflow.spec.js:4:3 › Complete Add Video Workflow - Production baseURL Fix Verification › should successfully register, login, add video, and verify it appears in library (42.1s)
+
+
+  1) [chromium] › tests\test-final-video-workflow.spec.js:4:3 › Complete Add Video Workflow - Production baseURL Fix Verification › should successfully register, login, add video, and verify it appears in library 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0[39m
+    Received:   [31m0[39m
+
+      186 |     console.log(`  Video count after adding: ${videoCount}`);
+      187 |
+    > 188 |     expect(videoCount).toBeGreaterThan(initialVideos);
+          |                        ^
+      189 |     console.log(`✓ Video count increased from ${initialVideos} to ${videoCount}`);
+      190 |
+      191 |     // Verify title matches exactly
+        at C:\Users\benja\projects\medio\tests\test-final-video-workflow.spec.js:188:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\test-final-video-workflow--bd0ab-erify-it-appears-in-library-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\test-final-video-workflow--bd0ab-erify-it-appears-in-library-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\test-final-video-workflow--bd0ab-erify-it-appears-in-library-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\test-final-video-workflow--bd0ab-erify-it-appears-in-library-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\test-final-video-workflow--bd0ab-erify-it-appears-in-library-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests\test-final-video-workflow.spec.js:4:3 › Complete Add Video Workflow - Production baseURL Fix Verification › should successfully register, login, add video, and verify it appears in library 

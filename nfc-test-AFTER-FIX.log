@@ -1,0 +1,168 @@
+
+> medio@0.1.0 test:e2e
+> playwright test --config=playwright.proxy.config.ts tests/e2e/nfc-registration-proxy.spec.ts --reporter=line
+
+
+Running 5 tests using 1 worker
+
+[1A[2K[1/5] [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:67:7 › NFC Chip Registration Workflow - Proxy Mode › [T031] should load NFC Manager page with profiles and chips
+[1A[2K[chromium] › tests\e2e\nfc-registration-proxy.spec.ts:67:7 › NFC Chip Registration Workflow - Proxy Mode › [T031] should load NFC Manager page with profiles and chips
+[CLEANUP] ✓ Deleted test user: nfc-test-1761076295557@example.com
+
+[1A[2K  1) [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:67:7 › NFC Chip Registration Workflow - Proxy Mode › [T031] should load NFC Manager page with profiles and chips 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m1[39m
+    Received: [31m0[39m
+
+       99 |     if (nfcApiCalls.length > 0) {
+      100 |       const successfulCalls = nfcApiCalls.filter(r => r.status >= 200 && r.status < 300);
+    > 101 |       expect(successfulCalls.length).toBe(nfcApiCalls.length);
+          |                                      ^
+      102 |     }
+      103 |   });
+      104 |
+        at C:\Users\benja\projects\medio\tests\e2e\nfc-registration-proxy.spec.ts:101:38
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\nfc-registration-proxy-NFC-bd7f4-age-with-profiles-and-chips-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\nfc-registration-proxy-NFC-bd7f4-age-with-profiles-and-chips-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\nfc-registration-proxy-NFC-bd7f4-age-with-profiles-and-chips-chromium\error-context.md
+
+
+[1A[2K[2/5] [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:109:7 › NFC Chip Registration Workflow - Proxy Mode › [T032] should register new chip successfully
+[1A[2K[chromium] › tests\e2e\nfc-registration-proxy.spec.ts:109:7 › NFC Chip Registration Workflow - Proxy Mode › [T032] should register new chip successfully
+[CLEANUP] ✓ Deleted test user: nfc-test-1761076298038@example.com
+
+[1A[2K  2) [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:109:7 › NFC Chip Registration Workflow - Proxy Mode › [T032] should register new chip successfully 
+
+    TimeoutError: page.waitForSelector: Timeout 3000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[id="chipUid"], input[placeholder*="Chip"], input[name="chip_uid"]') to be visible[22m
+
+
+      117 |
+      118 |     // Wait for modal/form to appear
+    > 119 |     await page.waitForSelector('input[id="chipUid"], input[placeholder*="Chip"], input[name="chip_uid"]', { timeout: 3000 });
+          |                ^
+      120 |
+      121 |     // Fill in chip details
+      122 |     const chipUidInput = page.locator('input[id="chipUid"], input[placeholder*="Chip"], input[name="chip_uid"]').first();
+        at C:\Users\benja\projects\medio\tests\e2e\nfc-registration-proxy.spec.ts:119:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\nfc-registration-proxy-NFC-d2b12-ister-new-chip-successfully-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\nfc-registration-proxy-NFC-d2b12-ister-new-chip-successfully-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\nfc-registration-proxy-NFC-d2b12-ister-new-chip-successfully-chromium\error-context.md
+
+
+[1A[2K[3/5] [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:152:7 › NFC Chip Registration Workflow - Proxy Mode › [T033] should handle 2-3 minute form completion without session expiry
+[1A[2K[chromium] › tests\e2e\nfc-registration-proxy.spec.ts:152:7 › NFC Chip Registration Workflow - Proxy Mode › [T033] should handle 2-3 minute form completion without session expiry
+[CLEANUP] ✓ Deleted test user: nfc-test-1761076304451@example.com
+
+[1A[2K  3) [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:152:7 › NFC Chip Registration Workflow - Proxy Mode › [T033] should handle 2-3 minute form completion without session expiry 
+
+    TimeoutError: page.waitForSelector: Timeout 3000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[id="chipUid"], input[name="chip_uid"]') to be visible[22m
+
+
+      160 |
+      161 |     // Wait for form to appear
+    > 162 |     await page.waitForSelector('input[id="chipUid"], input[name="chip_uid"]', { timeout: 3000 });
+          |                ^
+      163 |
+      164 |     // Fill first field
+      165 |     const chipUidInput = page.locator('input[id="chipUid"], input[name="chip_uid"]').first();
+        at C:\Users\benja\projects\medio\tests\e2e\nfc-registration-proxy.spec.ts:162:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\nfc-registration-proxy-NFC-f2aea-tion-without-session-expiry-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\nfc-registration-proxy-NFC-f2aea-tion-without-session-expiry-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\nfc-registration-proxy-NFC-f2aea-tion-without-session-expiry-chromium\error-context.md
+
+
+[1A[2K[4/5] [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:216:7 › NFC Chip Registration Workflow - Proxy Mode › [T034] should persist chip after navigation away and back
+[1A[2K[chromium] › tests\e2e\nfc-registration-proxy.spec.ts:216:7 › NFC Chip Registration Workflow - Proxy Mode › [T034] should persist chip after navigation away and back
+[CLEANUP] ✓ Deleted test user: nfc-test-1761076310469@example.com
+
+[1A[2K  4) [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:216:7 › NFC Chip Registration Workflow - Proxy Mode › [T034] should persist chip after navigation away and back 
+
+    TimeoutError: page.waitForSelector: Timeout 3000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[id="chipUid"], input[name="chip_uid"]') to be visible[22m
+
+
+      222 |     const addButton = page.locator('button:has-text("Add"), button:has-text("Register")').first();
+      223 |     await addButton.click();
+    > 224 |     await page.waitForSelector('input[id="chipUid"], input[name="chip_uid"]', { timeout: 3000 });
+          |                ^
+      225 |
+      226 |     const chipUidInput = page.locator('input[id="chipUid"], input[name="chip_uid"]').first();
+      227 |     const labelInput = page.locator('input[id="label"], input[name="label"]').first();
+        at C:\Users\benja\projects\medio\tests\e2e\nfc-registration-proxy.spec.ts:224:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\nfc-registration-proxy-NFC-7f0ea-er-navigation-away-and-back-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\nfc-registration-proxy-NFC-7f0ea-er-navigation-away-and-back-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\nfc-registration-proxy-NFC-7f0ea-er-navigation-away-and-back-chromium\error-context.md
+
+
+[1A[2K[5/5] [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:279:7 › NFC Chip Registration Workflow - Proxy Mode › [BONUS] should maintain authentication during NFC operations
+[1A[2K[chromium] › tests\e2e\nfc-registration-proxy.spec.ts:279:7 › NFC Chip Registration Workflow - Proxy Mode › [BONUS] should maintain authentication during NFC operations
+[CLEANUP] ✓ Deleted test user: nfc-test-1761076316516@example.com
+
+[1A[2K  5) [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:279:7 › NFC Chip Registration Workflow - Proxy Mode › [BONUS] should maintain authentication during NFC operations 
+
+    TimeoutError: page.waitForSelector: Timeout 3000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[id="chipUid"], input[name="chip_uid"]') to be visible[22m
+
+
+      297 |     const addButton = page.locator('button:has-text("Add"), button:has-text("Register")').first();
+      298 |     await addButton.click();
+    > 299 |     await page.waitForSelector('input[id="chipUid"], input[name="chip_uid"]', { timeout: 3000 });
+          |                ^
+      300 |
+      301 |     // Listen for API requests
+      302 |     let cookieHeaderSent = false;
+        at C:\Users\benja\projects\medio\tests\e2e\nfc-registration-proxy.spec.ts:299:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\nfc-registration-proxy-NFC-861be-ation-during-NFC-operations-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\nfc-registration-proxy-NFC-861be-ation-during-NFC-operations-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\nfc-registration-proxy-NFC-861be-ation-during-NFC-operations-chromium\error-context.md
+
+
+[1A[2K  5 failed
+    [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:67:7 › NFC Chip Registration Workflow - Proxy Mode › [T031] should load NFC Manager page with profiles and chips 
+    [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:109:7 › NFC Chip Registration Workflow - Proxy Mode › [T032] should register new chip successfully 
+    [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:152:7 › NFC Chip Registration Workflow - Proxy Mode › [T033] should handle 2-3 minute form completion without session expiry 
+    [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:216:7 › NFC Chip Registration Workflow - Proxy Mode › [T034] should persist chip after navigation away and back 
+    [chromium] › tests\e2e\nfc-registration-proxy.spec.ts:279:7 › NFC Chip Registration Workflow - Proxy Mode › [BONUS] should maintain authentication during NFC operations 

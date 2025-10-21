@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { IMAGE_PLACEHOLDERS, LAZY_LOAD_CONFIG, IMAGE_TRANSITION } from '../constants/images';
 
 interface LazyImageProps {

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { NFCChipProvider, useNFCChips } from '../contexts/NFCChipContext';
 import NFCChipErrorBoundary from '../components/common/NFCChipErrorBoundary';
 import ChipRegistrationForm from '../components/nfc/ChipRegistrationForm';

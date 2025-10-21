@@ -1,59 +1,77 @@
 version: '3.8'
 
 services:
-  # Development service
-  dev:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: medio-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: medio
+      POSTGRES_PASSWORD: medio_dev_password
+      POSTGRES_DB: medio
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medio"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: medio-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      DATABASE_URL: postgresql://medio:medio_dev_password@postgres:5432/medio
+      FRONTEND_URL: http://localhost:8080
+      CORS_ORIGINS: http://localhost:3000,http://localhost:8080
+      SESSION_SECRET: dev_session_secret_change_in_production_min_64_chars_required
+      JWT_SECRET: dev_jwt_secret_change_in_production_min_64_chars_required
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run dev
+
+  # Frontend with BFF Proxy
+  frontend:
     build:
       context: .
-      dockerfile: Dockerfile.dev
-    ports:
-      - "3000:3000"
-    volumes:
-      # Mount source code for hot reloading
-      - ./src:/app/src
-      - ./public:/app/public
-      # Prevent node_modules from being overwritten
-      - /app/node_modules
+      dockerfile: Dockerfile
+    container_name: medio-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
     environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true  # For file watching in Docker
-    stdin_open: true  # Keep stdin open for React dev server
-    tty: true
+      NODE_ENV: production
+      PORT: 8080
+      BACKEND_URL: http://backend:5000
+    ports:
+      - "8080:8080"
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
-  # Production build service
-  prod:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:80"
-    profiles:
-      - production
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+volumes:
+  postgres_data:
+    driver: local
 
-  # Test service
-  test:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./src:/app/src
-      - ./public:/app/public
-      - ./coverage:/app/coverage  # Mount for test coverage results
-      - /app/node_modules
-    environment:
-      - CI=true
-    command: npm test -- --coverage --watchAll=false
-    profiles:
-      - test
+networks:
+  default:
+    name: medio-network

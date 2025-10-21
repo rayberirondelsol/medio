@@ -1,0 +1,211 @@
+
+> medio@0.1.0 test:e2e
+> playwright test --config=playwright.proxy.config.ts tests/e2e/session-persistence-proxy.spec.ts --reporter=line
+
+
+Running 5 tests using 1 worker
+
+[1A[2K[1/5] [chromium] › tests\e2e\session-persistence-proxy.spec.ts:61:7 › Extended Session Navigation - Proxy Mode › [T041] should navigate between pages for 10 minutes without auth errors
+[1A[2K[chromium] › tests\e2e\session-persistence-proxy.spec.ts:61:7 › Extended Session Navigation - Proxy Mode › [T041] should navigate between pages for 10 minutes without auth errors
+Starting 10-minute navigation test...
+
+[1A[2K[1s] Navigated to Dashboard (1 total navigations)
+
+[1A[2K[2s] Navigated to Videos (2 total navigations)
+
+[1A[2K[3s] Navigated to Profiles (3 total navigations)
+
+[1A[2K[4s] Navigated to NFC Manager (4 total navigations)
+
+[1A[2K[5s] Navigated to Settings (5 total navigations)
+
+[1A[2K[6s] Navigated to Dashboard (6 total navigations)
+
+[1A[2K[7s] Navigated to Videos (7 total navigations)
+
+[1A[2K[8s] Navigated to Profiles (8 total navigations)
+
+[1A[2K[9s] Navigated to NFC Manager (9 total navigations)
+
+[1A[2K[10s] Navigated to Settings (10 total navigations)
+
+[1A[2K[11s] Navigated to Dashboard (11 total navigations)
+
+[1A[2K[12s] Navigated to Videos (12 total navigations)
+
+[1A[2K[13s] Navigated to Profiles (13 total navigations)
+
+[1A[2K[14s] Navigated to NFC Manager (14 total navigations)
+
+[1A[2K[15s] Navigated to Settings (15 total navigations)
+
+[1A[2K[16s] Navigated to Dashboard (16 total navigations)
+
+[1A[2K[17s] Navigated to Videos (17 total navigations)
+
+[1A[2K[18s] Navigated to Profiles (18 total navigations)
+
+[1A[2K[19s] Navigated to NFC Manager (19 total navigations)
+
+[1A[2K[20s] Navigated to Settings (20 total navigations)
+
+[1A[2K[21s] Navigated to Dashboard (21 total navigations)
+
+[1A[2K[22s] Navigated to Videos (22 total navigations)
+
+[1A[2K[23s] Navigated to Profiles (23 total navigations)
+
+[1A[2K[24s] Navigated to NFC Manager (24 total navigations)
+
+[1A[2K[25s] Navigated to Settings (25 total navigations)
+
+[1A[2K[26s] Navigated to Dashboard (26 total navigations)
+
+[1A[2K[27s] Navigated to Videos (27 total navigations)
+
+[1A[2K[28s] Navigated to Profiles (28 total navigations)
+
+[1A[2K[CLEANUP] ✓ Deleted test user: session-test-1761070270852@example.com
+
+[1A[2K  1) [chromium] › tests\e2e\session-persistence-proxy.spec.ts:61:7 › Extended Session Navigation - Proxy Mode › [T041] should navigate between pages for 10 minutes without auth errors 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.waitForTimeout: Test timeout of 30000ms exceeded.
+
+      88 |         await page.goto(`http://localhost:8080${url}`);
+      89 |         await page.waitForLoadState('domcontentloaded');
+    > 90 |         await page.waitForTimeout(1000); // Wait 1 second between navigations
+         |                    ^
+      91 |         totalNavigations++;
+      92 |
+      93 |         const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        at C:\Users\benja\projects\medio\tests\e2e\session-persistence-proxy.spec.ts:90:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\session-persistence-proxy--3c196-minutes-without-auth-errors-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\session-persistence-proxy--3c196-minutes-without-auth-errors-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[2/5] [chromium] › tests\e2e\session-persistence-proxy.spec.ts:113:7 › Extended Session Navigation - Proxy Mode › [T042] should maintain auth in multiple tabs simultaneously
+[1A[2K[chromium] › tests\e2e\session-persistence-proxy.spec.ts:113:7 › Extended Session Navigation - Proxy Mode › [T042] should maintain auth in multiple tabs simultaneously
+[CLEANUP] ✓ Deleted test user: session-test-1761070302095@example.com
+
+[1A[2K[3/5] [chromium] › tests\e2e\session-persistence-proxy.spec.ts:178:7 › Extended Session Navigation - Proxy Mode › [T043] should handle 5-minute idle period and resume navigation
+[1A[2K[chromium] › tests\e2e\session-persistence-proxy.spec.ts:178:7 › Extended Session Navigation - Proxy Mode › [T043] should handle 5-minute idle period and resume navigation
+User authenticated and on Dashboard
+
+[1A[2KCookies recorded. Starting 5-minute idle period...
+
+[1A[2K[CLEANUP] ✓ Deleted test user: session-test-1761070302095@example.com
+
+[1A[2K  2) [chromium] › tests\e2e\session-persistence-proxy.spec.ts:178:7 › Extended Session Navigation - Proxy Mode › [T043] should handle 5-minute idle period and resume navigation 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.waitForTimeout: Test timeout of 30000ms exceeded.
+
+      192 |     // Wait 5 minutes idle
+      193 |     const fiveMinutes = 5 * 60 * 1000;
+    > 194 |     await page.waitForTimeout(fiveMinutes);
+          |                ^
+      195 |
+      196 |     console.log('5-minute idle period complete. Resuming navigation...');
+      197 |
+        at C:\Users\benja\projects\medio\tests\e2e\session-persistence-proxy.spec.ts:194:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\session-persistence-proxy--dea41-eriod-and-resume-navigation-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\session-persistence-proxy--dea41-eriod-and-resume-navigation-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\session-persistence-proxy--dea41-eriod-and-resume-navigation-chromium\error-context.md
+
+
+[1A[2K[4/5] [chromium] › tests\e2e\session-persistence-proxy.spec.ts:229:7 › Extended Session Navigation - Proxy Mode › [T044] should auto-refresh token near expiry and continue session
+[1A[2K[chromium] › tests\e2e\session-persistence-proxy.spec.ts:229:7 › Extended Session Navigation - Proxy Mode › [T044] should auto-refresh token near expiry and continue session
+Initial token recorded
+
+[1A[2KWaiting 2 minutes to simulate near-expiry scenario...
+
+[1A[2K[CLEANUP] ✓ Deleted test user: session-test-1761070341333@example.com
+
+[1A[2K  3) [chromium] › tests\e2e\session-persistence-proxy.spec.ts:229:7 › Extended Session Navigation - Proxy Mode › [T044] should auto-refresh token near expiry and continue session 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.waitForTimeout: Test timeout of 30000ms exceeded.
+
+      244 |     const twoMinutes = 2 * 60 * 1000;
+      245 |     console.log('Waiting 2 minutes to simulate near-expiry scenario...');
+    > 246 |     await page.waitForTimeout(twoMinutes);
+          |                ^
+      247 |
+      248 |     const authErrors: string[] = [];
+      249 |     page.on('response', response => {
+        at C:\Users\benja\projects\medio\tests\e2e\session-persistence-proxy.spec.ts:246:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\session-persistence-proxy--14a2c-expiry-and-continue-session-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\session-persistence-proxy--14a2c-expiry-and-continue-session-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\session-persistence-proxy--14a2c-expiry-and-continue-session-chromium\error-context.md
+
+
+[1A[2K[5/5] [chromium] › tests\e2e\session-persistence-proxy.spec.ts:284:7 › Extended Session Navigation - Proxy Mode › [BONUS] comprehensive session persistence flow
+[1A[2K[chromium] › tests\e2e\session-persistence-proxy.spec.ts:284:7 › Extended Session Navigation - Proxy Mode › [BONUS] comprehensive session persistence flow
+Waiting 1 minute idle...
+
+[1A[2K[CLEANUP] ✓ Deleted test user: session-test-1761070373597@example.com
+
+[1A[2K  4) [chromium] › tests\e2e\session-persistence-proxy.spec.ts:284:7 › Extended Session Navigation - Proxy Mode › [BONUS] comprehensive session persistence flow 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.waitForTimeout: Test timeout of 30000ms exceeded.
+
+      305 |     // 3. Idle for 1 minute
+      306 |     console.log('Waiting 1 minute idle...');
+    > 307 |     await page.waitForTimeout(60000);
+          |                ^
+      308 |
+      309 |     // 4. Resume in first tab
+      310 |     await page.goto('http://localhost:8080/dashboard');
+        at C:\Users\benja\projects\medio\tests\e2e\session-persistence-proxy.spec.ts:307:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\session-persistence-proxy--24ec1-ve-session-persistence-flow-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\session-persistence-proxy--24ec1-ve-session-persistence-flow-chromium\test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\session-persistence-proxy--24ec1-ve-session-persistence-flow-chromium\video-1.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #4: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\session-persistence-proxy--24ec1-ve-session-persistence-flow-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\session-persistence-proxy--24ec1-ve-session-persistence-flow-chromium\error-context.md
+
+
+[1A[2K  4 failed
+    [chromium] › tests\e2e\session-persistence-proxy.spec.ts:61:7 › Extended Session Navigation - Proxy Mode › [T041] should navigate between pages for 10 minutes without auth errors 
+    [chromium] › tests\e2e\session-persistence-proxy.spec.ts:178:7 › Extended Session Navigation - Proxy Mode › [T043] should handle 5-minute idle period and resume navigation 
+    [chromium] › tests\e2e\session-persistence-proxy.spec.ts:229:7 › Extended Session Navigation - Proxy Mode › [T044] should auto-refresh token near expiry and continue session 
+    [chromium] › tests\e2e\session-persistence-proxy.spec.ts:284:7 › Extended Session Navigation - Proxy Mode › [BONUS] comprehensive session persistence flow 
+  1 passed (2.3m)

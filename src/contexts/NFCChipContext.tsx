@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { NFCChip, NFCChipContextType } from '../types/nfc';
 import * as nfcService from '../services/nfcService';
 import * as Sentry from '@sentry/react';

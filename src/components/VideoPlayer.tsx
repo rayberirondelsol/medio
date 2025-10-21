@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { sanitizeVideo, getSecureEmbedUrl } from '../utils/videoSanitizer';
 import './VideoPlayer.css';
 

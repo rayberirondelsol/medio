@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@sentry/node": "^10.20.0",
     "@sentry/react": "^10.11.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.8.0",
@@ -12,6 +13,9 @@
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "axios": "^1.6.2",
+    "dotenv": "^17.2.2",
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^3.0.5",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-icons": "^5.5.0",
@@ -40,14 +44,17 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "lint": "eslint src/ --ext .ts,.tsx",
     "lint:fix": "eslint src/ --ext .ts,.tsx --fix",
-    "validate": "npm run lint && npm run test:coverage && npm run build"
+    "validate": "npm run lint && npm run test:coverage && npm run build",
+    "start:prod": "node server.js"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
     ],
-    "plugins": ["unused-imports"],
+    "plugins": [
+      "unused-imports"
+    ],
     "rules": {
       "unused-imports/no-unused-imports": "error",
       "unused-imports/no-unused-vars": [
@@ -77,9 +84,10 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
-    "dotenv": "^17.2.2",
+    "@types/pg": "^8.15.5",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-unused-imports": "^4.3.0"
+    "eslint-plugin-unused-imports": "^4.3.0",
+    "pg": "^8.16.3"
   },
   "overrides": {
     "framer-motion": {

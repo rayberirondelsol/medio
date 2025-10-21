@@ -1,0 +1,100 @@
+===================================================================================
+CSRF TOKEN FLOW - CROSS-DOMAIN REQUEST SCENARIO (Production)
+===================================================================================
+
+BEFORE FIX (403 Forbidden Error):
+---------------------------------
+
+1. Frontend (medio-react-app.fly.dev)         2. Backend (medio-backend.fly.dev)
+   ├─ GET /api/csrf-token                        ├─ CSRF Middleware
+   │  withCredentials: true ────────────────────>├─ Generates token
+   │                                             ├─ Sets cookie (sameSite:none)
+   │                                             └─ Returns { csrfToken: "ABC123" }
+   │                                              <────────────────────────────────
+   │  Stores token in memory                     
+   │  csrfToken = "ABC123"
+   │
+   ├─ POST /api/nfc/chips                       ├─ CSRF Middleware validation
+   │  Headers: X-CSRF-Token: ABC123             ├─ DEFAULT: Only checks req.body._csrf
+   │  Body: { chip_uid: "..." }                 │  or req.query._csrf
+   │  withCredentials: true ────────────────────>├─ Header NOT checked!
+   │  (CSRF cookie may not be sent due to       ├─ Token not found
+   │   cross-domain restrictions)               └─ Throws EBADCSRFTOKEN error
+   │                                              <────────────────────────────────
+   │  403 Forbidden                             Response: 403 Invalid CSRF token
+   │  "Invalid CSRF token"
+
+
+AFTER FIX (Request Succeeds):
+-----------------------------
+
+1. Frontend (medio-react-app.fly.dev)         2. Backend (medio-backend.fly.dev)
+   ├─ GET /api/csrf-token                        ├─ CSRF Middleware
+   │  withCredentials: true ────────────────────>├─ Generates token
+   │                                             ├─ Sets cookie (sameSite:none)
+   │                                             └─ Returns { csrfToken: "ABC123" }
+   │                                              <────────────────────────────────
+   │  Stores token in memory                     
+   │  csrfToken = "ABC123"
+   │
+   ├─ POST /api/nfc/chips                       ├─ CSRF Middleware validation
+   │  Headers: X-CSRF-Token: ABC123             ├─ NEW: Custom value function
+   │  Body: { chip_uid: "..." }                 │  1. Checks req.headers['x-csrf-token']
+   │  withCredentials: true ────────────────────>│     -> Finds "ABC123" ✓
+   │                                             ├─ Validates token
+   │                                             ├─ Token is valid ✓
+   │                                             └─ Proceeds to next middleware
+   │                                              <────────────────────────────────
+   │  201 Created                               Response: 201 Created (or other)
+   │  { id: "chip_id", chip_uid: "..." }
+
+
+KEY DIFFERENCE:
+---------------
+
+BEFORE: value parameter NOT specified in csrf() config
+   └─ csurf uses default behavior:
+      └─ Only checks body._csrf and query._csrf
+      └─ Does NOT check request headers
+
+AFTER: value function specified in csrf() config
+   └─ csurf uses custom function:
+      └─ First checks req.headers['x-csrf-token']  ← Works for cross-domain!
+      └─ Falls back to body._csrf
+      └─ Falls back to query._csrf
+
+
+WHY THIS WORKS FOR CROSS-DOMAIN:
+---------------------------------
+
+Problem: Cross-domain cookies may not be sent by browser
+- Cookie domain must match or browser blocks it
+- CSRF cookie set by backend may not return with POST request
+- Relying on cookies alone = 403 error in cross-domain scenarios
+
+Solution: Accept CSRF token from request header
+- Headers are NOT subject to same cookie domain restrictions
+- Frontend can send X-CSRF-Token: <value> header from any domain
+- Backend checks header for token (works even if cookie missing)
+- Much more reliable for cross-domain requests
+
+
+MIDDLEWARE ORDER:
+-----------------
+
+app.use(express.json());                    ← Parse JSON body
+app.use(cookieParser(...));                 ← Parse cookies
+app.use(validateCsrfFromHeader);            ← REMOVED (no longer needed)
+app.use((req, res, next) => {               ← Conditional CSRF middleware
+  if (isExcluded(req.path)) return next();
+  csrfProtection(req, res, next);           ← THIS NOW CHECKS HEADERS!
+});
+│
+└─ csrfProtection uses custom value function:
+   value: (req) => {
+     return req.headers['x-csrf-token']    ← Checks header first
+          || req.body._csrf                ← Falls back to body
+          || req.query._csrf;              ← Falls back to query
+   }
+
+===================================================================================

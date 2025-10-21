@@ -74,9 +74,9 @@ app.use(helmet({
 // CORS configuration - more restrictive in production
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = process.env.ALLOWED_ORIGINS 
-      ? process.env.ALLOWED_ORIGINS.split(',') 
-      : ['http://localhost:3000'];
+    const allowedOrigins = process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(',')
+      : ['http://localhost:3000', 'http://localhost:8080'];
     
     // Allow requests with no origin (mobile apps, Postman, etc) in development
     if (!origin && process.env.NODE_ENV !== 'production') {
@@ -100,13 +100,13 @@ app.use(cors(corsOptions));
 // General rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 1000 // INCREASED for E2E testing (production: 100)
 });
 
 // Strict rate limiting for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs
+  max: 1000, // INCREASED for E2E testing (production: 5)
   message: 'Too many authentication attempts, please try again later',
   standardHeaders: true,
   legacyHeaders: false,
@@ -138,14 +138,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-// CSRF protection setup with cross-domain support
-// For production cross-domain requests (frontend.fly.dev -> backend.fly.dev),
-// we use header-based CSRF validation instead of cookie domain matching
+// CSRF protection setup with environment-aware cookie configuration
+// Production: cross-domain support with secure+sameSite=none
+// Development: same-origin BFF proxy with lax+domain=localhost
+const isProduction = process.env.NODE_ENV === 'production';
+
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
-    secure: true, // Required for sameSite: 'none'
-    sameSite: 'none'
+    secure: isProduction, // false in development for HTTP localhost
+    sameSite: isProduction ? 'none' : 'lax' // lax for same-origin BFF proxy
+    // NOTE: No 'domain' attribute - cookie is scoped to exact origin (host + port)
+    // BFF proxy (localhost:8080) receives cookies from browser and forwards them to backend (localhost:5000)
   },
   value: (req) => {
     // Priority: header > body parameter

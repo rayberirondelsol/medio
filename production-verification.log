@@ -1,0 +1,39 @@
+[1A[2K[2m[WebServer] [22m(node:2736) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[2m[WebServer] [22m(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[1A[2K[2m[WebServer] [22m(node:2736) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+
+
+Running 7 tests using 6 workers
+
+[1A[2K[1/7] [setup] › tests\auth.setup.ts:19:6 › authenticate as parent user
+[1A[2K  1) [setup] › tests\auth.setup.ts:19:6 › authenticate as parent user ──────────────────────────────
+
+    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      39 |   // Submit login form and wait for navigation
+      40 |   await Promise.all([
+    > 41 |     page.waitForURL(/\/(dashboard|videos)/, { timeout: 15000 }),
+         |          ^
+      42 |     page.click('button[type="submit"]', { force: true }),
+      43 |   ]);
+      44 |
+        at C:\Users\benja\projects\medio\tests\auth.setup.ts:41:10
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\auth.setup.ts-authenticate-as-parent-user-setup\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\auth.setup.ts-authenticate-as-parent-user-setup\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth.setup.ts-authenticate-as-parent-user-setup\error-context.md
+
+
+[1A[2K  1 failed
+    [setup] › tests\auth.setup.ts:19:6 › authenticate as parent user ───────────────────────────────
+  6 did not run

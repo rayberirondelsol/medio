@@ -1,0 +1,207 @@
+================================================================================
+CSRF TOKEN ARCHITECTURE - BEFORE VS AFTER FIX
+================================================================================
+
+BEFORE FIX (BROKEN)
+================================================================================
+
+Frontend Application
+├── AddVideoModal Component
+│   └── Calls videoService.createVideo(data)
+│
+├── videoService.ts (WRONG CONFIG)
+│   └── import apiClient from '../config/api'
+│
+├── config/api.ts (LEGACY - NO CSRF)
+│   ├── axios.create({...})
+│   └── interceptors.request.use((config) => return config)  ❌ EMPTY
+│
+├── Network Request
+│   ├── POST /api/videos
+│   ├── Headers: { Content-Type, Cookie }
+│   └── ❌ X-CSRF-Token: NOT PRESENT
+│
+└── Backend Response
+    ├── CSRF Middleware validates X-CSRF-Token header
+    ├── Header NOT found ❌
+    └── Response: 403 Forbidden
+
+
+AFTER FIX (WORKING)
+================================================================================
+
+Frontend Application
+├── AddVideoModal Component
+│   └── Calls videoService.createVideo(data)
+│
+├── videoService.ts (CORRECT CONFIG)
+│   └── import apiClient from '../utils/axiosConfig'  ✓ FIXED
+│
+├── utils/axiosConfig.ts (PRODUCTION - HAS CSRF)
+│   ├── axios.create({...})
+│   ├── interceptors.request.use(
+│   │   async (config) => {
+│   │     if (shouldAttachCsrf(config.method)) {
+│   │       const token = await fetchCsrfToken();  ✓ FETCHES
+│   │       config.headers['X-CSRF-Token'] = token;  ✓ ATTACHES
+│   │     }
+│   │     return config;
+│   │   }
+│   ├── CSRF Token Cache
+│   │   ├── csrfToken: cached_value
+│   │   └── Returns immediately (no extra request)
+│   └── Retry Logic
+│       ├── 403 with CSRF message detected
+│       ├── Token cleared and refetched
+│       └── Request retried with fresh token
+│
+├── Network Request
+│   ├── POST /api/videos
+│   ├── Headers: {
+│   │   Content-Type,
+│   │   X-CSRF-Token: abc123def456...  ✓ PRESENT
+│   │   Cookie
+│   │ }
+│   └── Body: { title, description, ... }
+│
+└── Backend Response
+    ├── CSRF Middleware validates X-CSRF-Token header
+    ├── Header FOUND ✓
+    ├── Token validated ✓
+    └── Response: 200 OK { id, title, ... }
+
+
+AXIOS INSTANCE COMPARISON
+================================================================================
+
+Property                    config/api.ts       utils/axiosConfig.ts
+────────────────────────────────────────────────────────────────────────────
+CSRF Support               ❌ None              ✓ Yes
+Token Fetching             ❌ No               ✓ Yes
+Token Caching              ❌ No               ✓ Yes
+Header Attachment          ❌ No               ✓ Yes
+Auto-Retry (403)           ❌ No               ✓ Yes
+JWT Refresh Support        ❌ No               ✓ Yes
+Request Cancellation       ❌ No               ✓ Yes
+Method Detection           ❌ No               ✓ Yes
+Selective CSRF             ❌ No               ✓ Yes (POST only)
+Production Ready           ❌ No               ✓ Yes
+
+
+FLOW DIAGRAM - REQUEST LIFECYCLE
+================================================================================
+
+USER ACTION: Submits "Add Video" form
+    ↓
+VIDEO SERVICE: videoService.createVideo(data)
+    ↓
+AXIOS INSTANCE SELECTION
+    ├── Before: config/api (wrong) ❌
+    └── After: utils/axiosConfig (right) ✓
+    ↓
+REQUEST INTERCEPTOR
+    ├── Before: Empty (does nothing) ❌
+    └── After:
+        1. Check method: POST ✓
+        2. shouldAttachCsrf(method) = true ✓
+        3. Call fetchCsrfToken() ✓
+    ↓
+TOKEN MANAGEMENT
+    ├── Check cache: Token exists? ✓
+    ├── Return cached token (fast!) ✓
+    ├── (If not cached: GET /api/csrf-token)
+    └── Store token for reuse ✓
+    ↓
+HEADER INJECTION
+    ├── Before: No X-CSRF-Token header ❌
+    └── After: 
+        ├── Create header object ✓
+        ├── Set: headers['X-CSRF-Token'] = token ✓
+        ├── Assign: config.headers = headers ✓
+    ↓
+NETWORK REQUEST
+    ├── Before: POST /api/videos (no CSRF header) ❌
+    └── After: POST /api/videos (with CSRF header) ✓
+    ↓
+BACKEND CSRF MIDDLEWARE
+    ├── Check for X-CSRF-Token header
+    ├── Before: NOT FOUND ❌ → 403 Forbidden
+    └── After: FOUND ✓ → Validate token ✓
+    ↓
+BACKEND ROUTE HANDLER
+    ├── Before: Never reached (403 returned first) ❌
+    └── After: Execute create video logic ✓
+    ↓
+RESPONSE
+    ├── Before: { message: 'Invalid CSRF token' } (403) ❌
+    └── After: { id: "...", title: "...", ... } (200) ✓
+    ↓
+FRONTEND UI
+    ├── Before: Error message shown ❌
+    └── After: Modal closes, video appears ✓
+
+
+CACHING STRATEGY
+================================================================================
+
+Application Lifecycle:
+    ↓
+USER LOGS IN
+    - First POST request detected
+    - Cache empty: csrfToken = null
+    - Call: GET /api/csrf-token
+    - Response: { csrfToken: "abc123..." }
+    - Cache: csrfToken = "abc123..."
+    ↓
+USER ADDS VIDEO
+    - POST request detected
+    - Check cache: csrfToken = "abc123..." ✓
+    - Use cached token (no network call)
+    - Fast! No delay!
+    ↓
+TOKEN EXPIRATION (Rare)
+    - POST fails: 403 with "invalid csrf"
+    - Interceptor detects error
+    - Clear cache: csrfToken = null
+    - Fetch fresh: GET /api/csrf-token
+    - Get new token: "def456..."
+    - Cache: csrfToken = "def456..."
+    - Retry: POST with new token ✓
+    ↓
+SUCCESS
+    - 200 OK response ✓
+    - Transparent to user ✓
+
+
+FILES INVOLVED
+================================================================================
+
+Frontend Services (NOW FIXED):
+  ├── src/services/videoService.ts ......... Import changed ✓
+  └── src/services/platformService.ts ..... Import changed ✓
+
+Correct Axios Instance:
+  └── src/utils/axiosConfig.ts ............ Already had fix
+
+Backend CSRF Middleware:
+  └── backend/src/server.js .............. Expects X-CSRF-Token header
+
+Backend Error Handler:
+  └── backend/src/middleware/error-handler.js .. Handles CSRF errors
+
+
+IMPACT ANALYSIS
+================================================================================
+
+What Changed:     2 import statements (1 line each)
+What Stayed Same: All function signatures, APIs, behavior
+Build Status:     Succeeds ✓
+Compilation:      Success ✓
+Breaking Changes: None ✓
+Risk Level:       Very Low ✓
+Production Ready: Yes ✓
+
+
+================================================================================
+CONCLUSION: Fix redirects services to use the CSRF-aware axios instance
+================================================================================

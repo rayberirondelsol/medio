@@ -1,0 +1,11 @@
+[dotenv@17.2.2] injecting env (1) from .env -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+[PROXY] Starting frontend server on port 8080
+[PROXY] Backend URL: http://localhost:5000
+[PROXY] __dirname: C:\Users\benja\projects\medio
+[PROXY] Build path: C:\Users\benja\projects\medio\build
+✓ Frontend server running on http://0.0.0.0:8080
+✓ Proxying /api/* requests to http://localhost:5000
+✓ Serving React app from /build directory
+✓ Health check available at http://localhost:8080/health
+(node:24348) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

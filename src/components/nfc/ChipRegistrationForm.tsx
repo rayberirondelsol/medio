@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNFCChips } from '../../contexts/NFCChipContext';
 import { validateChipUID, validateLabel } from '../../utils/nfcValidation';
 import NFCScanButton from './NFCScanButton';

@@ -6,8 +6,11 @@ axios.defaults.timeout = 10000; // 10 seconds timeout for all requests
 axios.defaults.withCredentials = true; // Include cookies in requests
 
 // Create axios instance with custom configuration
+// IMPORTANT: Use relative URL (/api) as fallback for BFF proxy mode
+// When REACT_APP_API_URL is empty, requests go through the proxy (same origin)
+// When REACT_APP_API_URL is set, requests go directly to backend (cross-origin)
 const apiClient = axios.create({
-  baseURL: resolveApiBaseUrlOrDefault('http://localhost:5000/api'),
+  baseURL: resolveApiBaseUrlOrDefault('/api'),
   timeout: 10000, // 10 seconds
   withCredentials: true,
   headers: {

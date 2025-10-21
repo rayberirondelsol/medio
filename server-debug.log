@@ -1,0 +1,7 @@
+[dotenv@17.2.2] injecting env (2) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[PROXY] Starting frontend server on port 8080
+[PROXY] Backend URL: http://localhost:5000
+✓ Frontend server running on http://0.0.0.0:8080
+✓ Proxying /api/* requests to http://localhost:5000
+✓ Serving React app from /build directory
+✓ Health check available at http://localhost:8080/health

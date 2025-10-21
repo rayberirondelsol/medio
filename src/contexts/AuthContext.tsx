@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import axiosInstance, { RequestManager } from '../utils/axiosConfig';
 import { resolveApiBaseUrl } from '../utils/runtimeConfig';
@@ -21,11 +21,10 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const getApiUrl = () => {
+  // resolveApiBaseUrl returns undefined for relative URLs (proxy mode)
+  // In proxy mode, return empty string because axiosInstance already has baseURL='/api'
   const url = resolveApiBaseUrl();
-  if (!url) {
-    throw new Error('Medio API endpoint is not configured. Please set the REACT_APP_API_URL environment variable.');
-  }
-  return url;
+  return url ?? '';  // Empty string = let axios handle baseURL
 };
 
 

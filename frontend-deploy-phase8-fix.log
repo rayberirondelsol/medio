@@ -1,0 +1,269 @@
+==> Verifying app config
+Validating C:\Users\benja\projects\medio\fly.toml
+[32m✓[0m Configuration is valid
+--> Verified app config
+==> Building image
+Waiting for depot builder...
+
+==> Building image with Depot
+--> build:  (​)
+#1 [internal] load build definition from Dockerfile
+#1 DONE 0.0s
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 1.23kB 0.5s done
+#1 DONE 0.5s
+
+#2 [internal] load metadata for docker.io/library/node:18-alpine
+#2 DONE 0.3s
+
+#3 [internal] load .dockerignore
+#3 transferring context:
+#3 transferring context: 203B 0.5s done
+#3 DONE 0.5s
+
+#4 [builder 1/6] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+#4 resolve docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 1.94MB 2.9s done
+#5 DONE 2.9s
+
+#6 [builder 2/6] WORKDIR /app
+#6 CACHED
+
+#7 [builder 3/6] COPY package*.json ./
+#7 DONE 0.2s
+
+#8 [builder 4/6] RUN npm ci
+#8 6.077 npm warn deprecated w3c-hr-time@1.0.2: Use your platform's native performance.now() and performance.timeOrigin.
+#8 6.696 npm warn deprecated stable@0.1.8: Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility
+#8 6.739 npm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead
+#8 6.947 npm warn deprecated rollup-plugin-terser@7.0.2: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
+#8 6.947 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+#8 6.994 npm warn deprecated workbox-google-analytics@6.6.0: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained
+#8 7.221 npm warn deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+#8 7.221 npm warn deprecated
+#8 7.221 npm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+#8 7.636 npm warn deprecated workbox-cacheable-response@6.6.0: workbox-background-sync@6.6.0
+#8 8.821 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+#8 9.102 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+#8 ...
+
+#9 [stage-1 4/7] RUN npm ci --only=production
+#9 0.241 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+#9 6.081 npm warn deprecated w3c-hr-time@1.0.2: Use your platform's native performance.now() and performance.timeOrigin.
+#9 6.586 npm warn deprecated stable@0.1.8: Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility
+#9 6.656 npm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead
+#9 6.853 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+#9 6.894 npm warn deprecated rollup-plugin-terser@7.0.2: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
+#9 7.156 npm warn deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+#9 7.156 npm warn deprecated
+#9 7.156 npm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+#9 7.292 npm warn deprecated workbox-cacheable-response@6.6.0: workbox-background-sync@6.6.0
+#9 7.876 npm warn deprecated workbox-google-analytics@6.6.0: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained
+#9 8.661 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+#9 9.026 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+#9 9.660 npm warn deprecated domexception@2.0.1: Use your platform's native DOMException instead
+#9 ...
+
+#8 [builder 4/6] RUN npm ci
+#8 9.674 npm warn deprecated domexception@2.0.1: Use your platform's native DOMException instead
+#8 10.58 npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+#8 10.80 npm warn deprecated svgo@1.3.2: This SVGO version is no longer supported. Upgrade to v2.x.x.
+#8 11.55 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+#8 11.58 npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+#8 12.21 npm warn deprecated @babel/plugin-proposal-numeric-separator@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-numeric-separator instead.
+#8 12.21 npm warn deprecated @babel/plugin-proposal-optional-chaining@7.21.0: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-chaining instead.
+#8 12.21 npm warn deprecated @babel/plugin-proposal-private-methods@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-methods instead.
+#8 12.24 npm warn deprecated @babel/plugin-proposal-class-properties@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
+#8 12.28 npm warn deprecated @babel/plugin-proposal-nullish-coalescing-operator@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-nullish-coalescing-operator instead.
+#8 13.42 npm warn deprecated source-map@0.8.0-beta.0: The work that was done in this beta branch won't be included in future versions
+#8 13.47 npm warn deprecated @babel/plugin-proposal-private-property-in-object@7.21.11: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-property-in-object instead.
+#8 18.80 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+#8 ...
+
+#9 [stage-1 4/7] RUN npm ci --only=production
+#9 10.52 npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+#9 11.01 npm warn deprecated svgo@1.3.2: This SVGO version is no longer supported. Upgrade to v2.x.x.
+#9 11.55 npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+#9 11.55 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+#9 12.14 npm warn deprecated @babel/plugin-proposal-private-methods@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-methods instead.
+#9 12.14 npm warn deprecated @babel/plugin-proposal-nullish-coalescing-operator@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-nullish-coalescing-operator instead.
+#9 12.17 npm warn deprecated @babel/plugin-proposal-optional-chaining@7.21.0: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-chaining instead.
+#9 12.17 npm warn deprecated @babel/plugin-proposal-class-properties@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
+#9 12.17 npm warn deprecated @babel/plugin-proposal-numeric-separator@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-numeric-separator instead.
+#9 13.53 npm warn deprecated source-map@0.8.0-beta.0: The work that was done in this beta branch won't be included in future versions
+#9 13.55 npm warn deprecated @babel/plugin-proposal-private-property-in-object@7.21.11: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-property-in-object instead.
+#9 18.03 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+#9 22.89 
+#9 22.89 added 1442 packages, and audited 1443 packages in 23s
+#9 22.89 
+#9 22.89 272 packages are looking for funding
+#9 22.89   run `npm fund` for details
+#9 22.91 
+#9 22.91 15 vulnerabilities (3 low, 3 moderate, 9 high)
+#9 22.91 
+#9 22.91 To address issues that do not require attention, run:
+#9 22.91   npm audit fix
+#9 22.91 
+#9 22.91 To address all issues (including breaking changes), run:
+#9 22.91   npm audit fix --force
+#9 22.91 
+#9 22.91 Run `npm audit` for details.
+#9 22.91 npm notice
+#9 22.91 npm notice New major version of npm available! 10.8.2 -> 11.6.2
+#9 22.91 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2
+#9 22.91 npm notice To update run: npm install -g npm@11.6.2
+#9 22.91 npm notice
+#9 ...
+
+#8 [builder 4/6] RUN npm ci
+#8 27.54 
+#8 27.54 added 1452 packages, and audited 1453 packages in 27s
+#8 27.54 
+#8 27.54 272 packages are looking for funding
+#8 27.54   run `npm fund` for details
+#8 27.66 
+#8 27.66 17 vulnerabilities (3 low, 5 moderate, 9 high)
+#8 27.66 
+#8 27.66 To address issues that do not require attention, run:
+#8 27.66   npm audit fix
+#8 27.66 
+#8 27.66 To address all issues (including breaking changes), run:
+#8 27.66   npm audit fix --force
+#8 27.66 
+#8 27.66 Run `npm audit` for details.
+#8 27.66 npm notice
+#8 27.66 npm notice New major version of npm available! 10.8.2 -> 11.6.2
+#8 27.66 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2
+#8 27.66 npm notice To update run: npm install -g npm@11.6.2
+#8 27.66 npm notice
+#8 ...
+
+#9 [stage-1 4/7] RUN npm ci --only=production
+#9 DONE 31.2s
+
+#8 [builder 4/6] RUN npm ci
+#8 DONE 31.2s
+
+#10 [stage-1 5/7] COPY server.js ./
+#10 DONE 1.4s
+
+#11 [builder 5/6] COPY . .
+#11 DONE 5.2s
+
+#12 [builder 6/6] RUN npm run build
+#12 0.486 
+#12 0.486 > medio@0.1.0 build
+#12 0.486 > react-scripts build
+#12 0.486 
+#12 2.264 Creating an optimized production build...
+#12 26.80 Compiled successfully.
+#12 26.80 
+#12 26.80 File sizes after gzip:
+#12 26.80 
+#12 26.84   131.15 kB  build/static/js/main.12ca2544.js
+#12 26.84   5.43 kB    build/static/js/483.797d1270.chunk.js
+#12 26.84   3.28 kB    build/static/js/169.63e4bc53.chunk.js
+#12 26.84   2.64 kB    build/static/js/200.85b633a4.chunk.js
+#12 26.84   2.64 kB    build/static/css/483.cf4f518b.chunk.css
+#12 26.84   2.38 kB    build/static/js/245.dda38407.chunk.js
+#12 26.84   1.98 kB    build/static/js/575.dba617ee.chunk.js
+#12 26.84   1.76 kB    build/static/js/453.2e81fd26.chunk.js
+#12 26.84   1.71 kB    build/static/css/main.f4be682d.css
+#12 26.84   1.68 kB    build/static/js/355.b432c57c.chunk.js
+#12 26.84   1.6 kB     build/static/js/159.02d7a6bb.chunk.js
+#12 26.84   1.28 kB    build/static/css/159.2bf8b6d6.chunk.css
+#12 26.84   1.27 kB    build/static/js/795.6333ea3c.chunk.js
+#12 26.84   1.13 kB    build/static/js/448.b7c24874.chunk.js
+#12 26.84   1.12 kB    build/static/css/169.60f2ed30.chunk.css
+#12 26.84   1.1 kB     build/static/css/575.a285423d.chunk.css
+#12 26.84   1.07 kB    build/static/css/245.7f4a8555.chunk.css
+#12 26.84   984 B      build/static/css/795.f42f58f9.chunk.css
+#12 26.84   970 B      build/static/js/220.18e16104.chunk.js
+#12 26.84   609 B      build/static/css/448.0b82a7de.chunk.css
+#12 26.84   608 B      build/static/css/220.0b82a7de.chunk.css
+#12 26.84 
+#12 26.84 The project was built assuming it is hosted at /.
+#12 26.84 You can control this with the homepage field in your package.json.
+#12 26.84 
+#12 26.84 The build folder is ready to be deployed.
+#12 26.84 You may serve it with a static server:
+#12 26.84 
+#12 26.84   npm install -g serve
+#12 26.84   serve -s build
+#12 26.84 
+#12 26.84 Find out more about deployment here:
+#12 26.84 
+#12 26.84   https://cra.link/deployment
+#12 26.84 
+#12 DONE 27.2s
+
+#13 [stage-1 6/7] COPY --from=builder /app/build ./build
+#13 DONE 0.0s
+
+#14 [stage-1 7/7] RUN addgroup -g 1001 -S nodejs &&     adduser -S nodejs -u 1001 &&     chown -R nodejs:nodejs /app
+#14 DONE 31.9s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 7.1s done
+#15 exporting manifest sha256:112d35315972e9ac6604331c41a7ad7cbe036ce9b9031f04037001a04885ea55 done
+#15 exporting config sha256:cb2e1129e7b274913b992347bc6ba8912cbfb77d142e5c386530d2f090a2f5cd done
+#15 pushing layers for registry.fly.io/medio-react-app:deployment-01K8461JSZ3JM81HZYW51EPQY2@sha256:112d35315972e9ac6604331c41a7ad7cbe036ce9b9031f04037001a04885ea55
+#15 pushing layer sha256:a318742469acf64045518f1ad7668c8c4cb1ef398617f14b7f06f9de546f25fb
+#15 pushing layer sha256:43dda21e08e1c1bb6a385a2311711b0db5b0fb65bb716a5e724568682612510c
+#15 pushing layer sha256:cb2e1129e7b274913b992347bc6ba8912cbfb77d142e5c386530d2f090a2f5cd
+#15 pushing layer sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870
+#15 pushing layer sha256:dd71dde834b5c203d162902e6b8994cb2309ae049a0eabc4efea161b2b5a3d0e
+#15 pushing layer sha256:ab2f5f6c127689685c8373a274e1398dff428d83519dd8ec14835b063f67c57f
+#15 pushing layer sha256:21e88bd940d78e0eabdeea4254240564d947dc05fbb5a6a7060e2f527f113257
+#15 pushing layer sha256:1e5a4c89cee5c0826c540ab06d4b6b491c96eda01837f430bd47f0d26702d6e3
+#15 pushing layer sha256:25ff2da83641908f65c3a74d80409d6b1b62ccfaab220b9ea70b80df5a2e0549
+#15 pushing layer sha256:7f8532a86670243997f960dba6eeafc43088fa7572e9a85814ae4d89c69b67ba
+#15 pushing layer sha256:fbea150a9249df422797e6a5dbdc83d2a246e83dd1ff9c3454a2b33d0755cb9e
+#15 pushing layer sha256:43dda21e08e1c1bb6a385a2311711b0db5b0fb65bb716a5e724568682612510c 0.2s done
+#15 pushing layer sha256:25ff2da83641908f65c3a74d80409d6b1b62ccfaab220b9ea70b80df5a2e0549 0.5s done
+#15 pushing layer sha256:dd71dde834b5c203d162902e6b8994cb2309ae049a0eabc4efea161b2b5a3d0e 0.9s done
+#15 pushing layer sha256:1e5a4c89cee5c0826c540ab06d4b6b491c96eda01837f430bd47f0d26702d6e3 1.7s done
+#15 pushing layer sha256:cb2e1129e7b274913b992347bc6ba8912cbfb77d142e5c386530d2f090a2f5cd 1.7s done
+#15 pushing layer sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870 1.7s done
+#15 pushing layer sha256:21e88bd940d78e0eabdeea4254240564d947dc05fbb5a6a7060e2f527f113257 1.7s done
+#15 pushing layer sha256:fbea150a9249df422797e6a5dbdc83d2a246e83dd1ff9c3454a2b33d0755cb9e 1.8s done
+#15 pushing layer sha256:ab2f5f6c127689685c8373a274e1398dff428d83519dd8ec14835b063f67c57f 1.9s done
+#15 pushing layer sha256:a318742469acf64045518f1ad7668c8c4cb1ef398617f14b7f06f9de546f25fb 3.2s done
+#15 pushing layers for registry.fly.io/medio-react-app:deployment-01K8461JSZ3JM81HZYW51EPQY2@sha256:112d35315972e9ac6604331c41a7ad7cbe036ce9b9031f04037001a04885ea55 3.8s done
+#15 pushing layer sha256:7f8532a86670243997f960dba6eeafc43088fa7572e9a85814ae4d89c69b67ba 3.8s done
+#15 pushing manifest for registry.fly.io/medio-react-app:deployment-01K8461JSZ3JM81HZYW51EPQY2@sha256:112d35315972e9ac6604331c41a7ad7cbe036ce9b9031f04037001a04885ea55
+#15 pushing manifest for registry.fly.io/medio-react-app:deployment-01K8461JSZ3JM81HZYW51EPQY2@sha256:112d35315972e9ac6604331c41a7ad7cbe036ce9b9031f04037001a04885ea55 0.1s done
+#15 DONE 11.0s
+--> Build Summary:  (​)
+[38;5;252m--> Building image done[0m
+image: registry.fly.io/medio-react-app:deployment-01K8461JSZ3JM81HZYW51EPQY2
+image size: 305 MB
+
+Watch your deployment at https://fly.io/apps/medio-react-app/monitoring
+
+Updating existing machines in 'medio-react-app' with rolling strategy
+> [1/2] Acquiring lease for 2873d39c626128
+> [1/2] Acquired lease for 2873d39c626128
+> [2/2] Acquiring lease for d8994e9fee91e8
+> [2/2] Acquired lease for d8994e9fee91e8
+> [2/2] Updating machine config for d8994e9fee91e8
+> [1/2] Updating machine config for 2873d39c626128
+> [2/2] Updating d8994e9fee91e8 [app]
+> [1/2] Updating 2873d39c626128 [app]
+> [1/2] Updated machine config for 2873d39c626128
+✔ [1/2] Machine 2873d39c626128 is now in a good state
+> [2/2] Updated machine config for d8994e9fee91e8
+✔ [2/2] Machine d8994e9fee91e8 is now in a good state
+> [2/2] Clearing lease for d8994e9fee91e8
+> [1/2] Clearing lease for 2873d39c626128
+✔ [1/2] Cleared lease for 2873d39c626128
+✔ [2/2] Cleared lease for d8994e9fee91e8
+Checking DNS configuration for medio-react-app.fly.dev
+
+Visit your newly deployed app at https://medio-react-app.fly.dev/

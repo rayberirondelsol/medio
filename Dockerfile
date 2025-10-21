@@ -1,6 +1,6 @@
-# Multi-stage build for React application
+# Multi-stage build for React application with BFF Proxy
 
-# Stage 1: Build the application
+# Stage 1: Build the React application
 FROM node:18-alpine AS builder
 
 # Set working directory
@@ -9,41 +9,44 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install ALL dependencies (including express and http-proxy-middleware)
 RUN npm ci
 
 # Copy application source
 COPY . .
 
-# Build the application
+# Build the React application
 RUN npm run build
 
-# Stage 2: Production image with nginx
-FROM nginx:alpine
+# Stage 2: Production runtime with Node.js (BFF Proxy)
+FROM node:18-alpine
 
-RUN apk add --no-cache gettext
+# Set working directory
+WORKDIR /app
 
-# Copy built application from builder stage with nginx ownership
-COPY --from=builder --chown=nginx:nginx /app/build /usr/share/nginx/html
+# Copy package files for production dependencies
+COPY package*.json ./
 
-# Copy nginx configuration
-COPY --chown=nginx:nginx nginx.conf /etc/nginx/conf.d/default.conf
+# Install ONLY production dependencies
+# IMPORTANT: express and http-proxy-middleware must be in dependencies, not devDependencies
+RUN npm ci --only=production
 
-# Copy entrypoint script for runtime env substitution
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+# Copy server.js (BFF proxy server)
+COPY server.js ./
 
-# Create necessary directories and set permissions for non-root operation
-RUN touch /var/run/nginx.pid \
-    && chown -R nginx:nginx /var/cache/nginx /var/log/nginx /var/run/nginx.pid /etc/nginx/conf.d
+# Copy built React application from builder stage
+COPY --from=builder /app/build ./build
 
-# Switch to non-root nginx user
-USER nginx
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 && \
+    chown -R nodejs:nodejs /app
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# Switch to non-root user
+USER nodejs
 
-# Expose port 8080 for Fly.io
+# Expose port 8080
 EXPOSE 8080
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start BFF proxy server
+CMD ["node", "server.js"]

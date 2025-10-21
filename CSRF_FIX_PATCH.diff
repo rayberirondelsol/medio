@@ -1,0 +1,20 @@
+diff --git a/src/services/platformService.ts b/src/services/platformService.ts
+index 597def9..8bd766f 100644
+--- a/src/services/platformService.ts
++++ b/src/services/platformService.ts
+@@ -1,4 +1,4 @@
+-import apiClient from '../config/api';
++import apiClient from '../utils/axiosConfig';
+ 
+ export interface Platform {
+   id: string;
+diff --git a/src/services/videoService.ts b/src/services/videoService.ts
+index a58f100..80312d1 100644
+--- a/src/services/videoService.ts
++++ b/src/services/videoService.ts
+@@ -1,4 +1,4 @@
+-import apiClient from '../config/api';
++import apiClient from '../utils/axiosConfig';
+ import { VideoMetadata, CreateVideoRequest, CreateVideoResponse } from '../types/video';
+ 
+ /**

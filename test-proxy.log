@@ -1,0 +1,3 @@
+[dotenv@17.2.2] injecting env (2) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+Test proxy on :9999
+Try: curl http://localhost:9999/api/csrf-token

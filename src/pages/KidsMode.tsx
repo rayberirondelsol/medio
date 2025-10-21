@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FiX } from 'react-icons/fi';
 import axios from 'axios';
 import axiosInstance, { RequestManager } from '../utils/axiosConfig';

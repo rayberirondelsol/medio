@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { FiVideo, FiUsers, FiCreditCard, FiClock, FiPlay, FiPlus } from 'react-icons/fi';
@@ -6,7 +6,7 @@ import axios from 'axios';
 import { resolveApiBaseUrlOrDefault } from '../utils/runtimeConfig';
 import './Dashboard.css';
 
-const API_URL = resolveApiBaseUrlOrDefault('http://localhost:5000/api');
+const API_URL = resolveApiBaseUrlOrDefault('/api');
 
 interface DashboardStats {
   totalVideos: number;

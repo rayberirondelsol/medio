@@ -1,0 +1,135 @@
+
+> medio@0.1.0 test:e2e
+> playwright test --config=playwright.proxy.config.ts tests/e2e/auth-registration-proxy.spec.ts --workers=1
+
+
+Running 6 tests using 1 worker
+
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+Browser console error: Error fetching dashboard data: $
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✓ Deleted user: proxy-test-1761053988090-404j35@example.com
+  ✓  1 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:82:7 › Same-Origin Authentication via Proxy › T013: should redirect to dashboard after successful registration (1.6s)
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+✓ Auth cookie confirmed before navigation
+Browser console error: Failed to load resource: the server responded with a status of 404 (Not Found)
+Browser console error: Error fetching videos: $
+401 errors detected: [ [32m'401: http://localhost:8080/api/auth/me'[39m ]
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✓ Deleted user: proxy-test-1761053989654-rjzx85@example.com
+[CLEANUP] Database connection closed
+  ✘  2 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:106:7 › Same-Origin Authentication via Proxy › T014: should load Videos page without 401 errors after registration (2.0s)
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+Browser console error: Error fetching dashboard data: $
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✓ Deleted user: proxy-test-1761053992715-uw46nv@example.com
+  ✓  3 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:157:7 › Same-Origin Authentication via Proxy › T015: should maintain auth after page refresh on dashboard (1.6s)
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+Browser console error: Error fetching dashboard data: $
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✓ Deleted user: proxy-test-1761053994308-ap74wc@example.com
+[CLEANUP] Database connection closed
+  ✘  4 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:189:7 › Same-Origin Authentication via Proxy › T016: should make authenticated API call immediately after login (11.4s)
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+All cookies: [
+  { name: [32m'_csrf'[39m, domain: [32m'localhost'[39m, sameSite: [32m'Lax'[39m, path: [32m'/'[39m },
+  {
+    name: [32m'authToken'[39m,
+    domain: [32m'localhost'[39m,
+    sameSite: [32m'Lax'[39m,
+    path: [32m'/'[39m
+  },
+  {
+    name: [32m'refreshToken'[39m,
+    domain: [32m'localhost'[39m,
+    sameSite: [32m'Lax'[39m,
+    path: [32m'/'[39m
+  }
+]
+GET /api/auth/me status: [33m200[39m
+Browser console error: Failed to load resource: the server responded with a status of 404 (Not Found)
+Browser console error: Error fetching videos: $
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+Browser console error: Error fetching dashboard data: $
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✓ Deleted user: proxy-test-1761054007136-4ucmfs@example.com
+  ✓  5 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:220:7 › Same-Origin Authentication via Proxy › T017: should verify cookies are sent with proxy requests (2.5s)
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+Browser console error: Failed to load resource: the server responded with a status of 404 (Not Found)
+Browser console error: Error fetching videos: $
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+Browser console error: Error fetching dashboard data: $
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+Browser console error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+✅ Complete proxy flow test passed!
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✓ Deleted user: proxy-test-1761054009569-jozdzk@example.com
+[CLEANUP] Database connection closed
+  ✓  6 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:275:7 › Same-Origin Authentication via Proxy › T018: Comprehensive proxy flow - registration to navigation (2.4s)
+
+
+  1) [chromium] › tests\e2e\auth-registration-proxy.spec.ts:106:7 › Same-Origin Authentication via Proxy › T014: should load Videos page without 401 errors after registration 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected length: [32m0[39m
+    Received length: [31m1[39m
+    Received array:  [31m["401: http://localhost:8080/api/auth/me"][39m
+
+      149 |       console.log('401 errors detected:', failedRequests);
+      150 |     }
+    > 151 |     expect(failedRequests).toHaveLength(0);
+          |                            ^
+      152 |
+      153 |     // Verify Videos page loaded (use more specific selector to avoid ambiguity)
+      154 |     await expect(page.locator('h2').filter({ hasText: 'My Videos' }).or(page.locator('h1').filter({ hasText: 'Videos' }))).toBeVisible({ timeout: 5000 });
+        at C:\Users\benja\projects\medio\tests\e2e\auth-registration-proxy.spec.ts:151:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-2255d-1-errors-after-registration-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-2255d-1-errors-after-registration-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-registration-proxy-Sa-2255d-1-errors-after-registration-chromium\error-context.md
+
+  2) [chromium] › tests\e2e\auth-registration-proxy.spec.ts:189:7 › Same-Origin Authentication via Proxy › T016: should make authenticated API call immediately after login 
+
+    TimeoutError: page.waitForResponse: Timeout 10000ms exceeded while waiting for event "response"
+
+      200 |
+      201 |     // Wait for successful registration and auth check response
+    > 202 |     const authMeResponse = page.waitForResponse(
+          |                                 ^
+      203 |       response => response.url().includes('/api/auth/me') && response.status() === 200,
+      204 |       { timeout: 10000 }
+      205 |     );
+        at C:\Users\benja\projects\medio\tests\e2e\auth-registration-proxy.spec.ts:202:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-cfe3a-all-immediately-after-login-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-cfe3a-all-immediately-after-login-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-registration-proxy-Sa-cfe3a-all-immediately-after-login-chromium\error-context.md
+
+  2 failed
+    [chromium] › tests\e2e\auth-registration-proxy.spec.ts:106:7 › Same-Origin Authentication via Proxy › T014: should load Videos page without 401 errors after registration 
+    [chromium] › tests\e2e\auth-registration-proxy.spec.ts:189:7 › Same-Origin Authentication via Proxy › T016: should make authenticated API call immediately after login 
+  4 passed (24.9s)

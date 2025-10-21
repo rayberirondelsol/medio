@@ -156,7 +156,7 @@ export async function scanNFCChip(): Promise<string> {
       };
 
       // Set up error event handler
-      reader.onreadingerror = (event: Event) => {
+      reader.onreadingerror = (_event: Event) => {
         clearTimeout(timeoutId);
         reject(
           new NFCError(

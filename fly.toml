@@ -11,7 +11,9 @@ primary_region = 'iad'
 
 [env]
   NODE_ENV = 'production'
-  REACT_APP_API_URL = 'https://medio-backend.fly.dev/api'
+  # BACKEND_URL for BFF Proxy - points to backend service
+  BACKEND_URL = 'https://medio-backend.fly.dev'
+  # REACT_APP_API_URL removed - frontend uses relative URLs in proxy mode
 
 [http_service]
   internal_port = 8080
@@ -25,7 +27,7 @@ primary_region = 'iad'
     interval = '15s'
     timeout = '10s'
     grace_period = '5s'
-    path = '/'
+    path = '/health'
     protocol = 'http'
     tls_skip_verify = false
 
@@ -33,7 +35,3 @@ primary_region = 'iad'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-
-[[statics]]
-  guest_path = '/usr/share/nginx/html'
-  url_prefix = '/'

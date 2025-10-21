@@ -1,0 +1,13 @@
+=========================================
+PRODUCTION AUTHENTICATION VERIFICATION
+=========================================
+Frontend: https://medio-react-app.fly.dev
+Backend: https://medio-backend.fly.dev
+
+[STEP 1] Getting CSRF token...
+CSRF Token: oImasDZ9-NkJPa_h9ysR...
+
+[STEP 2] Registering new user...
+Email: prod-test-1761077485@example.com
+Response: {"message":"Registration failed"}
+❌ Registration failed

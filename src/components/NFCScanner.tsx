@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FiCreditCard } from 'react-icons/fi';
 import './NFCScanner.css';
 

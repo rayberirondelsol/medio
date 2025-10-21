@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Layout from '../components/Layout';
 import LazyImage from '../components/LazyImage';
 import AddVideoModal from '../components/videos/AddVideoModal';
@@ -12,7 +12,7 @@ import axiosInstance from '../utils/axiosConfig';
 import { resolveApiBaseUrlOrDefault } from '../utils/runtimeConfig';
 import './Videos.css';
 
-const API_URL = resolveApiBaseUrlOrDefault('http://localhost:5000/api');
+const API_URL = resolveApiBaseUrlOrDefault('/api');
 
 interface Video {
   id: string;

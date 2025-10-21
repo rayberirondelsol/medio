@@ -1,0 +1,442 @@
+
+> medio@0.1.0 test:e2e
+> playwright test --config=playwright.proxy.config.ts tests/e2e/auth-registration-proxy.spec.ts
+
+
+Running 6 tests using 1 worker
+
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+Browser console error: Failed to load resource: the server responded with a status of 429 (Too Many Requests)
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✗ Failed to delete user proxy-test-1761042105999-xpzzu3@example.com: error: password authentication failed for user "medio_user"
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mC:\Users\benja\projects\medio\[39mtests\e2e\auth-registration-proxy.spec.ts:64:11
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:326:11
+    at TimeoutManager.withRunnable [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:324:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:220:5[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:465:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:464:9[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:326:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runTest [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:317:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:194:11[90m)[39m
+    at process.<anonymous> [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m {
+  length: [33m106[39m,
+  severity: [32m'FATAL'[39m,
+  code: [32m'28P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'auth.c'[39m,
+  line: [32m'334'[39m,
+  routine: [32m'auth_failed'[39m
+}
+[CLEANUP] Database connection closed
+  ✘  1 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:82:7 › Same-Origin Authentication via Proxy › T013: should redirect to dashboard after successful registration (11.6s)
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+Browser console error: Failed to load resource: the server responded with a status of 429 (Too Many Requests)
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✗ Failed to delete user proxy-test-1761042118548-wv4ibt@example.com: error: password authentication failed for user "medio_user"
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mC:\Users\benja\projects\medio\[39mtests\e2e\auth-registration-proxy.spec.ts:64:11
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:326:11
+    at TimeoutManager.withRunnable [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:324:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:220:5[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:465:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:464:9[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:326:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runTest [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:317:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:194:11[90m)[39m
+    at process.<anonymous> [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m {
+  length: [33m106[39m,
+  severity: [32m'FATAL'[39m,
+  code: [32m'28P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'auth.c'[39m,
+  line: [32m'334'[39m,
+  routine: [32m'auth_failed'[39m
+}
+[CLEANUP] Database connection closed
+  ✘  2 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:106:7 › Same-Origin Authentication via Proxy › T014: should load Videos page without 401 errors after registration (11.6s)
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+Browser console error: Failed to load resource: the server responded with a status of 429 (Too Many Requests)
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✗ Failed to delete user proxy-test-1761042131013-nb64b4@example.com: error: password authentication failed for user "medio_user"
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mC:\Users\benja\projects\medio\[39mtests\e2e\auth-registration-proxy.spec.ts:64:11
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:326:11
+    at TimeoutManager.withRunnable [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:324:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:220:5[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:465:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:464:9[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:326:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runTest [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:317:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:194:11[90m)[39m
+    at process.<anonymous> [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m {
+  length: [33m106[39m,
+  severity: [32m'FATAL'[39m,
+  code: [32m'28P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'auth.c'[39m,
+  line: [32m'334'[39m,
+  routine: [32m'auth_failed'[39m
+}
+[CLEANUP] Database connection closed
+  ✘  3 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:141:7 › Same-Origin Authentication via Proxy › T015: should maintain auth after page refresh on dashboard (11.5s)
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+Browser console error: Failed to load resource: the server responded with a status of 429 (Too Many Requests)
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✗ Failed to delete user proxy-test-1761042143501-yo0vha@example.com: error: password authentication failed for user "medio_user"
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mC:\Users\benja\projects\medio\[39mtests\e2e\auth-registration-proxy.spec.ts:64:11
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:326:11
+    at TimeoutManager.withRunnable [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:324:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:220:5[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:465:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:464:9[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:326:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runTest [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:317:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:194:11[90m)[39m
+    at process.<anonymous> [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m {
+  length: [33m106[39m,
+  severity: [32m'FATAL'[39m,
+  code: [32m'28P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'auth.c'[39m,
+  line: [32m'334'[39m,
+  routine: [32m'auth_failed'[39m
+}
+[CLEANUP] Database connection closed
+  ✘  4 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:173:7 › Same-Origin Authentication via Proxy › T016: should make authenticated API call immediately after login (11.5s)
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+Browser console error: Failed to load resource: the server responded with a status of 429 (Too Many Requests)
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✗ Failed to delete user proxy-test-1761042155895-jdhikf@example.com: error: password authentication failed for user "medio_user"
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mC:\Users\benja\projects\medio\[39mtests\e2e\auth-registration-proxy.spec.ts:64:11
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:326:11
+    at TimeoutManager.withRunnable [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:324:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:220:5[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:465:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:464:9[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:326:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runTest [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:317:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:194:11[90m)[39m
+    at process.<anonymous> [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m {
+  length: [33m106[39m,
+  severity: [32m'FATAL'[39m,
+  code: [32m'28P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'auth.c'[39m,
+  line: [32m'334'[39m,
+  routine: [32m'auth_failed'[39m
+}
+[CLEANUP] Database connection closed
+  ✘  5 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:212:7 › Same-Origin Authentication via Proxy › T017: should verify cookies are sent with proxy requests (11.7s)
+Browser console error: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+Browser console error: Failed to load resource: the server responded with a status of 429 (Too Many Requests)
+[CLEANUP] Deleting 1 test user(s)...
+[CLEANUP] ✗ Failed to delete user proxy-test-1761042168541-scgpa4@example.com: error: password authentication failed for user "medio_user"
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mC:\Users\benja\projects\medio\[39mtests\e2e\auth-registration-proxy.spec.ts:64:11
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:326:11
+    at TimeoutManager.withRunnable [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:324:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:220:5[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:465:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:464:9[90m)[39m
+    at [90mC:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:326:11
+    at TestInfoImpl._runAsStep [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:315:7[90m)[39m
+    at WorkerMain._runTest [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:317:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:194:11[90m)[39m
+    at process.<anonymous> [90m(C:\Users\benja\projects\medio\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m {
+  length: [33m106[39m,
+  severity: [32m'FATAL'[39m,
+  code: [32m'28P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'auth.c'[39m,
+  line: [32m'334'[39m,
+  routine: [32m'auth_failed'[39m
+}
+[CLEANUP] Database connection closed
+  ✘  6 [chromium] › tests\e2e\auth-registration-proxy.spec.ts:261:7 › Same-Origin Authentication via Proxy › T018: Comprehensive proxy flow - registration to navigation (11.5s)
+
+
+  1) [chromium] › tests\e2e\auth-registration-proxy.spec.ts:82:7 › Same-Origin Authentication via Proxy › T013: should redirect to dashboard after successful registration 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/\/dashboard/[39m
+    Received string:  [31m"http://localhost:8080/register"[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 10000ms[22m
+    [2m    13 × unexpected value "http://localhost:8080/register"[22m
+
+
+       98 |
+       99 |     // Should redirect to dashboard (not /register)
+    > 100 |     await expect(page).toHaveURL(/\/dashboard/, { timeout: 10000 });
+          |                        ^
+      101 |
+      102 |     // Verify user is authenticated (dashboard should show user info)
+      103 |     await expect(page.locator('text=Dashboard')).toBeVisible();
+        at C:\Users\benja\projects\medio\tests\e2e\auth-registration-proxy.spec.ts:100:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-bacf5-ter-successful-registration-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-bacf5-ter-successful-registration-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-registration-proxy-Sa-bacf5-ter-successful-registration-chromium\error-context.md
+
+  2) [chromium] › tests\e2e\auth-registration-proxy.spec.ts:106:7 › Same-Origin Authentication via Proxy › T014: should load Videos page without 401 errors after registration 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/\/dashboard/[39m
+    Received string:  [31m"http://localhost:8080/register"[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 10000ms[22m
+    [2m    13 × unexpected value "http://localhost:8080/register"[22m
+
+
+      116 |     await page.fill('input[name="confirmPassword"]', testUser.password);
+      117 |     await page.click('button[type="submit"]');
+    > 118 |     await expect(page).toHaveURL(/\/dashboard/, { timeout: 10000 });
+          |                        ^
+      119 |
+      120 |     // Track network requests
+      121 |     const failedRequests: string[] = [];
+        at C:\Users\benja\projects\medio\tests\e2e\auth-registration-proxy.spec.ts:118:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-2255d-1-errors-after-registration-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-2255d-1-errors-after-registration-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-registration-proxy-Sa-2255d-1-errors-after-registration-chromium\error-context.md
+
+  3) [chromium] › tests\e2e\auth-registration-proxy.spec.ts:141:7 › Same-Origin Authentication via Proxy › T015: should maintain auth after page refresh on dashboard 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/\/dashboard/[39m
+    Received string:  [31m"http://localhost:8080/register"[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 10000ms[22m
+    [2m    14 × unexpected value "http://localhost:8080/register"[22m
+
+
+      151 |     await page.fill('input[name="confirmPassword"]', testUser.password);
+      152 |     await page.click('button[type="submit"]');
+    > 153 |     await expect(page).toHaveURL(/\/dashboard/, { timeout: 10000 });
+          |                        ^
+      154 |
+      155 |     // Get cookies before refresh
+      156 |     const cookiesBefore = await context.cookies();
+        at C:\Users\benja\projects\medio\tests\e2e\auth-registration-proxy.spec.ts:153:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-2b4e5-r-page-refresh-on-dashboard-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-2b4e5-r-page-refresh-on-dashboard-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-registration-proxy-Sa-2b4e5-r-page-refresh-on-dashboard-chromium\error-context.md
+
+  4) [chromium] › tests\e2e\auth-registration-proxy.spec.ts:173:7 › Same-Origin Authentication via Proxy › T016: should make authenticated API call immediately after login 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/\/dashboard/[39m
+    Received string:  [31m"http://localhost:8080/register"[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 10000ms[22m
+    [2m    14 × unexpected value "http://localhost:8080/register"[22m
+
+
+      200 |     // Submit registration
+      201 |     await page.click('button[type="submit"]');
+    > 202 |     await expect(page).toHaveURL(/\/dashboard/, { timeout: 10000 });
+          |                        ^
+      203 |
+      204 |     // Wait a bit for API calls to complete
+      205 |     await page.waitForTimeout(2000);
+        at C:\Users\benja\projects\medio\tests\e2e\auth-registration-proxy.spec.ts:202:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-cfe3a-all-immediately-after-login-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-cfe3a-all-immediately-after-login-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-registration-proxy-Sa-cfe3a-all-immediately-after-login-chromium\error-context.md
+
+  5) [chromium] › tests\e2e\auth-registration-proxy.spec.ts:212:7 › Same-Origin Authentication via Proxy › T017: should verify cookies are sent with proxy requests 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/\/dashboard/[39m
+    Received string:  [31m"http://localhost:8080/register"[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 10000ms[22m
+    [2m    13 × unexpected value "http://localhost:8080/register"[22m
+
+
+      222 |     await page.fill('input[name="confirmPassword"]', testUser.password);
+      223 |     await page.click('button[type="submit"]');
+    > 224 |     await expect(page).toHaveURL(/\/dashboard/, { timeout: 10000 });
+          |                        ^
+      225 |
+      226 |     // Get cookies
+      227 |     const cookies = await context.cookies();
+        at C:\Users\benja\projects\medio\tests\e2e\auth-registration-proxy.spec.ts:224:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-19a09-re-sent-with-proxy-requests-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-19a09-re-sent-with-proxy-requests-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-registration-proxy-Sa-19a09-re-sent-with-proxy-requests-chromium\error-context.md
+
+  6) [chromium] › tests\e2e\auth-registration-proxy.spec.ts:261:7 › Same-Origin Authentication via Proxy › T018: Comprehensive proxy flow - registration to navigation 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/\/dashboard/[39m
+    Received string:  [31m"http://localhost:8080/register"[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 10000ms[22m
+    [2m    14 × unexpected value "http://localhost:8080/register"[22m
+
+
+      271 |     await page.fill('input[name="confirmPassword"]', testUser.password);
+      272 |     await page.click('button[type="submit"]');
+    > 273 |     await expect(page).toHaveURL(/\/dashboard/, { timeout: 10000 });
+          |                        ^
+      274 |
+      275 |     // 2. Verify cookies
+      276 |     const cookies = await context.cookies();
+        at C:\Users\benja\projects\medio\tests\e2e\auth-registration-proxy.spec.ts:273:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-6d433--registration-to-navigation-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\auth-registration-proxy-Sa-6d433--registration-to-navigation-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-registration-proxy-Sa-6d433--registration-to-navigation-chromium\error-context.md
+
+  6 failed
+    [chromium] › tests\e2e\auth-registration-proxy.spec.ts:82:7 › Same-Origin Authentication via Proxy › T013: should redirect to dashboard after successful registration 
+    [chromium] › tests\e2e\auth-registration-proxy.spec.ts:106:7 › Same-Origin Authentication via Proxy › T014: should load Videos page without 401 errors after registration 
+    [chromium] › tests\e2e\auth-registration-proxy.spec.ts:141:7 › Same-Origin Authentication via Proxy › T015: should maintain auth after page refresh on dashboard 
+    [chromium] › tests\e2e\auth-registration-proxy.spec.ts:173:7 › Same-Origin Authentication via Proxy › T016: should make authenticated API call immediately after login 
+    [chromium] › tests\e2e\auth-registration-proxy.spec.ts:212:7 › Same-Origin Authentication via Proxy › T017: should verify cookies are sent with proxy requests 
+    [chromium] › tests\e2e\auth-registration-proxy.spec.ts:261:7 › Same-Origin Authentication via Proxy › T018: Comprehensive proxy flow - registration to navigation 

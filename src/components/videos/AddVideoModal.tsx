@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { createVideo } from '../../services/videoService';
 import { getPlatforms } from '../../services/platformService';
 import { AgeRating, CreateVideoRequest, Platform } from '../../types/video';

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { FiPlus, FiCreditCard, FiLink2, FiTrash2 } from 'react-icons/fi';
 import axios from 'axios';
 import { resolveApiBaseUrlOrDefault } from '../utils/runtimeConfig';
 import './NFCManager.css';
 
-const API_URL = resolveApiBaseUrlOrDefault('http://localhost:5000/api');
+const API_URL = resolveApiBaseUrlOrDefault('/api');
 
 interface NFCChip {
   id: string;
@@ -192,8 +192,10 @@ const NFCManager: React.FC = () => {
               </div>
               <form onSubmit={handleAddChip} className="modal-form">
                 <div className="form-group">
-                  <label>Chip ID</label>
+                  <label htmlFor="chipUid">Chip ID</label>
                   <input
+                    id="chipUid"
+                    name="chip_uid"
                     type="text"
                     value={formData.chip_uid}
                     onChange={(e) => setFormData({...formData, chip_uid: e.target.value})}
@@ -204,8 +206,10 @@ const NFCManager: React.FC = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Label</label>
+                  <label htmlFor="label">Label</label>
                   <input
+                    id="label"
+                    name="label"
                     type="text"
                     value={formData.label}
                     onChange={(e) => setFormData({...formData, label: e.target.value})}

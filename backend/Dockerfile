@@ -1,32 +1,22 @@
 FROM node:18-alpine
 
-# Create app directory and user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
-
 WORKDIR /app
 
-# Copy package files with correct ownership
-COPY --chown=nodejs:nodejs package*.json ./
+# Copy package files
+COPY package*.json ./
 
-# Install dependencies as root (needed for some native modules)
-# Use production-only install for production, full install for development
-ARG NODE_ENV=production
-RUN if [ "$NODE_ENV" = "development" ]; then npm ci; else npm ci --only=production; fi
+# Install dependencies
+RUN npm ci --only=production && npm install nodemon --save-dev
 
-# Copy source code with correct ownership
-COPY --chown=nodejs:nodejs . .
-
-# Ensure directories are owned by the app user
-RUN chown -R nodejs:nodejs /app && \
-    mkdir -p /app/uploads/videos /app/uploads/thumbnails /app/logs && \
-    chown -R nodejs:nodejs /app/uploads /app/logs
-
-# Switch to non-root user
-USER nodejs
+# Copy application code
+COPY . .
 
 # Expose port
 EXPOSE 5000
 
-# Start the server
-CMD ["node", "src/server.js"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:5000/api/health', (r) => { process.exit(r.statusCode === 200 ? 0 : 1); })"
+
+# Start application
+CMD ["npm", "start"]

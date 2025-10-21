@@ -1,0 +1,43 @@
+No machine specified, using 2874234fed42e8 in region iad
+Connecting to fdaa:2c:d077:a7b:1c5:db2e:33ba:2...
+===================================
+  PRODUCTION MIGRATION RUNNER
+===================================
+
+[1/4] Adding video_url column and constraint...
+  ✓ Added video_url column
+  ✓ Added unique constraint on (user_id, video_url)
+
+[2/4] Adding channel_name column...
+  ✓ Added channel_name column
+
+[3/4] Adding user_uuid to users table...
+  ✓ Added user_uuid column to users
+
+[4/4] Adding user_uuid to nfc_chips table...
+  ✓ Added user_uuid column to nfc_chips
+  ✓ Added foreign key constraint on nfc_chips(user_uuid)
+
+===================================
+  VERIFYING SCHEMA
+===================================
+
+Videos table columns:
+  - id: uuid
+  - user_id: uuid
+  - platform_id: uuid
+  - title: character varying(500)
+  - description: text
+  - thumbnail_url: character varying(500)
+  - platform_video_id: character varying(255)
+  - duration_seconds: integer
+  - age_rating: character varying(10)
+  - created_at: timestamp without time zone
+  - updated_at: timestamp without time zone
+  - video_url: text
+  - channel_name: character varying(255)
+
+✅ All migrations completed successfully!
+✅ Production database is up to date.
+
+Error: The handle is invalid.

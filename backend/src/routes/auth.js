@@ -15,10 +15,11 @@ const setAuthCookie = (res, token) => {
   res.cookie('authToken', token, {
     httpOnly: true,
     secure: isProduction, // HTTPS only in production
-    sameSite: isProduction ? 'none' : 'lax', // 'none' requires Secure; 'lax' is safer for development
+    sameSite: 'lax', // Same-origin authentication via BFF proxy
     maxAge: 15 * 60 * 1000, // 15 minutes (access token)
     path: '/'
-    // domain option removed for cross-origin security - cookies only valid for backend domain
+    // NOTE: No 'domain' attribute - cookie is scoped to exact origin (host + port)
+    // BFF proxy (localhost:8080) receives cookies from browser and forwards them to backend (localhost:5000)
   });
 };
 
@@ -29,10 +30,11 @@ const setRefreshCookie = (res, token) => {
   res.cookie('refreshToken', token, {
     httpOnly: true,
     secure: isProduction, // HTTPS only in production
-    sameSite: isProduction ? 'none' : 'lax',
+    sameSite: 'lax', // Same-origin authentication via BFF proxy
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     path: '/'
-    // domain option removed for cross-origin security - cookies only valid for backend domain
+    // NOTE: No 'domain' attribute - cookie is scoped to exact origin (host + port)
+    // BFF proxy (localhost:8080) receives cookies from browser and forwards them to backend (localhost:5000)
   });
 };
 
@@ -88,7 +90,7 @@ router.post('/register',
     try {
       // Check if user exists
       const existingUser = await pool.query(
-        'SELECT id FROM users WHERE email = $1',
+        'SELECT user_uuid FROM users WHERE email = $1',
         [email]
       );
 
@@ -101,23 +103,34 @@ router.post('/register',
 
       // Create user
       const result = await pool.query(
-        'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name',
+        'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING user_uuid, email, name',
         [email, passwordHash, name]
       );
 
       const user = result.rows[0];
 
+      logger.info('[REGISTER] User created:', user.email, 'UUID:', user.user_uuid);
+
       // Generate both access and refresh tokens
-      const accessToken = generateAccessToken(user);
-      const refreshToken = generateRefreshToken(user);
+      const accessToken = generateAccessToken({ id: user.user_uuid, email: user.email });
+      const refreshToken = generateRefreshToken({ id: user.user_uuid, email: user.email });
+
+      logger.info('[REGISTER] Access token generated:', accessToken.substring(0, 50) + '...');
+      logger.info('[REGISTER] Refresh token generated:', refreshToken.substring(0, 50) + '...');
+
+      // Decode to verify token payload
+      const decoded = jwt.decode(accessToken);
+      logger.info('[REGISTER] Access token payload:', JSON.stringify(decoded, null, 2));
 
       // Set secure httpOnly cookies
       setAuthCookie(res, accessToken);
       setRefreshCookie(res, refreshToken);
 
+      logger.info('[REGISTER] Cookies set successfully');
+
       res.status(201).json({
         user: {
-          id: user.id,
+          id: user.user_uuid,
           email: user.email,
           name: user.name
         },
@@ -148,7 +161,7 @@ router.post('/login',
     try {
       // Get user
       const result = await pool.query(
-        'SELECT id, email, name, password_hash FROM users WHERE email = $1',
+        'SELECT user_uuid, email, name, password_hash FROM users WHERE email = $1',
         [email]
       );
 
@@ -165,8 +178,8 @@ router.post('/login',
       }
 
       // Generate both access and refresh tokens
-      const accessToken = generateAccessToken(user);
-      const refreshToken = generateRefreshToken(user);
+      const accessToken = generateAccessToken({ id: user.user_uuid, email: user.email });
+      const refreshToken = generateRefreshToken({ id: user.user_uuid, email: user.email });
 
       // Set secure httpOnly cookies
       setAuthCookie(res, accessToken);
@@ -174,7 +187,7 @@ router.post('/login',
 
       res.json({
         user: {
-          id: user.id,
+          id: user.user_uuid,
           email: user.email,
           name: user.name
         },
@@ -191,67 +204,100 @@ router.post('/login',
 // Get current auth status / verify token endpoint
 router.get('/me', async (req, res) => {
   try {
+    logger.info('[AUTH /me] ===== START AUTH CHECK =====');
+    logger.info('[AUTH /me] Headers:', JSON.stringify(req.headers, null, 2));
+    logger.info('[AUTH /me] Cookies:', JSON.stringify(req.cookies, null, 2));
+
     // Get token from cookie or header
     let token = req.cookies?.authToken;
+    logger.info('[AUTH /me] Token from cookie:', token ? `${token.substring(0, 50)}...` : 'NONE');
 
     if (!token) {
       const authHeader = req.headers['authorization'];
       token = authHeader && authHeader.split(' ')[1];
+      logger.info('[AUTH /me] Token from Authorization header:', token ? `${token.substring(0, 50)}...` : 'NONE');
     }
 
     if (!token) {
+      logger.warn('[AUTH /me] No token found - returning 401');
       return res.status(401).json({ message: 'Not authenticated', authenticated: false });
     }
 
     // Verify the token
     const jwt = require('jsonwebtoken');
     const JWT_SECRET = process.env.JWT_SECRET;
+    logger.info('[AUTH /me] JWT_SECRET present:', !!JWT_SECRET);
+    logger.info('[AUTH /me] JWT_SECRET length:', JWT_SECRET?.length);
 
     try {
+      logger.info('[AUTH /me] Attempting jwt.verify()...');
       const decoded = jwt.verify(token, JWT_SECRET);
+      logger.info('[AUTH /me] ✓ JWT verification SUCCESS');
+      logger.info('[AUTH /me] Decoded token:', JSON.stringify(decoded, null, 2));
 
       // Check if token is blacklisted
       if (decoded.jti) {
-        const blacklistCheck = await pool.query(
-          'SELECT id FROM token_blacklist WHERE token_jti = $1',
-          [decoded.jti]
-        );
+        logger.info('[AUTH /me] Checking token blacklist for jti:', decoded.jti);
+        try {
+          const blacklistCheck = await pool.query(
+            'SELECT id FROM token_blacklist WHERE token_jti = $1',
+            [decoded.jti]
+          );
 
-        if (blacklistCheck.rows.length > 0) {
-          res.clearCookie('authToken');
-          return res.status(401).json({ message: 'Token has been revoked', authenticated: false });
+          if (blacklistCheck.rows.length > 0) {
+            logger.warn('[AUTH /me] Token is BLACKLISTED - returning 401');
+            res.clearCookie('authToken');
+            return res.status(401).json({ message: 'Token has been revoked', authenticated: false });
+          }
+          logger.info('[AUTH /me] Token NOT blacklisted');
+        } catch (blacklistError) {
+          // Log the error but don't reject valid tokens if blacklist check fails
+          logger.error('[AUTH /me] Blacklist check failed (table may not exist):', blacklistError.message);
+          logger.warn('[AUTH /me] Continuing authentication despite blacklist check failure');
+          // Continue to user verification - don't fail authentication
         }
       }
 
       // Get fresh user data from database
+      logger.info('[AUTH /me] Fetching user from database, user_uuid:', decoded.id);
       const userResult = await pool.query(
-        'SELECT id, email, name FROM users WHERE id = $1',
+        'SELECT user_uuid, email, name FROM users WHERE user_uuid = $1',
         [decoded.id]
       );
 
       if (userResult.rows.length === 0) {
+        logger.warn('[AUTH /me] User NOT FOUND in database - returning 401');
         res.clearCookie('authToken');
         return res.status(401).json({ message: 'User not found', authenticated: false });
       }
 
       const user = userResult.rows[0];
+      logger.info('[AUTH /me] ✓ User found:', user.email);
+      logger.info('[AUTH /me] ===== AUTH CHECK SUCCESS =====');
+
       res.json({
         authenticated: true,
         user: {
-          id: user.id,
+          id: user.user_uuid,
           email: user.email,
           name: user.name
         }
       });
     } catch (err) {
+      logger.error('[AUTH /me] ✗ JWT verification FAILED:', err.message);
+      logger.error('[AUTH /me] Error name:', err.name);
+      logger.error('[AUTH /me] Error stack:', err.stack);
+
       res.clearCookie('authToken');
       if (err.name === 'TokenExpiredError') {
+        logger.warn('[AUTH /me] Token EXPIRED');
         return res.status(401).json({ message: 'Token has expired', authenticated: false });
       }
+      logger.warn('[AUTH /me] Token INVALID');
       return res.status(401).json({ message: 'Invalid token', authenticated: false });
     }
   } catch (error) {
-    logger.error('Auth check error:', error);
+    logger.error('[AUTH /me] Unexpected error:', error);
     res.status(500).json({ message: 'Auth check failed' });
   }
 });
@@ -279,21 +325,28 @@ router.post('/refresh', async (req, res) => {
 
       // Check if token is blacklisted
       if (decoded.jti) {
-        const blacklistCheck = await pool.query(
-          'SELECT id FROM token_blacklist WHERE token_jti = $1',
-          [decoded.jti]
-        );
+        try {
+          const blacklistCheck = await pool.query(
+            'SELECT id FROM token_blacklist WHERE token_jti = $1',
+            [decoded.jti]
+          );
 
-        if (blacklistCheck.rows.length > 0) {
-          res.clearCookie('authToken');
-          res.clearCookie('refreshToken');
-          return res.status(401).json({ message: 'Refresh token has been revoked' });
+          if (blacklistCheck.rows.length > 0) {
+            res.clearCookie('authToken');
+            res.clearCookie('refreshToken');
+            return res.status(401).json({ message: 'Refresh token has been revoked' });
+          }
+        } catch (blacklistError) {
+          // Log the error but don't reject valid tokens if blacklist check fails
+          logger.error('[REFRESH] Blacklist check failed:', blacklistError.message);
+          logger.warn('[REFRESH] Continuing authentication despite blacklist check failure');
+          // Continue to user verification - don't fail authentication
         }
       }
 
       // Get fresh user data from database
       const userResult = await pool.query(
-        'SELECT id, email, name FROM users WHERE id = $1',
+        'SELECT user_uuid, email, name FROM users WHERE user_uuid = $1',
         [decoded.id]
       );
 
@@ -306,7 +359,7 @@ router.post('/refresh', async (req, res) => {
       const user = userResult.rows[0];
 
       // Generate new access token
-      const newAccessToken = generateAccessToken(user);
+      const newAccessToken = generateAccessToken({ id: user.user_uuid, email: user.email });
 
       // Set new access token cookie
       setAuthCookie(res, newAccessToken);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FiMail, FiLock, FiUser, FiPlay } from 'react-icons/fi';
@@ -86,6 +86,7 @@ const Register: React.FC = () => {
             <input
               type="text"
               id="name"
+              name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -101,6 +102,7 @@ const Register: React.FC = () => {
             <input
               type="email"
               id="email"
+              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -116,6 +118,7 @@ const Register: React.FC = () => {
             <input
               type="password"
               id="password"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -131,6 +134,7 @@ const Register: React.FC = () => {
             <input
               type="password"
               id="confirmPassword"
+              name="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required

@@ -1,0 +1,143 @@
+==> Verifying app config
+Validating C:\Users\benja\projects\medio\backend\fly.toml
+[32m✓[0m Configuration is valid
+--> Verified app config
+==> Building image
+Waiting for depot builder...
+
+==> Building image with Depot
+--> build:  (​)
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 525B 0.5s done
+#1 DONE 0.5s
+
+#2 [internal] load metadata for docker.io/library/node:18-alpine
+#2 DONE 0.3s
+
+#3 [internal] load .dockerignore
+#3 transferring context:
+#3 transferring context: 105B 0.5s done
+#3 DONE 0.5s
+
+#4 [1/5] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+#4 resolve docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 1.76MB 2.2s done
+#5 DONE 2.2s
+
+#6 [2/5] WORKDIR /app
+#6 CACHED
+
+#7 [3/5] COPY package*.json ./
+#7 DONE 0.0s
+
+#8 [4/5] RUN npm ci --only=production && npm install nodemon --save-dev
+#8 0.480 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+#8 3.517 npm warn deprecated csurf@1.11.0: This package is archived and no longer maintained. For support, visit https://github.com/expressjs/express/discussions
+#8 3.618 npm warn deprecated multer@1.4.5-lts.2: Multer 1.x is impacted by a number of vulnerabilities, which have been patched in 2.x. You should upgrade to the latest 2.x version.
+#8 5.826 
+#8 5.826 added 254 packages, and audited 255 packages in 5s
+#8 5.826 
+#8 5.826 24 packages are looking for funding
+#8 5.826   run `npm fund` for details
+#8 5.830 
+#8 5.830 4 vulnerabilities (2 low, 2 moderate)
+#8 5.830 
+#8 5.830 To address all issues possible (including breaking changes), run:
+#8 5.830   npm audit fix --force
+#8 5.830 
+#8 5.830 Some issues need review, and may require choosing
+#8 5.830 a different dependency.
+#8 5.830 
+#8 5.830 Run `npm audit` for details.
+#8 5.832 npm notice
+#8 5.832 npm notice New major version of npm available! 10.8.2 -> 11.6.2
+#8 5.832 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2
+#8 5.832 npm notice To update run: npm install -g npm@11.6.2
+#8 5.832 npm notice
+#8 8.479 npm warn deprecated supertest@6.3.4: Please upgrade to supertest v7.1.3+, see release notes at https://github.com/forwardemail/supertest/releases/tag/v7.1.3 - maintenance is supported by Forward Email @ https://forwardemail.net
+#8 8.538 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+#8 8.785 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+#8 8.906 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+#8 9.265 npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+#8 9.289 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+#8 9.504 npm warn deprecated superagent@8.1.2: Please upgrade to superagent v10.2.2+, see release notes at https://github.com/forwardemail/superagent/releases/tag/v10.2.2 - maintenance is supported by Forward Email @ https://forwardemail.net
+#8 9.793 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+#8 10.28 
+#8 10.28 added 360 packages, and audited 615 packages in 4s
+#8 10.28 
+#8 10.28 75 packages are looking for funding
+#8 10.28   run `npm fund` for details
+#8 10.29 
+#8 10.29 4 vulnerabilities (2 low, 2 moderate)
+#8 10.29 
+#8 10.29 To address all issues possible (including breaking changes), run:
+#8 10.29   npm audit fix --force
+#8 10.29 
+#8 10.29 Some issues need review, and may require choosing
+#8 10.29 a different dependency.
+#8 10.29 
+#8 10.29 Run `npm audit` for details.
+#8 DONE 11.2s
+
+#9 [5/5] COPY . .
+#9 DONE 0.3s
+
+#10 exporting to image
+#10 exporting layers
+#10 exporting layers 1.5s done
+#10 exporting manifest sha256:a32f5a15469d6ad90ae7ce1d439f1273d474f8c5d052411af4d9b625c22b9da7 done
+#10 exporting config sha256:33e78834401899666a2acccb61166d1a7c17f03d2f031c48510bfc57ce78a180 done
+#10 pushing layers for registry.fly.io/medio-backend:deployment-01K845HG1N0M54KETQRDB96Q9Z@sha256:a32f5a15469d6ad90ae7ce1d439f1273d474f8c5d052411af4d9b625c22b9da7
+#10 pushing layer sha256:7ea02edd7f5141e9025459a22ee728518b35f29dec18b9283861aab6c07256bc
+#10 pushing layer sha256:1e5a4c89cee5c0826c540ab06d4b6b491c96eda01837f430bd47f0d26702d6e3
+#10 pushing layer sha256:33e78834401899666a2acccb61166d1a7c17f03d2f031c48510bfc57ce78a180
+#10 pushing layer sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870
+#10 pushing layer sha256:dd71dde834b5c203d162902e6b8994cb2309ae049a0eabc4efea161b2b5a3d0e
+#10 pushing layer sha256:ad8e2de87c87f584f58b23310fd2fadab5cb7a251af5b06e541fecdf8b88b0d1
+#10 pushing layer sha256:bcfc38b6dac49f2770b0ba89a5272e073b171f4bd5ca53eb777a76997dcad586
+#10 pushing layer sha256:25ff2da83641908f65c3a74d80409d6b1b62ccfaab220b9ea70b80df5a2e0549
+#10 pushing layer sha256:43dda21e08e1c1bb6a385a2311711b0db5b0fb65bb716a5e724568682612510c
+#10 pushing layer sha256:dd71dde834b5c203d162902e6b8994cb2309ae049a0eabc4efea161b2b5a3d0e 0.3s done
+#10 pushing layer sha256:25ff2da83641908f65c3a74d80409d6b1b62ccfaab220b9ea70b80df5a2e0549 0.7s done
+#10 pushing layer sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870 1.3s done
+#10 pushing layer sha256:1e5a4c89cee5c0826c540ab06d4b6b491c96eda01837f430bd47f0d26702d6e3 1.5s done
+#10 pushing layer sha256:7ea02edd7f5141e9025459a22ee728518b35f29dec18b9283861aab6c07256bc 1.5s done
+#10 pushing layer sha256:33e78834401899666a2acccb61166d1a7c17f03d2f031c48510bfc57ce78a180 1.5s done
+#10 pushing layer sha256:bcfc38b6dac49f2770b0ba89a5272e073b171f4bd5ca53eb777a76997dcad586 1.5s done
+#10 pushing layer sha256:43dda21e08e1c1bb6a385a2311711b0db5b0fb65bb716a5e724568682612510c 1.5s done
+#10 pushing layers for registry.fly.io/medio-backend:deployment-01K845HG1N0M54KETQRDB96Q9Z@sha256:a32f5a15469d6ad90ae7ce1d439f1273d474f8c5d052411af4d9b625c22b9da7 1.9s done
+#10 pushing layer sha256:ad8e2de87c87f584f58b23310fd2fadab5cb7a251af5b06e541fecdf8b88b0d1 1.9s done
+#10 pushing manifest for registry.fly.io/medio-backend:deployment-01K845HG1N0M54KETQRDB96Q9Z@sha256:a32f5a15469d6ad90ae7ce1d439f1273d474f8c5d052411af4d9b625c22b9da7
+#10 pushing manifest for registry.fly.io/medio-backend:deployment-01K845HG1N0M54KETQRDB96Q9Z@sha256:a32f5a15469d6ad90ae7ce1d439f1273d474f8c5d052411af4d9b625c22b9da7 0.1s done
+#10 DONE 3.5s
+--> Build Summary:  (​)
+[38;5;252m--> Building image done[0m
+image: registry.fly.io/medio-backend:deployment-01K845HG1N0M54KETQRDB96Q9Z
+image size: 80 MB
+
+Watch your deployment at https://fly.io/apps/medio-backend/monitoring
+
+Updating existing machines in 'medio-backend' with rolling strategy
+> [1/2] Acquiring lease for 2874234fed42e8
+> [1/2] Acquired lease for 2874234fed42e8
+> [2/2] Acquiring lease for 28715d4c671438
+> [2/2] Acquired lease for 28715d4c671438
+> [2/2] Updating machine config for 28715d4c671438
+> [1/2] Updating machine config for 2874234fed42e8
+> [2/2] Updating 28715d4c671438 [app]
+> [1/2] Updating 2874234fed42e8 [app]
+> [2/2] Updated machine config for 28715d4c671438
+✔ [2/2] Machine 28715d4c671438 is now in a good state
+> [1/2] Updated machine config for 2874234fed42e8
+✔ [1/2] Machine 2874234fed42e8 is now in a good state
+> [2/2] Clearing lease for 28715d4c671438
+> [1/2] Clearing lease for 2874234fed42e8
+✔ [2/2] Cleared lease for 28715d4c671438
+✔ [1/2] Cleared lease for 2874234fed42e8
+Checking DNS configuration for medio-backend.fly.dev
+
+Visit your newly deployed app at https://medio-backend.fly.dev/
