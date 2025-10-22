@@ -45,7 +45,10 @@
     "lint": "eslint src/ --ext .ts,.tsx",
     "lint:fix": "eslint src/ --ext .ts,.tsx --fix",
     "validate": "npm run lint && npm run test:coverage && npm run build",
-    "start:prod": "node server.js"
+    "start:prod": "node server.js",
+    "test:integration": "jest --config=jest.integration.config.js",
+    "test:integration:local": "TEST_BASE_URL=http://localhost:8080 jest --config=jest.integration.config.js",
+    "test:integration:production": "TEST_BASE_URL=https://medio-react-app.fly.dev jest --config=jest.integration.config.js"
   },
   "eslintConfig": {
     "extends": [
@@ -87,6 +90,7 @@
     "@types/pg": "^8.15.5",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-unused-imports": "^4.3.0",
+    "jest-html-reporter": "^4.3.0",
     "pg": "^8.16.3"
   },
   "overrides": {
