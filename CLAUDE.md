@@ -71,7 +71,16 @@ Browser (localhost:8080)
 
 ### Database Schema (Production)
 
-**Critical Note**: Production uses `user_id`/`platform_id` naming (NOT `user_uuid`/`platform_uuid` as in init.sql).
+**CRITICAL FIX APPLIED (2025-10-22)**: `init.sql` has been corrected to use proper column names matching backend code.
+
+**What was fixed**:
+- ❌ OLD: Primary keys named `user_uuid`, `platform_uuid`, `video_uuid` → ✅ NEW: `id`
+- ❌ OLD: Foreign keys named `user_uuid`, `platform_uuid` → ✅ NEW: `user_id`, `platform_id`
+- **This mismatch caused "Server error while saving video" and "NFC chip registration fails"**
+
+**If you have an existing production database** with the old schema:
+- Run migration: `backend/migrations/001_fix_column_naming.sql`
+- See: `backend/migrations/README.md` for instructions
 
 **Core Tables** (`backend/init.sql`):
 ```
