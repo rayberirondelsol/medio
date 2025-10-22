@@ -15,15 +15,15 @@ router.get('/', authenticateToken, async (req, res) => {
     
     // Get total count for pagination metadata
     const countResult = await pool.query(
-      'SELECT COUNT(*) FROM profiles WHERE user_id = $1',
+      'SELECT COUNT(*) FROM profiles WHERE user_uuid = $1',
       [req.user.id]
     );
     const totalCount = parseInt(countResult.rows[0].count);
     const totalPages = Math.ceil(totalCount / limit);
-    
+
     // Get paginated results
     const result = await pool.query(
-      'SELECT * FROM profiles WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3',
+      'SELECT * FROM profiles WHERE user_uuid = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3',
       [req.user.id, limit, offset]
     );
     
@@ -62,7 +62,7 @@ router.post('/',
 
     try {
       const result = await pool.query(`
-        INSERT INTO profiles (user_id, name, avatar_url, daily_limit_minutes)
+        INSERT INTO profiles (user_uuid, name, avatar_url, daily_limit_minutes)
         VALUES ($1, $2, $3, $4)
         RETURNING *
       `, [req.user.id, name, avatar_url, daily_limit_minutes || 60]);
@@ -93,7 +93,7 @@ router.put('/:id',
             avatar_url = COALESCE($2, avatar_url),
             daily_limit_minutes = COALESCE($3, daily_limit_minutes),
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = $4 AND user_id = $5
+        WHERE profile_uuid = $4 AND user_uuid = $5
         RETURNING *
       `, [name, avatar_url, daily_limit_minutes, id, req.user.id]);
 
@@ -115,7 +115,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 
   try {
     const result = await pool.query(
-      'DELETE FROM profiles WHERE id = $1 AND user_id = $2 RETURNING id',
+      'DELETE FROM profiles WHERE profile_uuid = $1 AND user_uuid = $2 RETURNING profile_uuid',
       [id, req.user.id]
     );
 
@@ -137,7 +137,7 @@ router.get('/:id/stats', authenticateToken, async (req, res) => {
   try {
     // Verify ownership
     const profileCheck = await pool.query(
-      'SELECT id FROM profiles WHERE id = $1 AND user_id = $2',
+      'SELECT profile_uuid FROM profiles WHERE profile_uuid = $1 AND user_uuid = $2',
       [id, req.user.id]
     );
 
