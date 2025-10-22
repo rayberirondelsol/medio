@@ -25,7 +25,7 @@ router.get('/', authenticateToken, async (req, res) => {
     const result = await pool.query(`
       SELECT v.*, p.name as platform_name, p.icon_url
       FROM videos v
-      LEFT JOIN platforms p ON v.platform_id = p.id
+      LEFT JOIN platforms p ON v.platform_uuid = p.platform_uuid
       WHERE v.user_uuid = $1
       ORDER BY v.created_at DESC
       LIMIT $2 OFFSET $3
