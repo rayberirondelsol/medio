@@ -44,10 +44,8 @@ const proxy = createProxyMiddleware({
   changeOrigin: true,
   // When using app.use('/api', proxy), Express strips '/api' from req.path
   // We need to add it back when forwarding to backend
-  pathRewrite: (path, req) => {
-    const newPath = '/api' + path;
-    console.log(`[PROXY] Rewriting path: ${path} -> ${newPath}`);
-    return newPath;
+  pathRewrite: {
+    '^/': '/api/'  // Prepend /api/ to all paths
   },
   // CRITICAL: Cookie handling for same-origin auth
   cookieDomainRewrite: {
