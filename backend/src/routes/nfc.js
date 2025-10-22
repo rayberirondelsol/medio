@@ -17,7 +17,7 @@ const router = express.Router();
 router.get('/chips', authenticateToken, nfcChipListingLimiter, async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT * FROM nfc_chips WHERE user_id = $1 ORDER BY created_at DESC',
+      'SELECT * FROM nfc_chips WHERE user_uuid = $1 ORDER BY created_at DESC',
       [req.user.id]
     );
     res.json(result.rows);
@@ -79,7 +79,7 @@ router.post('/chips',
 
     try {
       const result = await pool.query(`
-        INSERT INTO nfc_chips (user_id, chip_uid, label)
+        INSERT INTO nfc_chips (user_uuid, chip_uid, label)
         VALUES ($1, $2, $3)
         RETURNING *
       `, [req.user.id, normalizedUID, label]);
@@ -136,7 +136,7 @@ router.post('/map',
     try {
       // Verify ownership
       const chipCheck = await pool.query(
-        'SELECT id FROM nfc_chips WHERE id = $1 AND user_id = $2',
+        'SELECT id FROM nfc_chips WHERE id = $1 AND user_uuid = $2',
         [nfc_chip_id, req.user.id]
       );
 
@@ -251,7 +251,7 @@ router.post('/scan',
         WHERE nc.chip_uid = $1
           AND vnm.is_active = true
           AND (vnm.profile_id = $2 OR vnm.profile_id IS NULL)
-          AND nc.user_id = $3
+          AND nc.user_uuid = $3
         LIMIT 1
       `, [normalizedUID, profile_id, req.user.id]);
 
@@ -267,7 +267,7 @@ router.post('/scan',
           SELECT p.daily_limit_minutes, COALESCE(dwt.total_minutes, 0) as watched_today
           FROM profiles p
           LEFT JOIN daily_watch_time dwt ON p.id = dwt.profile_id AND dwt.date = CURRENT_DATE
-          WHERE p.id = $1 AND p.user_id = $2
+          WHERE p.id = $1 AND p.user_uuid = $2
         `, [profile_id, req.user.id]);
 
         if (limitCheck.rows.length > 0) {
@@ -301,7 +301,7 @@ router.delete('/map/:mappingId', authenticateToken, async (req, res) => {
       FROM nfc_chips nc
       WHERE vnm.nfc_chip_id = nc.id
         AND vnm.id = $1
-        AND nc.user_id = $2
+        AND nc.user_uuid = $2
       RETURNING vnm.id
     `, [mappingId, req.user.id]);
 
@@ -329,7 +329,7 @@ router.delete('/chips/:chipId',
       // Delete chip with ownership verification
       // CASCADE deletion will automatically remove associated video_nfc_mappings
       const result = await pool.query(
-        'DELETE FROM nfc_chips WHERE id = $1 AND user_id = $2 RETURNING id',
+        'DELETE FROM nfc_chips WHERE id = $1 AND user_uuid = $2 RETURNING id',
         [chipId, req.user.id]
       );
 

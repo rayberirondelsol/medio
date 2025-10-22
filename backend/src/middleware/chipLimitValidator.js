@@ -14,7 +14,7 @@ const validateChipLimit = async (req, res, next) => {
 
     // Count current chips for this user
     const result = await pool.query(
-      'SELECT COUNT(*) as chip_count FROM nfc_chips WHERE user_id = $1',
+      'SELECT COUNT(*) as chip_count FROM nfc_chips WHERE user_uuid = $1',
       [req.user.id]
     );
 

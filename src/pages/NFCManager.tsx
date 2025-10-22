@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { FiPlus, FiCreditCard, FiLink2, FiTrash2 } from 'react-icons/fi';
-import axios from 'axios';
-import { resolveApiBaseUrlOrDefault } from '../utils/runtimeConfig';
+import axiosInstance from '../utils/axiosConfig';
 import './NFCManager.css';
-
-const API_URL = resolveApiBaseUrlOrDefault('/api');
 
 interface NFCChip {
   id: string;
@@ -48,8 +45,8 @@ const NFCManager: React.FC = () => {
   const fetchData = async () => {
     try {
       const [chipsRes, videosRes] = await Promise.all([
-        axios.get(`${API_URL}/nfc/chips`),
-        axios.get(`${API_URL}/videos`)
+        axiosInstance.get('/nfc/chips'),
+        axiosInstance.get('/videos')
       ]);
       setChips(chipsRes.data);
       setVideos(videosRes.data);
@@ -63,7 +60,7 @@ const NFCManager: React.FC = () => {
   const handleAddChip = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${API_URL}/nfc/chips`, formData);
+      const response = await axiosInstance.post('/nfc/chips', formData);
       setChips([response.data, ...chips]);
       setShowAddModal(false);
       resetForm();
@@ -81,7 +78,7 @@ const NFCManager: React.FC = () => {
     if (!selectedChip) return;
 
     try {
-      await axios.post(`${API_URL}/nfc/map`, {
+      await axiosInstance.post('/api/nfc/map', {
         video_id: linkData.video_id,
         nfc_chip_id: selectedChip.id,
         max_watch_time_minutes: linkData.max_watch_time_minutes
@@ -97,7 +94,7 @@ const NFCManager: React.FC = () => {
   const handleDeleteChip = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this NFC chip?')) {
       try {
-        await axios.delete(`${API_URL}/nfc/chips/${id}`);
+        await axiosInstance.delete(`/api/nfc/chips/${id}`);
         setChips(chips.filter(c => c.id !== id));
       } catch (error) {
         console.error('Error deleting chip:', error);
