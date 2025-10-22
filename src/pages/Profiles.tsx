@@ -39,7 +39,10 @@ const Profiles: React.FC = () => {
   const fetchProfiles = async () => {
     try {
       const response = await axiosInstance.get('/profiles');
-      setProfiles(response.data);
+      // Backend returns {data: [...], pagination: {...}}
+      // Extract the profiles array from response.data.data
+      const profilesData = response.data.data || response.data || [];
+      setProfiles(Array.isArray(profilesData) ? profilesData : []);
       setIsLoading(false);
     } catch (error) {
       console.error('Error fetching profiles:', error);

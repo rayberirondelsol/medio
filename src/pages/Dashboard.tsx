@@ -34,10 +34,15 @@ const Dashboard: React.FC = () => {
         axiosInstance.get('/nfc/chips')
       ]);
 
+      // Backend returns {data: [...], pagination: {...}} for videos and profiles
+      const videosData = videosRes.data.data || videosRes.data || [];
+      const profilesData = profilesRes.data.data || profilesRes.data || [];
+      const nfcData = nfcRes.data.data || nfcRes.data || [];
+
       setStats({
-        totalVideos: videosRes.data.length,
-        totalProfiles: profilesRes.data.length,
-        totalNFCChips: nfcRes.data.length,
+        totalVideos: Array.isArray(videosData) ? videosData.length : 0,
+        totalProfiles: Array.isArray(profilesData) ? profilesData.length : 0,
+        totalNFCChips: Array.isArray(nfcData) ? nfcData.length : 0,
         watchTimeToday: 0 // This would come from aggregated session data
       });
 
