@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { FiPlus, FiEdit2, FiTrash2, FiClock, FiUser } from 'react-icons/fi';
-import axios from 'axios';
-import { resolveApiBaseUrlOrDefault } from '../utils/runtimeConfig';
+import axiosInstance from '../config/api';
 import './Profiles.css';
-
-const API_URL = resolveApiBaseUrlOrDefault('/api');
 
 interface Profile {
   id: string;
@@ -41,7 +38,7 @@ const Profiles: React.FC = () => {
 
   const fetchProfiles = async () => {
     try {
-      const response = await axios.get(`${API_URL}/profiles`);
+      const response = await axiosInstance.get('/profiles');
       setProfiles(response.data);
       setIsLoading(false);
     } catch (error) {
@@ -53,7 +50,7 @@ const Profiles: React.FC = () => {
   const handleAddProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${API_URL}/profiles`, formData);
+      const response = await axiosInstance.post('/profiles', formData);
       setProfiles([response.data, ...profiles]);
       setShowAddModal(false);
       resetForm();
@@ -65,7 +62,7 @@ const Profiles: React.FC = () => {
   const handleDeleteProfile = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this profile?')) {
       try {
-        await axios.delete(`${API_URL}/profiles/${id}`);
+        await axiosInstance.delete(`/profiles/${id}`);
         setProfiles(profiles.filter(p => p.id !== id));
       } catch (error) {
         console.error('Error deleting profile:', error);

@@ -9,10 +9,7 @@ import { RATE_LIMITS } from '../constants/rateLimits';
 import { FiPlus, FiEdit2, FiTrash2, FiLink, FiYoutube } from 'react-icons/fi';
 import { SiNetflix, SiPrime } from 'react-icons/si';
 import axiosInstance from '../utils/axiosConfig';
-import { resolveApiBaseUrlOrDefault } from '../utils/runtimeConfig';
 import './Videos.css';
-
-const API_URL = resolveApiBaseUrlOrDefault('/api');
 
 interface Video {
   id: string;
@@ -51,7 +48,7 @@ const Videos: React.FC = () => {
     startLoading('videos');
     setVideosFetchError(null);
     try {
-      const response = await axiosInstance.get(`${API_URL}/videos`);
+      const response = await axiosInstance.get('/videos');
       // Backend returns {data: [...], pagination: {...}}
       // Extract the videos array from response.data.data
       const videosData = response.data.data || response.data || [];
@@ -87,7 +84,7 @@ const Videos: React.FC = () => {
       
       startLoading('deleteVideo');
       try {
-        await axiosInstance.delete(`${API_URL}/videos/${id}`);
+        await axiosInstance.delete(`/videos/${id}`);
         setVideos(videos.filter(v => v.id !== id));
       } catch (error) {
         console.error('Error deleting video:', error);

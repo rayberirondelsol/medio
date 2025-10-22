@@ -2,11 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { FiVideo, FiUsers, FiCreditCard, FiClock, FiPlay, FiPlus } from 'react-icons/fi';
-import axios from 'axios';
-import { resolveApiBaseUrlOrDefault } from '../utils/runtimeConfig';
+import axiosInstance from '../config/api';
 import './Dashboard.css';
-
-const API_URL = resolveApiBaseUrlOrDefault('/api');
 
 interface DashboardStats {
   totalVideos: number;
@@ -32,9 +29,9 @@ const Dashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     try {
       const [videosRes, profilesRes, nfcRes] = await Promise.all([
-        axios.get(`${API_URL}/videos`),
-        axios.get(`${API_URL}/profiles`),
-        axios.get(`${API_URL}/nfc/chips`)
+        axiosInstance.get('/videos'),
+        axiosInstance.get('/profiles'),
+        axiosInstance.get('/nfc/chips')
       ]);
 
       setStats({
