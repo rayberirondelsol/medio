@@ -21,9 +21,9 @@ router.get('/', async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT
-        id,
+        platform_uuid AS id,
         name,
-        is_active AS "requiresAuth"
+        display_name
       FROM platforms
       ORDER BY name
     `);
@@ -31,8 +31,8 @@ router.get('/', async (req, res) => {
     // Transform database results to match API contract
     const platforms = result.rows.map(platform => ({
       id: platform.id,
-      name: platform.name.toLowerCase(),
-      requiresAuth: !platform.is_active // For now, use is_active as inverse of requiresAuth
+      name: platform.name,
+      displayName: platform.display_name
     }));
 
     res.json(platforms);

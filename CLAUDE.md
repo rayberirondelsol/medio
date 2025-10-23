@@ -33,6 +33,114 @@ This is a React TypeScript application created with Create React App. It's a sta
 - **Type Checking**: TypeScript with strict mode enabled
 - **Linting**: ESLint with react-app configuration
 
+### BFF Proxy & Same-Origin Auth
+
+**Critical Architecture**: Frontend uses Backend-for-Frontend (BFF) proxy pattern for same-origin authentication.
+
+**Request Flow**:
+```
+Browser (localhost:8080)
+  → GET /dashboard → server.js serves React build from /build
+  → POST /api/auth/login → http-proxy-middleware → Backend (localhost:5000)
+```
+
+**Key Files**:
+- `server.js` (185 lines): Express proxy + cookie/CSRF rewriting
+  - Proxies `/api/*` to `BACKEND_URL` (env var)
+  - **Cookie Domain Rewrite**: Removes `Domain=localhost:5000` → scopes cookies to localhost:8080
+  - **CSRF Forwarding**: Forwards `X-CSRF-Token` header and cookie to backend
+  - Health check: `GET /health`
+- `src/utils/axiosConfig.ts`: Axios instance with CSRF + token refresh interceptors
+  - `baseURL: '/api'` (relative URLs for proxy mode)
+  - `withCredentials: true` (includes cookies in requests)
+  - 401 interceptor: Auto-refresh access token via `/api/auth/refresh`
+  - 403 interceptor: Clears cached CSRF token and retries
+
+**Auth Flow**:
+1. POST `/api/auth/login` → Backend sets `authToken` (15m) + `refreshToken` (7d) httpOnly cookies
+2. Proxy removes Domain attribute → Cookies scoped to localhost:8080 (same-origin)
+3. Browser auto-sends cookies with every `/api/*` request
+4. Access token expires → axios interceptor calls `/api/auth/refresh` → new access token
+5. Logout: Backend inserts token JTI into `token_blacklist` table + clears cookies
+
+**CSRF Protection**:
+- Backend generates CSRF token via `csurf` middleware
+- Frontend fetches via `GET /api/csrf-token`, caches in memory
+- Attaches `X-CSRF-Token` header to all POST/PUT/PATCH/DELETE requests
+- Excluded endpoints: `/api/auth/refresh`, `/api/nfc/scan/public`, all GET requests
+
+### Database Schema (Production)
+
+**CRITICAL FIX APPLIED (2025-10-22)**: `init.sql` has been corrected to use proper column names matching backend code.
+
+**What was fixed**:
+- ❌ OLD: Primary keys named `user_uuid`, `platform_uuid`, `video_uuid` → ✅ NEW: `id`
+- ❌ OLD: Foreign keys named `user_uuid`, `platform_uuid` → ✅ NEW: `user_id`, `platform_id`
+- **This mismatch caused "Server error while saving video" and "NFC chip registration fails"**
+
+**If you have an existing production database** with the old schema:
+- Run migration: `backend/migrations/001_fix_column_naming.sql`
+- See: `backend/migrations/README.md` for instructions
+
+**Core Tables** (`backend/init.sql`):
+```
+users (id UUID, email, password_hash, name)
+  ├─ videos (user_id → users.id, platform_id → platforms.id)
+  ├─ nfc_chips (user_id → users.id, chip_uid UNIQUE)
+  ├─ profiles (user_id → users.id, name, age)
+  └─ watch_sessions (user_id, video_id, profile_id)
+
+platforms (id UUID, name UNIQUE)
+  └─ videos (platform_id → platforms.id, platform_video_id)
+
+token_blacklist (token_jti UNIQUE, user_id, expires_at)
+```
+
+**Key Constraints**:
+- Videos: `UNIQUE(user_id, platform_id, platform_video_id)` - Prevents duplicate URLs
+- NFC Chips: `UNIQUE(chip_uid)` - Global uniqueness (not per-user)
+- Token Blacklist: JTI (JWT ID) for logout revocation
+
+### API Integration Patterns
+
+**Service Layer** (`src/services/`):
+- `videoService.ts`: POST `/api/videos`, GET `/api/videos?page=1&limit=20`
+- `nfcService.ts`: POST `/api/nfc/chips`, POST `/api/nfc/map`
+- `platformService.ts`: GET `/api/platforms`
+
+**Error Handling**:
+- `ErrorBoundary.tsx`: Catches React crashes, logs to Sentry in production
+- `errorFormatter.ts`: Converts API errors to user-friendly messages
+- `axiosConfig.ts`: 401 → token refresh, 403 → CSRF retry, 409 → duplicate detection
+
+**Pagination** (Backend pattern):
+```json
+{
+  "data": [video1, video2, ...],
+  "pagination": {
+    "page": 2,
+    "limit": 20,
+    "totalCount": 150,
+    "totalPages": 8,
+    "hasNextPage": true
+  }
+}
+```
+
+**Frontend handling**: `const videos = response.data.data || response.data || [];`
+
+### Security Features
+
+| Feature | Implementation | Location |
+|---------|----------------|----------|
+| **CSRF Protection** | csurf middleware + X-CSRF-Token header | server.js:146, axiosConfig.ts:59 |
+| **XSS Prevention** | httpOnly cookies (JS cannot read) | auth.js:15-20 |
+| **Session Revocation** | token_blacklist + JTI checking | middleware/auth.js:28-38 |
+| **Password Hashing** | bcrypt (10 salt rounds) | auth.js:102 |
+| **Rate Limiting** | express-rate-limit on auth endpoints | server.js:106-127 |
+| **Timing Attack Mitigation** | Random delay on duplicate NFC chip | nfc.js:91-95 |
+| **Secure Cookies** | sameSite=lax, secure (prod), httpOnly | auth.js:15-20 |
+
 ## Project Structure
 
 - `src/` - Source code directory
