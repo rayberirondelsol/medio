@@ -15,7 +15,7 @@ router.get('/', authenticateToken, async (req, res) => {
     
     // Get total count for pagination metadata
     const countResult = await pool.query(
-      'SELECT COUNT(*) FROM videos WHERE user_id = $1',
+      'SELECT COUNT(*) FROM videos WHERE user_uuid = $1',
       [req.user.id]
     );
     const totalCount = parseInt(countResult.rows[0].count);
@@ -23,10 +23,10 @@ router.get('/', authenticateToken, async (req, res) => {
 
     // Get paginated results
     const result = await pool.query(`
-      SELECT v.*, p.name as platform_name, p.icon_url
+      SELECT v.*, p.name as platform_name, p.display_name as platform_display_name
       FROM videos v
-      LEFT JOIN platforms p ON v.platform_id = p.id
-      WHERE v.user_id = $1
+      LEFT JOIN platforms p ON v.platform_uuid = p.platform_uuid
+      WHERE v.user_uuid = $1
       ORDER BY v.created_at DESC
       LIMIT $2 OFFSET $3
     `, [req.user.id, limit, offset]);
@@ -73,7 +73,7 @@ router.post('/',
     try {
       // T008: Validate that platform_id exists in platforms table
       const platformCheck = await pool.query(
-        'SELECT id FROM platforms WHERE id = $1',
+        'SELECT platform_uuid FROM platforms WHERE platform_uuid = $1',
         [platform_id]
       );
 
@@ -91,7 +91,7 @@ router.post('/',
       // T010: Check for duplicate video_url if provided
       if (video_url) {
         const duplicateCheck = await pool.query(
-          'SELECT id FROM videos WHERE user_id = $1 AND video_url = $2',
+          'SELECT video_uuid FROM videos WHERE user_uuid = $1 AND url = $2',
           [req.user.id, video_url]
         );
 
@@ -102,7 +102,7 @@ router.post('/',
             code: 'DUPLICATE_URL',
             details: {
               video_url: ['A video with this URL already exists in your family\'s library'],
-              existing_video_id: duplicateCheck.rows[0].id
+              existing_video_id: duplicateCheck.rows[0].video_uuid
             }
           });
         }
@@ -110,10 +110,10 @@ router.post('/',
 
       // Insert the video
       const result = await pool.query(`
-        INSERT INTO videos (user_id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating, channel_name)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        INSERT INTO videos (user_uuid, title, description, thumbnail_url, platform_uuid, video_id, url, duration, age_rating)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *
-      `, [req.user.id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating, channel_name]);
+      `, [req.user.id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating]);
 
       res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -155,7 +155,7 @@ router.put('/:id',
             thumbnail_url = COALESCE($3, thumbnail_url),
             age_rating = COALESCE($4, age_rating),
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = $5 AND user_id = $6
+        WHERE video_uuid = $5 AND user_uuid = $6
         RETURNING *
       `, [title, description, thumbnail_url, age_rating, id, req.user.id]);
 
@@ -177,7 +177,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 
   try {
     const result = await pool.query(
-      'DELETE FROM videos WHERE id = $1 AND user_id = $2 RETURNING id',
+      'DELETE FROM videos WHERE video_uuid = $1 AND user_uuid = $2 RETURNING video_uuid',
       [id, req.user.id]
     );
 
@@ -200,9 +200,9 @@ router.get('/:videoId/nfc-mapping', authenticateToken, async (req, res) => {
     const result = await pool.query(`
       SELECT vnm.*, nc.chip_uid, nc.label, p.name as profile_name
       FROM video_nfc_mappings vnm
-      JOIN nfc_chips nc ON vnm.nfc_chip_id = nc.id
+      JOIN nfc_chips nc ON vnm.nfc_chip_id = nc.chip_uuid
       LEFT JOIN profiles p ON vnm.profile_id = p.id
-      WHERE vnm.video_id = $1 AND nc.user_id = $2
+      WHERE vnm.video_id = $1 AND nc.user_uuid = $2
     `, [videoId, req.user.id]);
 
     res.json(result.rows);
