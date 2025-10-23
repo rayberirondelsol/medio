@@ -17,7 +17,7 @@ const router = express.Router();
 router.get('/chips', authenticateToken, nfcChipListingLimiter, async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT * FROM nfc_chips WHERE user_uuid = $1 ORDER BY created_at DESC',
+      'SELECT * FROM nfc_chips WHERE user_id = $1 ORDER BY created_at DESC',
       [req.user.id]
     );
     res.json(result.rows);
@@ -79,7 +79,7 @@ router.post('/chips',
 
     try {
       const result = await pool.query(`
-        INSERT INTO nfc_chips (user_uuid, chip_uid, label)
+        INSERT INTO nfc_chips (user_id, chip_uid, label)
         VALUES ($1, $2, $3)
         RETURNING *
       `, [req.user.id, normalizedUID, label]);
@@ -136,7 +136,7 @@ router.post('/map',
     try {
       // Verify ownership
       const chipCheck = await pool.query(
-        'SELECT chip_uuid FROM nfc_chips WHERE chip_uuid = $1 AND user_uuid = $2',
+        'SELECT id FROM nfc_chips WHERE id = $1 AND user_id = $2',
         [nfc_chip_id, req.user.id]
       );
 
@@ -180,9 +180,9 @@ router.post('/scan/public',
       const result = await pool.query(`
         SELECT v.*, vnm.max_watch_time_minutes, p.name as platform_name
         FROM nfc_chips nc
-        JOIN video_nfc_mappings vnm ON nc.chip_uuid = vnm.nfc_chip_id
-        JOIN videos v ON vnm.video_id = v.video_uuid
-        LEFT JOIN platforms p ON v.platform_uuid = p.id
+        JOIN video_nfc_mappings vnm ON nc.id = vnm.nfc_chip_id
+        JOIN videos v ON vnm.video_id = v.id
+        LEFT JOIN platforms p ON v.platform_id = p.id
         WHERE nc.chip_uid = $1
           AND vnm.is_active = true
           AND (vnm.profile_id = $2 OR vnm.profile_id IS NULL)
@@ -245,13 +245,13 @@ router.post('/scan',
       const result = await pool.query(`
         SELECT v.*, vnm.max_watch_time_minutes, p.name as platform_name
         FROM nfc_chips nc
-        JOIN video_nfc_mappings vnm ON nc.chip_uuid = vnm.nfc_chip_id
-        JOIN videos v ON vnm.video_id = v.video_uuid
-        LEFT JOIN platforms p ON v.platform_uuid = p.id
+        JOIN video_nfc_mappings vnm ON nc.id = vnm.nfc_chip_id
+        JOIN videos v ON vnm.video_id = v.id
+        LEFT JOIN platforms p ON v.platform_id = p.id
         WHERE nc.chip_uid = $1
           AND vnm.is_active = true
           AND (vnm.profile_id = $2 OR vnm.profile_id IS NULL)
-          AND nc.user_uuid = $3
+          AND nc.user_id = $3
         LIMIT 1
       `, [normalizedUID, profile_id, req.user.id]);
 
@@ -299,9 +299,9 @@ router.delete('/map/:mappingId', authenticateToken, async (req, res) => {
       UPDATE video_nfc_mappings vnm
       SET is_active = false
       FROM nfc_chips nc
-      WHERE vnm.nfc_chip_id = nc.chip_uuid
+      WHERE vnm.nfc_chip_id = nc.id
         AND vnm.id = $1
-        AND nc.user_uuid = $2
+        AND nc.user_id = $2
       RETURNING vnm.id
     `, [mappingId, req.user.id]);
 
@@ -329,7 +329,7 @@ router.delete('/chips/:chipId',
       // Delete chip with ownership verification
       // CASCADE deletion will automatically remove associated video_nfc_mappings
       const result = await pool.query(
-        'DELETE FROM nfc_chips WHERE chip_uuid = $1 AND user_uuid = $2 RETURNING chip_uuid',
+        'DELETE FROM nfc_chips WHERE id = $1 AND user_id = $2 RETURNING id',
         [chipId, req.user.id]
       );
 

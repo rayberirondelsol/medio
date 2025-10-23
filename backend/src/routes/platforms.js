@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT
-        platform_uuid AS id,
+        id,
         name,
         display_name
       FROM platforms
