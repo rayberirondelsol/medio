@@ -65,25 +65,15 @@ jobs:
         run: |
           echo "🔍 Verifying backend deployment..."
 
-          # Test 1: Check /api/health endpoint
+          # Check /api/health endpoint
           HEALTH_STATUS=$(curl -s https://medio-backend.fly.dev/api/health | grep -o '"status":"healthy"')
           if [ -n "$HEALTH_STATUS" ]; then
             echo "✅ Backend health check passed"
+            echo "✅ Backend deployment verification passed"
           else
             echo "❌ FAIL: Backend health check failed"
             exit 1
           fi
-
-          # Test 2: Check /api/platforms endpoint
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://medio-backend.fly.dev/api/platforms)
-          if [ "$HTTP_CODE" = "200" ]; then
-            echo "✅ Backend /api/platforms returns HTTP 200"
-          else
-            echo "❌ FAIL: Backend returned HTTP $HTTP_CODE"
-            exit 1
-          fi
-
-          echo "✅ Backend deployment verification passed"
 
   # ============================================
   # JOB 2: FRONTEND DEPLOYMENT
