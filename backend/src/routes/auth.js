@@ -103,17 +103,17 @@ router.post('/register',
 
       // Create user
       const result = await pool.query(
-        'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING user_uuid, email, name',
+        'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name',
         [email, passwordHash, name]
       );
 
       const user = result.rows[0];
 
-      logger.info('[REGISTER] User created:', user.email, 'UUID:', user.user_uuid);
+      logger.info('[REGISTER] User created:', user.email, 'UUID:', user.id);
 
       // Generate both access and refresh tokens
-      const accessToken = generateAccessToken({ id: user.user_uuid, email: user.email });
-      const refreshToken = generateRefreshToken({ id: user.user_uuid, email: user.email });
+      const accessToken = generateAccessToken({ id: user.id, email: user.email });
+      const refreshToken = generateRefreshToken({ id: user.id, email: user.email });
 
       logger.info('[REGISTER] Access token generated:', accessToken.substring(0, 50) + '...');
       logger.info('[REGISTER] Refresh token generated:', refreshToken.substring(0, 50) + '...');
