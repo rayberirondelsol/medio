@@ -110,7 +110,7 @@ router.post('/',
 
       // Insert the video
       const result = await pool.query(`
-        INSERT INTO videos (user_id, title, description, thumbnail_url, platform_id, video_id, video_url, duration, age_rating)
+        INSERT INTO videos (user_id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *
       `, [req.user.id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating]);
