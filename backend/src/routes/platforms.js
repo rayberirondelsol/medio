@@ -22,8 +22,7 @@ router.get('/', async (req, res) => {
     const result = await pool.query(`
       SELECT
         id,
-        name,
-        display_name
+        name
       FROM platforms
       ORDER BY name
     `);
@@ -31,8 +30,7 @@ router.get('/', async (req, res) => {
     // Transform database results to match API contract
     const platforms = result.rows.map(platform => ({
       id: platform.id,
-      name: platform.name,
-      displayName: platform.display_name
+      name: platform.name
     }));
 
     res.json(platforms);

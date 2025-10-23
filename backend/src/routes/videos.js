@@ -23,7 +23,7 @@ router.get('/', authenticateToken, async (req, res) => {
 
     // Get paginated results
     const result = await pool.query(`
-      SELECT v.*, p.name as platform_name, p.display_name as platform_display_name
+      SELECT v.*, p.name as platform_name
       FROM videos v
       LEFT JOIN platforms p ON v.platform_id = p.id
       WHERE v.user_id = $1
