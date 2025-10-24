@@ -11,6 +11,7 @@ interface NFCChip {
   label: string;
   is_active: boolean;
   created_at: string;
+  video_count?: number;
 }
 
 interface Video {
@@ -51,7 +52,26 @@ const NFCManager: React.FC = () => {
         axiosInstance.get('/nfc/chips'),
         axiosInstance.get('/videos')
       ]);
-      setChips(chipsRes.data);
+
+      const chipsData = chipsRes.data;
+
+      // Fetch video counts for each chip
+      const chipsWithCounts = await Promise.all(
+        chipsData.map(async (chip: NFCChip) => {
+          try {
+            const videoCountRes = await axiosInstance.get(`/nfc/chips/${chip.id}/videos`);
+            return {
+              ...chip,
+              video_count: videoCountRes.data?.videos?.length || 0
+            };
+          } catch (error) {
+            console.error(`Error fetching video count for chip ${chip.id}:`, error);
+            return { ...chip, video_count: 0 };
+          }
+        })
+      );
+
+      setChips(chipsWithCounts);
       setVideos(videosRes.data);
       setIsLoading(false);
     } catch (error) {
@@ -166,6 +186,17 @@ const NFCManager: React.FC = () => {
                 <div className="chip-info">
                   <h3>{chip.label}</h3>
                   <p className="chip-uid">ID: {chip.chip_uid}</p>
+                  <p className="chip-video-count">
+                    {chip.video_count !== undefined ? (
+                      chip.video_count === 0 ? (
+                        'No videos assigned'
+                      ) : (
+                        `${chip.video_count} video${chip.video_count !== 1 ? 's' : ''} assigned`
+                      )
+                    ) : (
+                      'Loading...'
+                    )}
+                  </p>
                   <span className={`chip-status ${chip.is_active ? 'active' : 'inactive'}`}>
                     {chip.is_active ? 'Active' : 'Inactive'}
                   </span>

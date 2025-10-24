@@ -51,7 +51,22 @@
   font-size: 12px;
   color: var(--text-secondary);
   font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  margin-bottom: 4px;
+}
+
+.chip-video-count {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chip-video-count::before {
+  content: '🎬';
+  font-size: 14px;
 }
 
 .chip-status {
