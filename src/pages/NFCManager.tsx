@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
-import { FiPlus, FiCreditCard, FiLink2, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiCreditCard, FiLink2, FiTrash2, FiVideo } from 'react-icons/fi';
 import axiosInstance from '../utils/axiosConfig';
+import VideoAssignmentModal from '../components/nfc/VideoAssignmentModal';
 import './NFCManager.css';
 
 interface NFCChip {
@@ -21,12 +22,14 @@ const PlusIcon = FiPlus as React.ElementType;
 const CreditCardIcon = FiCreditCard as React.ElementType;
 const Link2Icon = FiLink2 as React.ElementType;
 const Trash2Icon = FiTrash2 as React.ElementType;
+const VideoIcon = FiVideo as React.ElementType;
 
 const NFCManager: React.FC = () => {
   const [chips, setChips] = useState<NFCChip[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showLinkModal, setShowLinkModal] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
   const [selectedChip, setSelectedChip] = useState<NFCChip | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -122,6 +125,16 @@ const NFCManager: React.FC = () => {
     setShowLinkModal(true);
   };
 
+  const openVideoModal = (chip: NFCChip) => {
+    setSelectedChip(chip);
+    setShowVideoModal(true);
+  };
+
+  const handleVideosUpdated = () => {
+    // Optionally refetch chips or show success message
+    fetchData();
+  };
+
   return (
     <Layout>
       <div className="nfc-page">
@@ -158,15 +171,22 @@ const NFCManager: React.FC = () => {
                   </span>
                 </div>
                 <div className="chip-actions">
-                  <button 
-                    className="btn-icon" 
+                  <button
+                    className="btn-icon"
+                    title="Manage Videos"
+                    onClick={() => openVideoModal(chip)}
+                  >
+                    <VideoIcon />
+                  </button>
+                  <button
+                    className="btn-icon"
                     title="Link Video"
                     onClick={() => openLinkModal(chip)}
                   >
                     <Link2Icon />
                   </button>
-                  <button 
-                    className="btn-icon delete" 
+                  <button
+                    className="btn-icon delete"
                     title="Delete"
                     onClick={() => handleDeleteChip(chip.id)}
                   >
@@ -281,6 +301,16 @@ const NFCManager: React.FC = () => {
               </form>
             </div>
           </div>
+        )}
+
+        {showVideoModal && selectedChip && (
+          <VideoAssignmentModal
+            isOpen={showVideoModal}
+            onClose={() => setShowVideoModal(false)}
+            chipId={selectedChip.id}
+            chipLabel={selectedChip.label}
+            onVideosUpdated={handleVideosUpdated}
+          />
         )}
       </div>
     </Layout>

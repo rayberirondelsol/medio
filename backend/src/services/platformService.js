@@ -15,12 +15,12 @@ const logger = require('../utils/logger');
  * Get a platform by its name
  *
  * @param {string} name - The platform name (e.g., 'YouTube', 'Vimeo', 'Dailymotion')
- * @returns {Promise<Object|null>} Platform object with {id (UUID), name (string), requiresAuth (boolean)} or null if not found
+ * @returns {Promise<Object|null>} Platform object with {id (UUID), name (string)} or null if not found
  */
 const getPlatformByName = async (name) => {
   try {
     const result = await pool.query(
-      'SELECT id, name, requires_auth as "requiresAuth" FROM platforms WHERE name = $1',
+      'SELECT id, name FROM platforms WHERE name = $1',
       [name]
     );
 
@@ -38,12 +38,12 @@ const getPlatformByName = async (name) => {
 /**
  * Get all available platforms
  *
- * @returns {Promise<Array>} Array of platform objects with {id (UUID), name (string), requiresAuth (boolean)}
+ * @returns {Promise<Array>} Array of platform objects with {id (UUID), name (string)}
  */
 const getAllPlatforms = async () => {
   try {
     const result = await pool.query(
-      'SELECT id, name, requires_auth as "requiresAuth" FROM platforms ORDER BY name'
+      'SELECT id, name FROM platforms ORDER BY name'
     );
 
     return result.rows;

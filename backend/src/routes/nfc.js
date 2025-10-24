@@ -363,4 +363,295 @@ router.delete('/chips/:chipId',
   }
 );
 
+// ================================================================================
+// VIDEO ASSIGNMENT ENDPOINTS (Feature: 007-nfc-video-assignment)
+// ================================================================================
+
+// GET /api/nfc/chips/:chipId/videos
+// Get all videos assigned to an NFC chip in sequence order
+router.get('/chips/:chipId/videos', authenticateToken, async (req, res) => {
+  const { chipId } = req.params;
+
+  try {
+    // Verify chip ownership
+    const chipCheck = await pool.query(
+      'SELECT chip_uuid, label, chip_uid FROM nfc_chips WHERE chip_uuid = $1 AND user_uuid = $2',
+      [chipId, req.user.user_uuid]
+    );
+
+    if (chipCheck.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Chip not found or not owned by user',
+        code: 'UNAUTHORIZED_CHIP'
+      });
+    }
+
+    const chip = chipCheck.rows[0];
+
+    // Get videos in sequence order
+    const result = await pool.query(`
+      SELECT
+        v.video_uuid as id,
+        v.title,
+        v.thumbnail_url,
+        v.duration as duration_seconds,
+        p.name as platform_name,
+        vnm.sequence_order,
+        vnm.mapping_uuid as mapping_id
+      FROM video_nfc_mappings vnm
+      JOIN videos v ON vnm.video_uuid = v.video_uuid
+      JOIN platforms p ON v.platform_uuid = p.platform_uuid
+      WHERE vnm.chip_uuid = $1
+        AND vnm.is_active = true
+      ORDER BY vnm.sequence_order ASC
+    `, [chipId]);
+
+    res.json({
+      chip: {
+        id: chip.chip_uuid,
+        label: chip.label,
+        chip_uid: chip.chip_uid
+      },
+      videos: result.rows
+    });
+  } catch (error) {
+    console.error('Error fetching chip videos:', error);
+    Sentry.captureException(error, {
+      tags: {
+        feature: 'nfc-video-assignment',
+        endpoint: 'GET /api/nfc/chips/:chipId/videos'
+      },
+      extra: {
+        user_uuid: req.user?.user_uuid,
+        chip_id: chipId
+      }
+    });
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch chip videos',
+      code: 'INTERNAL_ERROR'
+    });
+  }
+});
+
+// PUT /api/nfc/chips/:chipId/videos
+// Batch update video assignments for an NFC chip (replaces all existing assignments)
+router.put('/chips/:chipId/videos',
+  authenticateToken,
+  [
+    body('videos').isArray().withMessage('videos must be an array'),
+    body('videos.*.video_id').isUUID().withMessage('video_id must be a valid UUID'),
+    body('videos.*.sequence_order').isInt({ min: 1 }).withMessage('sequence_order must be a positive integer')
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        code: 'VALIDATION_ERROR',
+        details: errors.array()
+      });
+    }
+
+    const { chipId } = req.params;
+    const { videos } = req.body;
+
+    // Validate max 50 videos (FR-010)
+    if (videos.length > 50) {
+      return res.status(400).json({
+        success: false,
+        message: 'Maximum 50 videos per chip',
+        code: 'MAX_VIDEOS_EXCEEDED'
+      });
+    }
+
+    // Validate sequence is contiguous (1, 2, 3, ...)
+    const sequences = videos.map(v => v.sequence_order).sort((a, b) => a - b);
+    for (let i = 0; i < sequences.length; i++) {
+      if (sequences[i] !== i + 1) {
+        return res.status(400).json({
+          success: false,
+          message: 'Sequence must be contiguous (1, 2, 3, ...)',
+          code: 'NON_CONTIGUOUS_SEQUENCE'
+        });
+      }
+    }
+
+    // Check for duplicate video_ids
+    const videoIds = videos.map(v => v.video_id);
+    if (new Set(videoIds).size !== videoIds.length) {
+      return res.status(400).json({
+        success: false,
+        message: 'Duplicate video assignments not allowed',
+        code: 'DUPLICATE_VIDEO'
+      });
+    }
+
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      // Verify chip ownership
+      const chipCheck = await client.query(
+        'SELECT chip_uuid FROM nfc_chips WHERE chip_uuid = $1 AND user_uuid = $2',
+        [chipId, req.user.user_uuid]
+      );
+
+      if (chipCheck.rows.length === 0) {
+        await client.query('ROLLBACK');
+        return res.status(404).json({
+          success: false,
+          message: 'Chip not found',
+          code: 'UNAUTHORIZED_CHIP'
+        });
+      }
+
+      // Verify all videos belong to user
+      const videoCheck = await client.query(
+        'SELECT video_uuid FROM videos WHERE video_uuid = ANY($1) AND user_uuid = $2',
+        [videoIds, req.user.user_uuid]
+      );
+
+      if (videoCheck.rows.length !== videos.length) {
+        await client.query('ROLLBACK');
+        return res.status(409).json({
+          success: false,
+          message: 'One or more videos not found or not owned by user',
+          code: 'INVALID_VIDEO_IDS'
+        });
+      }
+
+      // Delete existing mappings
+      await client.query(
+        'DELETE FROM video_nfc_mappings WHERE chip_uuid = $1',
+        [chipId]
+      );
+
+      // Insert new mappings
+      for (const video of videos) {
+        await client.query(`
+          INSERT INTO video_nfc_mappings (video_uuid, chip_uuid, sequence_order, is_active)
+          VALUES ($1, $2, $3, true)
+        `, [video.video_id, chipId, video.sequence_order]);
+      }
+
+      await client.query('COMMIT');
+
+      res.json({
+        success: true,
+        message: 'Video assignments updated successfully',
+        count: videos.length
+      });
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error('Error updating video assignments:', error);
+      Sentry.captureException(error, {
+        tags: {
+          feature: 'nfc-video-assignment',
+          endpoint: 'PUT /api/nfc/chips/:chipId/videos'
+        },
+        extra: {
+          user_uuid: req.user?.user_uuid,
+          chip_id: chipId,
+          video_count: videos?.length
+        }
+      });
+      res.status(500).json({
+        success: false,
+        message: 'Failed to update video assignments',
+        code: 'INTERNAL_ERROR'
+      });
+    } finally {
+      client.release();
+    }
+  }
+);
+
+// DELETE /api/nfc/chips/:chipId/videos/:videoId
+// Remove a video from an NFC chip. Remaining videos are automatically re-sequenced.
+router.delete('/chips/:chipId/videos/:videoId', authenticateToken, async (req, res) => {
+  const { chipId, videoId } = req.params;
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Verify chip ownership and find mapping
+    const mappingCheck = await client.query(`
+      SELECT vnm.mapping_uuid
+      FROM video_nfc_mappings vnm
+      JOIN nfc_chips nc ON vnm.chip_uuid = nc.chip_uuid
+      WHERE vnm.chip_uuid = $1
+        AND vnm.video_uuid = $2
+        AND nc.user_uuid = $3
+    `, [chipId, videoId, req.user.user_uuid]);
+
+    if (mappingCheck.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({
+        success: false,
+        message: 'Mapping not found',
+        code: 'MAPPING_NOT_FOUND'
+      });
+    }
+
+    // Delete the mapping
+    await client.query(
+      'DELETE FROM video_nfc_mappings WHERE mapping_uuid = $1',
+      [mappingCheck.rows[0].mapping_uuid]
+    );
+
+    // Re-sequence remaining videos
+    await client.query(`
+      WITH ranked AS (
+        SELECT mapping_uuid,
+               ROW_NUMBER() OVER (PARTITION BY chip_uuid ORDER BY sequence_order) as new_sequence
+        FROM video_nfc_mappings
+        WHERE chip_uuid = $1
+      )
+      UPDATE video_nfc_mappings vnm
+      SET sequence_order = ranked.new_sequence
+      FROM ranked
+      WHERE vnm.mapping_uuid = ranked.mapping_uuid
+    `, [chipId]);
+
+    // Count remaining videos
+    const countResult = await client.query(
+      'SELECT COUNT(*) as count FROM video_nfc_mappings WHERE chip_uuid = $1',
+      [chipId]
+    );
+
+    await client.query('COMMIT');
+
+    res.json({
+      success: true,
+      message: 'Video removed from chip successfully',
+      remaining_videos: parseInt(countResult.rows[0].count)
+    });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error removing video from chip:', error);
+    Sentry.captureException(error, {
+      tags: {
+        feature: 'nfc-video-assignment',
+        endpoint: 'DELETE /api/nfc/chips/:chipId/videos/:videoId'
+      },
+      extra: {
+        user_uuid: req.user?.user_uuid,
+        chip_id: chipId,
+        video_id: videoId
+      }
+    });
+    res.status(500).json({
+      success: false,
+      message: 'Failed to remove video from chip',
+      code: 'INTERNAL_ERROR'
+    });
+  } finally {
+    client.release();
+  }
+});
+
 module.exports = router;
