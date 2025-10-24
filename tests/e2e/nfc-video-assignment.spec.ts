@@ -88,13 +88,13 @@ async function setupUserAndChip(page: Page): Promise<string> {
   await submitButton.click();
   await page.waitForTimeout(2000);
 
-  // Get chip UUID from database
+  // Get chip ID from database (production uses 'id' not 'chip_uuid')
   const chipResult = await pool.query(
-    'SELECT chip_uuid FROM nfc_chips WHERE chip_uid = $1',
+    'SELECT id FROM nfc_chips WHERE chip_uid = $1',
     [TEST_CHIP.uid]
   );
 
-  return chipResult.rows[0].chip_uuid;
+  return chipResult.rows[0].id;
 }
 
 /**
@@ -132,14 +132,14 @@ async function addTestVideos(page: Page): Promise<string[]> {
     await submitBtn.click();
     await page.waitForTimeout(2000);
 
-    // Get video UUID from database
+    // Get video ID from database (production uses 'id' not 'video_uuid')
     const videoResult = await pool.query(
-      'SELECT video_uuid FROM videos WHERE title = $1 OR url LIKE $2 ORDER BY created_at DESC LIMIT 1',
+      'SELECT id FROM videos WHERE title = $1 OR url LIKE $2 ORDER BY created_at DESC LIMIT 1',
       [video.title, `%${video.url.split('v=')[1]}%`]
     );
 
     if (videoResult.rows.length > 0) {
-      videoIds.push(videoResult.rows[0].video_uuid);
+      videoIds.push(videoResult.rows[0].id);
     }
   }
 
@@ -225,9 +225,9 @@ test.describe('NFC Video Assignment Workflow - Proxy Mode', () => {
     // Wait for modal to close
     await page.waitForTimeout(2000);
 
-    // Verify assignments in database
+    // Verify assignments in database (production uses 'nfc_chip_id' not 'chip_uuid')
     const mappings = await pool.query(
-      'SELECT * FROM video_nfc_mappings WHERE chip_uuid = $1 ORDER BY sequence_order',
+      'SELECT * FROM video_nfc_mappings WHERE nfc_chip_id = $1 ORDER BY sequence_order',
       [chipId]
     );
 
@@ -278,10 +278,10 @@ test.describe('NFC Video Assignment Workflow - Proxy Mode', () => {
 
     expect(videoIds.length).toBeGreaterThan(0);
 
-    // Manually assign videos via database
+    // Manually assign videos via database (production uses 'nfc_chip_id', 'video_id')
     for (let i = 0; i < Math.min(videoIds.length, 3); i++) {
       await pool.query(
-        'INSERT INTO video_nfc_mappings (chip_uuid, video_uuid, sequence_order) VALUES ($1, $2, $3)',
+        'INSERT INTO video_nfc_mappings (nfc_chip_id, video_id, sequence_order) VALUES ($1, $2, $3)',
         [chipId, videoIds[i], i + 1]
       );
     }
@@ -358,9 +358,9 @@ test.describe('NFC Video Assignment Workflow - Proxy Mode', () => {
     expect(result.message).toContain('updated');
     expect(result.count).toBe(2);
 
-    // Verify in database
+    // Verify in database (production uses 'nfc_chip_id')
     const mappings = await pool.query(
-      'SELECT * FROM video_nfc_mappings WHERE chip_uuid = $1 ORDER BY sequence_order',
+      'SELECT * FROM video_nfc_mappings WHERE nfc_chip_id = $1 ORDER BY sequence_order',
       [chipId]
     );
 
@@ -379,10 +379,10 @@ test.describe('NFC Video Assignment Workflow - Proxy Mode', () => {
 
     expect(videoIds.length).toBeGreaterThanOrEqual(3);
 
-    // Manually assign 3 videos
+    // Manually assign 3 videos (production uses 'nfc_chip_id', 'video_id')
     for (let i = 0; i < 3; i++) {
       await pool.query(
-        'INSERT INTO video_nfc_mappings (chip_uuid, video_uuid, sequence_order) VALUES ($1, $2, $3)',
+        'INSERT INTO video_nfc_mappings (nfc_chip_id, video_id, sequence_order) VALUES ($1, $2, $3)',
         [chipId, videoIds[i], i + 1]
       );
     }
@@ -410,8 +410,9 @@ test.describe('NFC Video Assignment Workflow - Proxy Mode', () => {
     expect(result.remaining_videos).toBe(2);
 
     // Verify remaining videos are re-sequenced (should be 1, 2 not 1, 3)
+    // Production uses 'nfc_chip_id'
     const mappings = await pool.query(
-      'SELECT sequence_order FROM video_nfc_mappings WHERE chip_uuid = $1 ORDER BY sequence_order',
+      'SELECT sequence_order FROM video_nfc_mappings WHERE nfc_chip_id = $1 ORDER BY sequence_order',
       [chipId]
     );
 
