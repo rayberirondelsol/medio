@@ -88,9 +88,9 @@ router.post('/register',
     const { email, password, name } = req.body;
 
     try {
-      // Check if user exists
+      // Check if user exists (use 'id' for consistency)
       const existingUser = await pool.query(
-        'SELECT user_uuid FROM users WHERE email = $1',
+        'SELECT id FROM users WHERE email = $1',
         [email]
       );
 
@@ -101,7 +101,7 @@ router.post('/register',
       // Hash password
       const passwordHash = await bcrypt.hash(password, 10);
 
-      // Create user
+      // Create user (id is UUID primary key - this is what we should use everywhere)
       const result = await pool.query(
         'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name',
         [email, passwordHash, name]
@@ -111,7 +111,7 @@ router.post('/register',
 
       logger.info('[REGISTER] User created:', user.email, 'UUID:', user.id);
 
-      // Generate both access and refresh tokens
+      // Generate both access and refresh tokens (user.id is the UUID primary key)
       const accessToken = generateAccessToken({ id: user.id, email: user.email });
       const refreshToken = generateRefreshToken({ id: user.id, email: user.email });
 
@@ -130,7 +130,7 @@ router.post('/register',
 
       res.status(201).json({
         user: {
-          id: user.user_uuid,
+          id: user.id,
           email: user.email,
           name: user.name
         },
@@ -159,9 +159,9 @@ router.post('/login',
     const { email, password } = req.body;
 
     try {
-      // Get user
+      // Get user (use 'id' not 'user_uuid' for consistency with foreign keys)
       const result = await pool.query(
-        'SELECT user_uuid, email, name, password_hash FROM users WHERE email = $1',
+        'SELECT id, email, name, password_hash FROM users WHERE email = $1',
         [email]
       );
 
@@ -177,9 +177,9 @@ router.post('/login',
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
-      // Generate both access and refresh tokens
-      const accessToken = generateAccessToken({ id: user.user_uuid, email: user.email });
-      const refreshToken = generateRefreshToken({ id: user.user_uuid, email: user.email });
+      // Generate both access and refresh tokens (use user.id which is the UUID primary key)
+      const accessToken = generateAccessToken({ id: user.id, email: user.email });
+      const refreshToken = generateRefreshToken({ id: user.id, email: user.email });
 
       // Set secure httpOnly cookies
       setAuthCookie(res, accessToken);
@@ -187,7 +187,7 @@ router.post('/login',
 
       res.json({
         user: {
-          id: user.user_uuid,
+          id: user.id,
           email: user.email,
           name: user.name
         },
@@ -258,10 +258,10 @@ router.get('/me', async (req, res) => {
         }
       }
 
-      // Get fresh user data from database
-      logger.info('[AUTH /me] Fetching user from database, user_uuid:', decoded.id);
+      // Get fresh user data from database (use 'id' which is the primary key)
+      logger.info('[AUTH /me] Fetching user from database, user id:', decoded.id);
       const userResult = await pool.query(
-        'SELECT user_uuid, email, name FROM users WHERE user_uuid = $1',
+        'SELECT id, email, name FROM users WHERE id = $1',
         [decoded.id]
       );
 
@@ -278,7 +278,7 @@ router.get('/me', async (req, res) => {
       res.json({
         authenticated: true,
         user: {
-          id: user.user_uuid,
+          id: user.id,
           email: user.email,
           name: user.name
         }
@@ -344,9 +344,9 @@ router.post('/refresh', async (req, res) => {
         }
       }
 
-      // Get fresh user data from database
+      // Get fresh user data from database (use 'id' which is the primary key)
       const userResult = await pool.query(
-        'SELECT user_uuid, email, name FROM users WHERE user_uuid = $1',
+        'SELECT id, email, name FROM users WHERE id = $1',
         [decoded.id]
       );
 
@@ -358,8 +358,8 @@ router.post('/refresh', async (req, res) => {
 
       const user = userResult.rows[0];
 
-      // Generate new access token
-      const newAccessToken = generateAccessToken({ id: user.user_uuid, email: user.email });
+      // Generate new access token (user.id is the UUID primary key)
+      const newAccessToken = generateAccessToken({ id: user.id, email: user.email });
 
       // Set new access token cookie
       setAuthCookie(res, newAccessToken);
