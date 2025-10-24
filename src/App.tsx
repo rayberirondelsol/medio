@@ -6,6 +6,8 @@ import { LoadingProvider } from './contexts/LoadingContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import PrivateRoute from './components/PrivateRoute';
 import LoadingSpinner from './components/LoadingSpinner';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 // Lazy load pages for code splitting
@@ -26,6 +28,18 @@ function App() {
           <LoadingProvider>
             <Router>
               <div className="App">
+              <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
               <Suspense fallback={<LoadingSpinner size="large" overlay />}>
                 <Routes>
                 {/* Public routes */}

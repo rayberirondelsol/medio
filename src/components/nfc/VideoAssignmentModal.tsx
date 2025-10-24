@@ -17,6 +17,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { getChipVideos, updateChipVideos, removeChipVideo } from '../../services/nfcService';
 import axiosInstance from '../../utils/axiosConfig';
 import ErrorBoundary from '../common/ErrorBoundary';
+import { toast } from 'react-toastify';
 import './VideoAssignmentModal.css';
 
 interface Video {
@@ -105,7 +106,9 @@ const VideoAssignmentModal: React.FC<VideoAssignmentModalProps> = ({
       setAssignedVideos(data.videos || []);
     } catch (err: any) {
       console.error('Error loading chip videos:', err);
-      setError(err.message || 'Failed to load videos');
+      const errorMsg = err.message || 'Failed to load videos';
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -143,7 +146,9 @@ const VideoAssignmentModal: React.FC<VideoAssignmentModalProps> = ({
         return;
       }
       console.error('Error loading library videos:', err);
-      setError(err.message || 'Failed to load video library');
+      const errorMsg = err.message || 'Failed to load video library';
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsLoadingLibrary(false);
       abortControllerRef.current = null;
@@ -250,13 +255,16 @@ const VideoAssignmentModal: React.FC<VideoAssignmentModalProps> = ({
         }));
 
       setAssignedVideos(updatedVideos);
+      toast.success('Video removed successfully');
 
       if (onVideosUpdated) {
         onVideosUpdated();
       }
     } catch (err: any) {
       console.error('Error removing video:', err);
-      setError(err.message || 'Failed to remove video');
+      const errorMsg = err.message || 'Failed to remove video';
+      setError(errorMsg);
+      toast.error(errorMsg);
     }
   };
 
@@ -288,6 +296,7 @@ const VideoAssignmentModal: React.FC<VideoAssignmentModalProps> = ({
       };
 
       await updateChipVideos(chipId, payload);
+      toast.success('Video assignments saved successfully');
 
       if (onVideosUpdated) {
         onVideosUpdated();
@@ -296,7 +305,9 @@ const VideoAssignmentModal: React.FC<VideoAssignmentModalProps> = ({
       onClose();
     } catch (err: any) {
       console.error('Error saving video assignments:', err);
-      setError(err.message || 'Failed to save video assignments');
+      const errorMsg = err.message || 'Failed to save video assignments';
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsSaving(false);
     }
