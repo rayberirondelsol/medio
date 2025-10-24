@@ -373,10 +373,10 @@ router.get('/chips/:chipId/videos', authenticateToken, async (req, res) => {
   const { chipId } = req.params;
 
   try {
-    // Verify chip ownership
+    // Verify chip ownership (Production schema: id, user_id)
     const chipCheck = await pool.query(
-      'SELECT chip_uuid, label, chip_uid FROM nfc_chips WHERE chip_uuid = $1 AND user_uuid = $2',
-      [chipId, req.user.user_uuid]
+      'SELECT id, label, chip_uid FROM nfc_chips WHERE id = $1 AND user_id = $2',
+      [chipId, req.user.id]
     );
 
     if (chipCheck.rows.length === 0) {
@@ -389,27 +389,27 @@ router.get('/chips/:chipId/videos', authenticateToken, async (req, res) => {
 
     const chip = chipCheck.rows[0];
 
-    // Get videos in sequence order
+    // Get videos in sequence order (Production schema: id, nfc_chip_id, video_id, platform_id)
     const result = await pool.query(`
       SELECT
-        v.video_uuid as id,
+        v.id,
         v.title,
         v.thumbnail_url,
-        v.duration as duration_seconds,
+        v.duration_seconds,
         p.name as platform_name,
         vnm.sequence_order,
-        vnm.mapping_uuid as mapping_id
+        vnm.id as mapping_id
       FROM video_nfc_mappings vnm
-      JOIN videos v ON vnm.video_uuid = v.video_uuid
-      JOIN platforms p ON v.platform_uuid = p.platform_uuid
-      WHERE vnm.chip_uuid = $1
+      JOIN videos v ON vnm.video_id = v.id
+      JOIN platforms p ON v.platform_id = p.id
+      WHERE vnm.nfc_chip_id = $1
         AND vnm.is_active = true
       ORDER BY vnm.sequence_order ASC
     `, [chipId]);
 
     res.json({
       chip: {
-        id: chip.chip_uuid,
+        id: chip.id,
         label: chip.label,
         chip_uid: chip.chip_uid
       },
@@ -423,7 +423,7 @@ router.get('/chips/:chipId/videos', authenticateToken, async (req, res) => {
         endpoint: 'GET /api/nfc/chips/:chipId/videos'
       },
       extra: {
-        user_uuid: req.user?.user_uuid,
+        user_id: req.user?.id,
         chip_id: chipId
       }
     });
@@ -493,10 +493,10 @@ router.put('/chips/:chipId/videos',
     try {
       await client.query('BEGIN');
 
-      // Verify chip ownership
+      // Verify chip ownership (Production schema: id, user_id)
       const chipCheck = await client.query(
-        'SELECT chip_uuid FROM nfc_chips WHERE chip_uuid = $1 AND user_uuid = $2',
-        [chipId, req.user.user_uuid]
+        'SELECT id FROM nfc_chips WHERE id = $1 AND user_id = $2',
+        [chipId, req.user.id]
       );
 
       if (chipCheck.rows.length === 0) {
@@ -508,10 +508,10 @@ router.put('/chips/:chipId/videos',
         });
       }
 
-      // Verify all videos belong to user
+      // Verify all videos belong to user (Production schema: id, user_id)
       const videoCheck = await client.query(
-        'SELECT video_uuid FROM videos WHERE video_uuid = ANY($1) AND user_uuid = $2',
-        [videoIds, req.user.user_uuid]
+        'SELECT id FROM videos WHERE id = ANY($1) AND user_id = $2',
+        [videoIds, req.user.id]
       );
 
       if (videoCheck.rows.length !== videos.length) {
@@ -523,16 +523,16 @@ router.put('/chips/:chipId/videos',
         });
       }
 
-      // Delete existing mappings
+      // Delete existing mappings (Production schema: nfc_chip_id)
       await client.query(
-        'DELETE FROM video_nfc_mappings WHERE chip_uuid = $1',
+        'DELETE FROM video_nfc_mappings WHERE nfc_chip_id = $1',
         [chipId]
       );
 
-      // Insert new mappings
+      // Insert new mappings (Production schema: video_id, nfc_chip_id)
       for (const video of videos) {
         await client.query(`
-          INSERT INTO video_nfc_mappings (video_uuid, chip_uuid, sequence_order, is_active)
+          INSERT INTO video_nfc_mappings (video_id, nfc_chip_id, sequence_order, is_active)
           VALUES ($1, $2, $3, true)
         `, [video.video_id, chipId, video.sequence_order]);
       }
@@ -553,7 +553,7 @@ router.put('/chips/:chipId/videos',
           endpoint: 'PUT /api/nfc/chips/:chipId/videos'
         },
         extra: {
-          user_uuid: req.user?.user_uuid,
+          user_id: req.user?.id,
           chip_id: chipId,
           video_count: videos?.length
         }
@@ -578,15 +578,15 @@ router.delete('/chips/:chipId/videos/:videoId', authenticateToken, async (req, r
   try {
     await client.query('BEGIN');
 
-    // Verify chip ownership and find mapping
+    // Verify chip ownership and find mapping (Production schema: id, nfc_chip_id, video_id, user_id)
     const mappingCheck = await client.query(`
-      SELECT vnm.mapping_uuid
+      SELECT vnm.id
       FROM video_nfc_mappings vnm
-      JOIN nfc_chips nc ON vnm.chip_uuid = nc.chip_uuid
-      WHERE vnm.chip_uuid = $1
-        AND vnm.video_uuid = $2
-        AND nc.user_uuid = $3
-    `, [chipId, videoId, req.user.user_uuid]);
+      JOIN nfc_chips nc ON vnm.nfc_chip_id = nc.id
+      WHERE vnm.nfc_chip_id = $1
+        AND vnm.video_id = $2
+        AND nc.user_id = $3
+    `, [chipId, videoId, req.user.id]);
 
     if (mappingCheck.rows.length === 0) {
       await client.query('ROLLBACK');
@@ -597,29 +597,29 @@ router.delete('/chips/:chipId/videos/:videoId', authenticateToken, async (req, r
       });
     }
 
-    // Delete the mapping
+    // Delete the mapping (Production schema: id)
     await client.query(
-      'DELETE FROM video_nfc_mappings WHERE mapping_uuid = $1',
-      [mappingCheck.rows[0].mapping_uuid]
+      'DELETE FROM video_nfc_mappings WHERE id = $1',
+      [mappingCheck.rows[0].id]
     );
 
-    // Re-sequence remaining videos
+    // Re-sequence remaining videos (Production schema: id, nfc_chip_id)
     await client.query(`
       WITH ranked AS (
-        SELECT mapping_uuid,
-               ROW_NUMBER() OVER (PARTITION BY chip_uuid ORDER BY sequence_order) as new_sequence
+        SELECT id,
+               ROW_NUMBER() OVER (PARTITION BY nfc_chip_id ORDER BY sequence_order) as new_sequence
         FROM video_nfc_mappings
-        WHERE chip_uuid = $1
+        WHERE nfc_chip_id = $1
       )
       UPDATE video_nfc_mappings vnm
       SET sequence_order = ranked.new_sequence
       FROM ranked
-      WHERE vnm.mapping_uuid = ranked.mapping_uuid
+      WHERE vnm.id = ranked.id
     `, [chipId]);
 
-    // Count remaining videos
+    // Count remaining videos (Production schema: nfc_chip_id)
     const countResult = await client.query(
-      'SELECT COUNT(*) as count FROM video_nfc_mappings WHERE chip_uuid = $1',
+      'SELECT COUNT(*) as count FROM video_nfc_mappings WHERE nfc_chip_id = $1',
       [chipId]
     );
 
@@ -639,7 +639,7 @@ router.delete('/chips/:chipId/videos/:videoId', authenticateToken, async (req, r
         endpoint: 'DELETE /api/nfc/chips/:chipId/videos/:videoId'
       },
       extra: {
-        user_uuid: req.user?.user_uuid,
+        user_id: req.user?.id,
         chip_id: chipId,
         video_id: videoId
       }
