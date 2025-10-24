@@ -114,20 +114,20 @@ test.describe('Live Production - NFC Chips and Videos', () => {
         age_rating: 'G'
       };
 
-      await page.fill('input[name="title"], input[placeholder*="Title"]', videoData.title);
+      await page.fill('input[id="title"], input[placeholder*="title"]', videoData.title);
 
-      const descField = page.locator('textarea[name="description"], textarea[placeholder*="Description"]');
+      const descField = page.locator('textarea[id="description"], textarea[placeholder*="description"]');
       if (await descField.isVisible({ timeout: 2000 }).catch(() => false)) {
         await descField.fill(videoData.description);
       }
 
-      const urlField = page.locator('input[name="video_url"], input[name="url"], input[placeholder*="URL"], input[placeholder*="url"]');
+      const urlField = page.locator('input[id="videoUrl"], input[placeholder*="URL"]');
       if (await urlField.isVisible({ timeout: 2000 }).catch(() => false)) {
         await urlField.fill(videoData.video_url);
       }
 
       // Select age rating if available
-      const ageRatingSelect = page.locator('select[name="age_rating"]');
+      const ageRatingSelect = page.locator('select[id="ageRating"]');
       if (await ageRatingSelect.isVisible({ timeout: 2000 }).catch(() => false)) {
         await ageRatingSelect.selectOption(videoData.age_rating);
       }
@@ -135,8 +135,8 @@ test.describe('Live Production - NFC Chips and Videos', () => {
       // Take screenshot of filled form
       await page.screenshot({ path: 'screenshot-video-form-filled.png' });
 
-      // Submit form
-      await page.click('button[type="submit"]:has-text("Save"), button[type="submit"]:has-text("Add"), button[type="submit"]:has-text("Create")');
+      // Submit form - look for "Add Video" button
+      await page.click('button[type="submit"]:has-text("Add Video")');
 
       // Wait for success
       await page.waitForTimeout(3000);
