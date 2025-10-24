@@ -110,14 +110,29 @@ router.post('/',
 
       // Insert the video
       const result = await pool.query(`
-        INSERT INTO videos (user_id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        INSERT INTO videos (user_id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating, channel_name)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *
-      `, [req.user.id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating]);
+      `, [req.user.id, title, description, thumbnail_url, platform_id, platform_video_id, video_url, duration_seconds, age_rating, channel_name]);
 
       res.status(201).json(result.rows[0]);
     } catch (error) {
       console.error('Error adding video:', error);
+      console.error('Error details:', {
+        code: error.code,
+        constraint: error.constraint,
+        detail: error.detail,
+        message: error.message,
+        stack: error.stack
+      });
+      console.error('Request data:', {
+        user_id: req.user.id,
+        title,
+        platform_id,
+        platform_video_id,
+        video_url,
+        channel_name
+      });
 
       // T010: Handle database unique constraint violation (23505)
       if (error.code === '23505' && error.constraint === 'unique_video_url_per_user') {
