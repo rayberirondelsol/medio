@@ -34,6 +34,7 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   width: 90%;
   overflow-y: auto;
+  pointer-events: auto;
   animation: slideUp 0.3s ease-out;
 }
 
