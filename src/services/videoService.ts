@@ -10,6 +10,7 @@ import { CreateVideoRequest, CreateVideoResponse } from '../types/video';
  */
 export async function createVideo(videoData: CreateVideoRequest): Promise<CreateVideoResponse> {
   try {
+    console.log('[createVideo] Sending request with data:', videoData);
     const response = await apiClient.post<CreateVideoResponse>('/videos', videoData);
 
     if (!response.data) {
@@ -18,6 +19,11 @@ export async function createVideo(videoData: CreateVideoRequest): Promise<Create
 
     return response.data;
   } catch (error: any) {
+    // Log full error details to console for debugging
+    console.error('[createVideo] ERROR:', error);
+    console.error('[createVideo] Response status:', error.response?.status);
+    console.error('[createVideo] Response data:', error.response?.data);
+
     // Handle different error scenarios
     if (error.response) {
       const status = error.response.status;

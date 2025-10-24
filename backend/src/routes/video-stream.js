@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/:id/stream', authenticateToken, async (req, res) => {
   try {
     const videoId = parseInt(req.params.id);
-    
+
     // Get video metadata from database
     const result = await pool.query(
       'SELECT * FROM videos WHERE id = $1 AND user_id = $2',
@@ -22,16 +22,17 @@ router.get('/:id/stream', authenticateToken, async (req, res) => {
     }
 
     const video = result.rows[0];
-    
+
     // For external URLs, redirect to the original source
-    if (video.url && (video.url.startsWith('http://') || video.url.startsWith('https://'))) {
-      return res.redirect(video.url);
+    if (video.video_url && (video.video_url.startsWith('http://') || video.video_url.startsWith('https://'))) {
+      return res.redirect(video.video_url);
     }
 
     // For local files, implement range request streaming
+    // Note: Production schema has no file_path column - videos are external URLs only
     // Secure path handling to prevent path traversal
     const uploadDir = path.resolve(process.env.UPLOAD_DIR || 'uploads');
-    const fileName = path.basename(video.file_path || video.url);
+    const fileName = path.basename(video.video_url);
     const videoPath = path.join(uploadDir, 'videos', fileName);
     
     // Validate that the resolved path is within the upload directory
@@ -156,16 +157,15 @@ router.get('/:id/metadata', authenticateToken, async (req, res) => {
     const videoId = parseInt(req.params.id);
     
     const result = await pool.query(`
-      SELECT 
+      SELECT
         v.id,
         v.title,
         v.description,
-        v.duration,
+        v.duration_seconds,
         v.thumbnail_url,
         v.created_at,
-        CASE 
-          WHEN v.file_path IS NOT NULL THEN 'local'
-          WHEN v.url LIKE 'http%' THEN 'external'
+        CASE
+          WHEN v.video_url LIKE 'http%' THEN 'external'
           ELSE 'unknown'
         END as source_type,
         COALESCE(

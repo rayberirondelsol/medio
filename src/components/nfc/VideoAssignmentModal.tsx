@@ -12,10 +12,11 @@
  * - Optimistic UI updates
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { getChipVideos, updateChipVideos, removeChipVideo } from '../../services/nfcService';
 import axiosInstance from '../../utils/axiosConfig';
+import ErrorBoundary from '../common/ErrorBoundary';
 import './VideoAssignmentModal.css';
 
 interface Video {
@@ -72,11 +73,22 @@ const VideoAssignmentModal: React.FC<VideoAssignmentModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // Load chip videos on mount
+  // AbortController for cancelling requests
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Load chip videos on mount and cleanup on unmount
   useEffect(() => {
     if (isOpen && chipId) {
       loadChipVideos();
     }
+
+    // Cleanup: abort pending requests when modal closes
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, chipId]);
 
@@ -104,8 +116,19 @@ const VideoAssignmentModal: React.FC<VideoAssignmentModalProps> = ({
    */
   const loadLibraryVideos = async () => {
     setIsLoadingLibrary(true);
+
+    // Cancel previous request if exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create new AbortController for this request
+    abortControllerRef.current = new AbortController();
+
     try {
-      const response = await axiosInstance.get('/videos');
+      const response = await axiosInstance.get('/videos', {
+        signal: abortControllerRef.current.signal
+      });
       const videos = response.data.data || response.data || [];
 
       // Filter out videos already assigned to this chip
@@ -114,10 +137,16 @@ const VideoAssignmentModal: React.FC<VideoAssignmentModalProps> = ({
 
       setLibraryVideos(availableVideos);
     } catch (err: any) {
+      // Ignore abort errors (expected when component unmounts)
+      if (err.name === 'AbortError' || err.name === 'CanceledError') {
+        console.log('Video library fetch cancelled');
+        return;
+      }
       console.error('Error loading library videos:', err);
       setError(err.message || 'Failed to load video library');
     } finally {
       setIsLoadingLibrary(false);
+      abortControllerRef.current = null;
     }
   };
 
@@ -514,4 +543,40 @@ const VideoAssignmentModal: React.FC<VideoAssignmentModalProps> = ({
   );
 };
 
-export default VideoAssignmentModal;
+/**
+ * Wrapped with ErrorBoundary for error resilience
+ */
+const VideoAssignmentModalWithErrorBoundary: React.FC<VideoAssignmentModalProps> = (props) => {
+  return (
+    <ErrorBoundary
+      fallback={
+        <div className="modal-overlay" role="dialog" aria-modal="true">
+          <div className="modal-content video-assignment-modal">
+            <div className="modal-header">
+              <h2>Error Loading Video Manager</h2>
+            </div>
+            <div className="modal-body">
+              <div className="error-message" role="alert">
+                <strong>Error</strong>
+                <p>Failed to load video assignment modal. Please try again later.</p>
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={props.onClose}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <VideoAssignmentModal {...props} />
+    </ErrorBoundary>
+  );
+};
+
+export default VideoAssignmentModalWithErrorBoundary;
