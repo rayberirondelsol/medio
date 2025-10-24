@@ -3,7 +3,7 @@ import { NFCChip } from '../types/nfc';
 
 export const fetchChips = async (): Promise<NFCChip[]> => {
   try {
-    const response = await axiosInstance.get('/api/nfc/chips');
+    const response = await axiosInstance.get('/nfc/chips');
     return response.data;
   } catch (error: any) {
     throw new Error(error.message);
@@ -12,7 +12,7 @@ export const fetchChips = async (): Promise<NFCChip[]> => {
 
 export const registerChip = async (chip_uid: string, label: string): Promise<NFCChip> => {
   try {
-    const response = await axiosInstance.post('/api/nfc/chips', { chip_uid, label });
+    const response = await axiosInstance.post('/nfc/chips', { chip_uid, label });
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || error.message);
@@ -21,7 +21,7 @@ export const registerChip = async (chip_uid: string, label: string): Promise<NFC
 
 export const deleteChip = async (chipId: string): Promise<void> => {
   try {
-    await axiosInstance.delete(`/api/nfc/chips/${chipId}`);
+    await axiosInstance.delete(`/nfc/chips/${chipId}`);
   } catch (error: any) {
     // T067: User-friendly German error messages
     const status = error.response?.status;
@@ -43,7 +43,7 @@ export const deleteChip = async (chipId: string): Promise<void> => {
  */
 export const getChipVideos = async (chipId: string): Promise<any> => {
   try {
-    const response = await axiosInstance.get(`/api/nfc/chips/${chipId}/videos`);
+    const response = await axiosInstance.get(`/nfc/chips/${chipId}/videos`);
     return response.data;
   } catch (error: any) {
     const status = error.response?.status;
@@ -63,7 +63,7 @@ export const getChipVideos = async (chipId: string): Promise<any> => {
  */
 export const updateChipVideos = async (chipId: string, payload: { videos: Array<{ video_id: string; sequence_order: number }> }): Promise<any> => {
   try {
-    const response = await axiosInstance.put(`/api/nfc/chips/${chipId}/videos`, payload);
+    const response = await axiosInstance.put(`/nfc/chips/${chipId}/videos`, payload);
     return response.data;
   } catch (error: any) {
     const status = error.response?.status;
@@ -95,7 +95,7 @@ export const updateChipVideos = async (chipId: string, payload: { videos: Array<
  */
 export const removeChipVideo = async (chipId: string, videoId: string): Promise<any> => {
   try {
-    const response = await axiosInstance.delete(`/api/nfc/chips/${chipId}/videos/${videoId}`);
+    const response = await axiosInstance.delete(`/nfc/chips/${chipId}/videos/${videoId}`);
     return response.data;
   } catch (error: any) {
     const status = error.response?.status;
