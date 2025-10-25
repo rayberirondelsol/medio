@@ -19,7 +19,7 @@
 
 ## Requirement Completeness
 
-- [ ] No [NEEDS CLARIFICATION] markers remain
+- [x] No [NEEDS CLARIFICATION] markers remain
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details)
@@ -28,13 +28,13 @@
 - [x] Scope is clearly bounded
 - [x] Dependencies and assumptions identified
 
-**Issues Found**:
-- **[NEEDS CLARIFICATION] markers**: 3 markers remain in "Open Questions / Clarifications" section:
-  1. Profile selection default behavior (remember last vs always show selection)
-  2. Parent exit mechanism (PIN, hidden button, timeout)
-  3. Gesture sensitivity configuration (per-profile vs system-wide)
+**Resolution Complete**:
+- **All clarifications resolved**: 3 questions answered with specific decisions:
+  1. Profile selection: Always show selection screen (Option A)
+  2. Parent exit: Hidden button sequence (Option A)
+  3. Gesture sensitivity: Fixed system-wide defaults (Option A)
 
-**Resolution Required**: These 3 clarifications need to be answered before proceeding to planning phase.
+**Status**: All clarification markers removed. Specification ready for planning phase.
 
 ## Feature Readiness
 
@@ -67,7 +67,7 @@ The following questions require user input before the spec can be finalized:
 | B      | Remember last selected profile | Faster startup (no selection step). Risk of tracking to wrong profile if device is shared. Requires parent or child to manually switch profiles when needed. |
 | C      | Remember with timeout (reset after 1 hour) | Balances convenience and accuracy. Auto-resets if enough time has passed, but remembers during same session. Most flexible but adds complexity. |
 
-**Your choice**: _[Awaiting user response]_
+**Your choice**: **Option A - Always show profile selection screen**
 
 ---
 
@@ -86,7 +86,7 @@ The following questions require user input before the spec can be finalized:
 | C      | Time-based auto-exit (after 2 hours of inactivity) | Completely passive, no parent interaction needed. May exit unexpectedly during long video watching. Cannot exit on-demand. |
 | D      | Physical device button (power button triple-press) | No on-screen UI needed. Uses device hardware. May conflict with device OS shortcuts. Requires documentation. |
 
-**Your choice**: _[Awaiting user response]_
+**Your choice**: **Option A - Hidden button sequence**
 
 ---
 
@@ -104,30 +104,29 @@ The following questions require user input before the spec can be finalized:
 | B      | Configurable per profile | Maximum flexibility. Parents can tune sensitivity for each child's ability level. Adds configuration complexity in parent mode. Requires additional UI. |
 | C      | Automatic adaptive sensitivity | System learns from child's gesture patterns over time and adjusts thresholds. Most user-friendly long-term. Complex to implement. Requires data collection and ML. Out of scope for MVP. |
 
-**Your choice**: _[Awaiting user response]_
+**Your choice**: **Option A - Fixed system-wide defaults**
 
 ---
 
 ## Summary
 
-**Overall Readiness**: 🟡 **Pending Clarifications**
+**Overall Readiness**: 🟢 **Ready for Planning**
 
 **Status**:
 - ✅ Content quality: Excellent
-- ✅ Requirement completeness: Strong (except clarifications)
-- ✅ Feature readiness: Ready pending clarifications
-- 🟡 Clarifications: 3 questions need user input
+- ✅ Requirement completeness: Complete
+- ✅ Feature readiness: Ready
+- ✅ Clarifications: All 3 questions answered
 
-**Next Steps**:
-1. User provides answers to Questions 1, 2, and 3
-2. Update spec.md by replacing [NEEDS CLARIFICATION] markers with selected answers
-3. Re-validate checklist (all items should pass)
-4. Proceed to `/speckit.plan` phase
-
-**Recommendation**:
-For fastest MVP delivery, suggest these defaults:
+**Decisions Made**:
 - Q1: Option A (Always show profile selection) - safest for multi-child households
 - Q2: Option A (Hidden button sequence) - maintains button-free design
 - Q3: Option A (Fixed defaults) - defers complexity, can iterate based on user feedback
 
-These defaults can be implemented immediately and refined in future iterations based on user testing feedback.
+**Next Steps**:
+1. ✅ Clarifications resolved
+2. ✅ Spec.md updated with selected answers
+3. ✅ Checklist validated (all items pass)
+4. **Ready to proceed to `/speckit.plan` phase**
+
+These decisions prioritize MVP simplicity and maintainability while ensuring core child safety and user experience requirements are met. Future iterations can add per-profile customization based on user testing feedback.

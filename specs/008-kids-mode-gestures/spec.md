@@ -205,9 +205,11 @@ As a parent, I want my child to select their profile before scanning an NFC chip
 
 ## Open Questions / Clarifications
 
-1. **Profile Selection Default Behavior**: If multiple profiles exist, should Kids Mode remember the last selected profile or always show the selection screen? [NEEDS CLARIFICATION: UX preference not specified]
-2. **Parent Exit Mechanism**: How should parents exit Kids Mode to return to parent mode (PIN code, hidden button sequence, timeout)? [NEEDS CLARIFICATION: Security/UX trade-off not specified]
-3. **Gesture Sensitivity**: Should gesture sensitivity (tilt angle threshold, shake acceleration threshold) be configurable per profile or system-wide? [NEEDS CLARIFICATION: Customization level not specified]
+1. **Profile Selection Default Behavior**: Kids Mode will **always show the profile selection screen** when multiple profiles exist. This ensures maximum accuracy in tracking watch time to the correct child and prevents wrong-profile tracking in households where children share devices. This adds a 5-second startup delay but prioritizes correctness over convenience.
+
+2. **Parent Exit Mechanism**: Parents will exit Kids Mode via a **hidden button sequence** (e.g., tap screen corners in specific order). This approach maintains the clean, button-free Kids Mode interface without visible UI elements that children might accidentally discover. The sequence will be documented in parent mode settings. This is preferred over PIN entry which would require an on-screen keyboard (breaking the button-free design) and over timeout-based exits which lack on-demand control.
+
+3. **Gesture Sensitivity**: Gesture sensitivity thresholds will use **fixed system-wide defaults** (not configurable). This simplifies MVP implementation and avoids additional configuration UI complexity. Default thresholds will target children aged 4-8 with typical motor skills. Future iterations can add per-profile customization based on user feedback and testing data.
 
 ## Out of Scope
 
