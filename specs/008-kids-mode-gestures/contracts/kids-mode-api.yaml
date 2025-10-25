@@ -1,0 +1,589 @@
+openapi: 3.0.3
+info:
+  title: Kids Mode Gesture Controls API
+  version: 1.0.0
+  description: |
+    API endpoints for Kids Mode with gesture-based video playback controls.
+
+    **Key Features**:
+    - NFC chip-based video loading
+    - Profile-based watch time enforcement
+    - Session tracking with heartbeat mechanism
+    - Sequential video playback support
+
+    **Security**: All endpoints require authentication except where marked "public"
+    (which still require CSRF tokens).
+
+servers:
+  - url: https://medio-backend.fly.dev/api
+    description: Production
+  - url: http://localhost:8080/api
+    description: Local development (BFF proxy)
+
+tags:
+  - name: Kids Mode
+    description: Child-friendly video playback interface
+  - name: Sessions
+    description: Watch session tracking and management
+
+paths:
+  /nfc/chips/{chipId}/videos:
+    get:
+      tags:
+        - Kids Mode
+      summary: Get videos assigned to NFC chip
+      description: |
+        Returns all videos assigned to an NFC chip in playback sequence order.
+        Used by Kids Mode after successful NFC scan to load video playlist.
+
+        **Authorization**: Requires authenticated user who owns the chip.
+      operationId: getChipVideos
+      parameters:
+        - name: chipId
+          in: path
+          required: true
+          description: UUID of the NFC chip
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Videos retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - chip
+                  - videos
+                properties:
+                  chip:
+                    $ref: '#/components/schemas/NFCChip'
+                  videos:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VideoWithSequence'
+                    description: Videos ordered by sequence_order (ascending)
+              example:
+                chip:
+                  id: "550e8400-e29b-41d4-a716-446655440000"
+                  chip_uid: "04:5A:B2:C3:D4:E5:F6"
+                  label: "Ben's Blue Chip"
+                videos:
+                  - id: "video-uuid-1"
+                    title: "Paw Patrol Episode 1"
+                    platform_id: "youtube-uuid"
+                    platform_video_id: "abc123"
+                    duration_seconds: 1320
+                    thumbnail_url: "https://i.ytimg.com/vi/abc123/maxresdefault.jpg"
+                    sequence_order: 1
+                  - id: "video-uuid-2"
+                    title: "Bluey - Magic Xylophone"
+                    platform_id: "youtube-uuid"
+                    platform_video_id: "def456"
+                    duration_seconds: 420
+                    thumbnail_url: "https://i.ytimg.com/vi/def456/maxresdefault.jpg"
+                    sequence_order: 2
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+      security:
+        - BearerAuth: []
+
+  /nfc/scan/public:
+    post:
+      tags:
+        - Kids Mode
+      summary: Validate NFC chip scan (public endpoint)
+      description: |
+        Validates an NFC chip UID and returns basic chip information.
+        Used by Kids Mode to verify chip belongs to user's account.
+
+        **Public Endpoint**: No JWT required, uses CSRF token only.
+        This allows Kids Mode to work without requiring children to authenticate.
+      operationId: scanNFCPublic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - chip_uid
+              properties:
+                chip_uid:
+                  type: string
+                  pattern: '^[0-9A-Fa-f:]{8,30}$'
+                  description: NFC chip UID (hex with optional colons)
+                  example: "04:5A:B2:C3:D4:E5:F6"
+      responses:
+        '200':
+          description: Chip validated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - chip
+                properties:
+                  chip:
+                    $ref: '#/components/schemas/NFCChip'
+              example:
+                chip:
+                  id: "550e8400-e29b-41d4-a716-446655440000"
+                  chip_uid: "04:5A:B2:C3:D4:E5:F6"
+                  label: "Ben's Blue Chip"
+                  is_active: true
+        '404':
+          description: Chip not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "NFC chip not registered"
+                message: "No videos found on this chip! Ask a grown-up to add some videos."
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - CSRFToken: []
+
+  /sessions/start/public:
+    post:
+      tags:
+        - Sessions
+      summary: Start watch session (Kids Mode)
+      description: |
+        Initiates a new watch session for Kids Mode video playback.
+        Checks daily watch time limit before allowing session to start.
+
+        **Public Endpoint**: No JWT required, uses CSRF token + profile validation.
+      operationId: startSessionPublic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - profile_id
+                - video_id
+                - chip_uid
+              properties:
+                profile_id:
+                  type: string
+                  format: uuid
+                  description: Child profile UUID
+                  example: "profile-uuid-123"
+                video_id:
+                  type: string
+                  format: uuid
+                  description: First video to play
+                  example: "video-uuid-1"
+                chip_uid:
+                  type: string
+                  pattern: '^[0-9A-Fa-f:]{8,30}$'
+                  description: NFC chip UID (for audit trail)
+                  example: "04:5A:B2:C3:D4:E5:F6"
+      responses:
+        '200':
+          description: Session started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - session_id
+                  - remaining_minutes
+                  - daily_limit_minutes
+                properties:
+                  session_id:
+                    type: string
+                    format: uuid
+                    description: Unique session identifier (use for heartbeat/end)
+                  remaining_minutes:
+                    type: integer
+                    minimum: 0
+                    description: Minutes remaining in daily allowance
+                    example: 45
+                  daily_limit_minutes:
+                    type: integer
+                    minimum: 1
+                    description: Total daily limit for this profile
+                    example: 60
+              example:
+                session_id: "session-uuid-abc"
+                remaining_minutes: 45
+                daily_limit_minutes: 60
+        '403':
+          description: Daily watch time limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                  - limit_reached
+                properties:
+                  error:
+                    type: string
+                    example: "Daily watch time limit reached"
+                  total_minutes:
+                    type: integer
+                    example: 60
+                  daily_limit_minutes:
+                    type: integer
+                    example: 60
+                  limit_reached:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    description: Child-friendly message
+                    example: "You've watched enough for today! See you tomorrow!"
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - CSRFToken: []
+
+  /sessions/{sessionId}/heartbeat:
+    post:
+      tags:
+        - Sessions
+      summary: Send session heartbeat
+      description: |
+        Periodic heartbeat to update watch session duration and check daily limit.
+        Kids Mode frontend sends heartbeat every 30-120 seconds during playback.
+
+        **Response**: Returns remaining time and limit status. If limit reached,
+        frontend should stop playback immediately.
+      operationId: sessionHeartbeat
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          description: Session UUID from start response
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_position_seconds:
+                  type: integer
+                  minimum: 0
+                  description: Current video playback position (for resume support)
+                  example: 145
+      responses:
+        '200':
+          description: Heartbeat acknowledged
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - session_id
+                  - elapsed_seconds
+                  - remaining_minutes
+                  - limit_reached
+                properties:
+                  session_id:
+                    type: string
+                    format: uuid
+                  elapsed_seconds:
+                    type: integer
+                    minimum: 0
+                    description: Seconds elapsed since session start
+                    example: 60
+                  remaining_minutes:
+                    type: integer
+                    minimum: 0
+                    description: Minutes remaining in daily allowance
+                    example: 44
+                  limit_reached:
+                    type: boolean
+                    description: Whether daily limit has been reached
+                    example: false
+              example:
+                session_id: "session-uuid-abc"
+                elapsed_seconds: 60
+                remaining_minutes: 44
+                limit_reached: false
+        '403':
+          description: Daily limit reached during playback
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - session_id
+                  - limit_reached
+                properties:
+                  session_id:
+                    type: string
+                    format: uuid
+                  elapsed_seconds:
+                    type: integer
+                    example: 3600
+                  remaining_minutes:
+                    type: integer
+                    example: 0
+                  limit_reached:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    description: Child-friendly message
+                    example: "Time's up! You've watched enough for today."
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - CSRFToken: []
+
+  /sessions/{sessionId}/end:
+    post:
+      tags:
+        - Sessions
+      summary: End watch session
+      description: |
+        Ends an active watch session and finalizes duration tracking.
+        Called when video sequence completes, user exits, or limit reached.
+
+        **Cleanup**: Frontend MUST call this on component unmount using
+        `navigator.sendBeacon()` for reliability (per Constitution VI).
+      operationId: endSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          description: Session UUID from start response
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - stopped_reason
+              properties:
+                stopped_reason:
+                  type: string
+                  enum:
+                    - video_completed
+                    - user_exit
+                    - limit_reached
+                    - next_video
+                    - previous_video
+                    - network_error
+                    - component_unmount
+                  description: Why session ended
+                  example: "video_completed"
+                final_position_seconds:
+                  type: integer
+                  minimum: 0
+                  description: Final video playback position
+                  example: 1320
+      responses:
+        '200':
+          description: Session ended successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - session_id
+                  - duration_seconds
+                  - stopped_reason
+                  - remaining_minutes
+                properties:
+                  session_id:
+                    type: string
+                    format: uuid
+                  duration_seconds:
+                    type: integer
+                    minimum: 0
+                    description: Total session duration
+                    example: 1320
+                  stopped_reason:
+                    type: string
+                    example: "video_completed"
+                  remaining_minutes:
+                    type: integer
+                    minimum: 0
+                    description: Minutes remaining in daily allowance
+                    example: 22
+              example:
+                session_id: "session-uuid-abc"
+                duration_seconds: 1320
+                stopped_reason: "video_completed"
+                remaining_minutes: 22
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - CSRFToken: []
+
+components:
+  schemas:
+    NFCChip:
+      type: object
+      required:
+        - id
+        - chip_uid
+        - label
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique chip identifier
+        chip_uid:
+          type: string
+          pattern: '^[0-9A-F:]{8,30}$'
+          description: Normalized NFC chip UID (uppercase, colon-separated)
+          example: "04:5A:B2:C3:D4:E5:F6"
+        label:
+          type: string
+          maxLength: 255
+          description: Human-readable chip name
+          example: "Ben's Blue Chip"
+        is_active:
+          type: boolean
+          description: Whether chip is active
+          default: true
+
+    VideoWithSequence:
+      type: object
+      required:
+        - id
+        - title
+        - platform_id
+        - platform_video_id
+        - duration_seconds
+        - sequence_order
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique video identifier
+        title:
+          type: string
+          maxLength: 500
+          description: Video title
+          example: "Paw Patrol Episode 1"
+        platform_id:
+          type: string
+          format: uuid
+          description: Platform UUID (YouTube, Vimeo, Dailymotion)
+        platform_video_id:
+          type: string
+          maxLength: 255
+          description: Platform-specific video ID
+          example: "abc123"
+        duration_seconds:
+          type: integer
+          minimum: 1
+          description: Video length in seconds
+          example: 1320
+        thumbnail_url:
+          type: string
+          format: uri
+          description: Video thumbnail URL
+          example: "https://i.ytimg.com/vi/abc123/maxresdefault.jpg"
+        sequence_order:
+          type: integer
+          minimum: 1
+          description: Playback order (1, 2, 3, ...)
+          example: 1
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error message
+        message:
+          type: string
+          description: Human-readable error description
+        code:
+          type: string
+          description: Error code for client-side handling
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Not found"
+            message: "The requested resource does not exist"
+
+    Forbidden:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Access denied"
+            message: "You do not have permission to access this resource"
+
+    TooManyRequests:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Too many requests"
+            message: "Rate limit exceeded. Please try again later."
+      headers:
+        Retry-After:
+          description: Seconds until rate limit resets
+          schema:
+            type: integer
+            example: 900
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Internal server error"
+            message: "An unexpected error occurred. Please try again later."
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token from authentication
+
+    CSRFToken:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+      description: CSRF token for state-changing operations
+
+security:
+  - BearerAuth: []
+  - CSRFToken: []
