@@ -225,7 +225,15 @@ All technical unknowns resolved in [research.md](./research.md). Key decisions d
 - **Heartbeat Interval**: 60 seconds (balance between accuracy and battery impact)
 - **Cleanup Mechanism**: `navigator.sendBeacon()` on component unmount (reliable, per Constitution VI)
 - **Daily Limit Check**: Every heartbeat returns `limit_reached` boolean
+- **Position Validation**: Server validates `current_position_seconds <= video.duration_seconds + 10s tolerance`
 - **Rationale**: Server-side enforcement prevents client-side tampering, heartbeat provides real-time limit detection
+
+### Decision 6: Server-Side Position Validation (Security)
+- **Approach**: Validate heartbeat `current_position_seconds` against video duration server-side
+- **Tolerance**: Allow 10 seconds buffer (accounts for network latency, buffering)
+- **Rejection**: Return 400 Bad Request if position exceeds `video.duration_seconds + 10`
+- **Rationale**: Prevents malicious clients from sending false position to reduce tracked watch time
+- **Implementation**: See backend/src/routes/sessions.js heartbeat endpoint
 
 **Research Artifacts**:
 - [research.md](./research.md) - 1,955 lines covering all 4 technical areas
@@ -554,6 +562,71 @@ Profile → Daily Watch Time (1:many)
 
 ## Deployment Strategy
 
+### Feature Flag Configuration
+
+**Purpose**: Enable gradual rollout of Kids Mode to beta testers before full public release.
+
+**Implementation**:
+```typescript
+// src/config/features.ts
+export const FEATURES = {
+  KIDS_MODE_ENABLED: process.env.REACT_APP_KIDS_MODE_ENABLED === 'true',
+};
+
+// src/App.tsx
+import { FEATURES } from './config/features';
+
+function App() {
+  return (
+    <Routes>
+      {/* ... other routes ... */}
+      {FEATURES.KIDS_MODE_ENABLED && (
+        <Route path="/kids" element={<KidsMode />} />
+      )}
+    </Routes>
+  );
+}
+```
+
+**Environment Variables**:
+```bash
+# .env.production (disabled by default)
+REACT_APP_KIDS_MODE_ENABLED=false
+
+# .env.staging (enabled for testing)
+REACT_APP_KIDS_MODE_ENABLED=true
+
+# .env.local (enabled for local dev)
+REACT_APP_KIDS_MODE_ENABLED=true
+```
+
+**Fly.io Secret Management**:
+```bash
+# Enable for staging/beta deployment
+flyctl secrets set REACT_APP_KIDS_MODE_ENABLED=true --app medio-react-app-staging
+
+# Enable for production (after beta testing)
+flyctl secrets set REACT_APP_KIDS_MODE_ENABLED=true --app medio-react-app
+```
+
+**Rollback Strategy**:
+- If critical issue discovered, disable via:
+  ```bash
+  flyctl secrets set REACT_APP_KIDS_MODE_ENABLED=false --app medio-react-app
+  # Redeploy or restart app to pick up new env var
+  ```
+- No code changes required for emergency disable
+
+**Beta Testing Phase**:
+1. Deploy with `KIDS_MODE_ENABLED=true` to staging
+2. Share staging URL with 5-10 beta tester families
+3. Monitor Sentry for errors over 1 week
+4. Collect feedback via survey
+5. Fix critical issues, re-test
+6. Enable in production once stable
+
+---
+
 ### Pre-Deployment Checklist
 
 - [ ] All unit tests passing (`npm run test:coverage` ≥80%)
@@ -565,6 +638,7 @@ Profile → Daily Watch Time (1:many)
 - [ ] Performance benchmarks meet targets (60fps, <2s transitions)
 - [ ] Battery impact measured (<1% per hour)
 - [ ] Sentry integration tested (trigger error, verify in Sentry dashboard)
+- [ ] Feature flag configured (`REACT_APP_KIDS_MODE_ENABLED=false` in production initially)
 
 ### Deployment Steps
 
@@ -642,6 +716,74 @@ componentDidCatch(error: Error, errorInfo: ErrorInfo) {
   }
 }
 ```
+
+### Gesture Confidence Logging
+
+**Purpose**: Track false positives and recognition accuracy in production to validate SC-002 (90% accuracy) and SC-003 (<5% false positives).
+
+**Implementation**:
+```typescript
+// In useShakeDetection.ts
+if (shakeDetected) {
+  const confidence = calculateConfidence(motionData);
+
+  Sentry.addBreadcrumb({
+    category: 'gesture',
+    message: 'Shake detected',
+    level: 'info',
+    data: {
+      magnitude: peakAcceleration,
+      confidence: confidence, // 0.0-1.0 based on multi-sample consistency
+      threshold: GESTURE_CONFIG.shakeThreshold,
+      direction: direction, // 'left' | 'right'
+      cooldownActive: lastShakeTime !== null,
+    },
+  });
+
+  // Only in development: console log for debugging
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Gesture] Shake detected:', { magnitude, confidence, direction });
+  }
+}
+
+// Track false positives (user didn't intend gesture)
+// Future enhancement: Add "Undo" button, log when clicked
+if (userClickedUndo) {
+  Sentry.captureMessage('Gesture false positive', {
+    level: 'warning',
+    tags: { gestureType: 'shake' },
+    extra: { lastGestureData: motionData },
+  });
+}
+```
+
+**Confidence Calculation**:
+```typescript
+// src/utils/gestureDetection.ts
+export function calculateConfidence(samples: MotionData[]): number {
+  // Confidence based on:
+  // 1. Number of samples above threshold (2+ = high confidence)
+  // 2. Magnitude consistency (low variance = high confidence)
+  // 3. Direction consistency (all same sign = high confidence)
+
+  const aboveThreshold = samples.filter(s => Math.abs(s.x) > GESTURE_CONFIG.shakeThreshold);
+  const variance = calculateVariance(samples.map(s => s.x));
+  const directionConsistency = samples.every(s => Math.sign(s.x) === Math.sign(samples[0].x));
+
+  let confidence = 0;
+  if (aboveThreshold.length >= 2) confidence += 0.4;
+  if (variance < 5) confidence += 0.3; // Low variance = consistent shake
+  if (directionConsistency) confidence += 0.3;
+
+  return Math.min(confidence, 1.0);
+}
+```
+
+**Metrics to Track**:
+- Total gestures detected per session
+- Confidence distribution (how many low-confidence detections?)
+- False positive rate (if undo feature added)
+- Gesture type distribution (tilt vs shake vs swipe usage)
 
 ### Performance Monitoring
 

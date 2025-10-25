@@ -40,23 +40,32 @@ A child-friendly video playback interface at `/kids` route with:
    npm install lodash @types/lodash @vimeo/player react-youtube
    ```
 
-2. **Start Backend** (Terminal 1):
+2. **Enable Feature Flag** (create `.env.local`):
+   ```bash
+   # .env.local
+   REACT_APP_KIDS_MODE_ENABLED=true
+   ```
+   **Important**: Kids Mode is behind a feature flag. This must be enabled for local development.
+
+3. **Start Backend** (Terminal 1):
    ```bash
    cd backend
    npm start
    # Backend runs on http://localhost:5000
    ```
 
-3. **Start BFF Proxy** (Terminal 2):
+4. **Start BFF Proxy** (Terminal 2):
    ```bash
    npm run start:prod
    # Frontend proxy runs on http://localhost:8080
    ```
 
-4. **Open Browser**:
+5. **Open Browser**:
    ```bash
    open http://localhost:8080/kids
    ```
+
+   **Expected**: If feature flag is disabled, you'll see a 404. Enable the flag in step 2 and restart the dev server.
 
 ### Test Data Setup
 

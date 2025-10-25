@@ -136,7 +136,24 @@ description: "Actionable task list for Kids Mode Gesture Controls implementation
 - [ ] T038 [US3] Implement shake-to-skip logic (right shake → next video, left shake → previous video, handle first/last video edge cases)
 - [ ] T039 [US3] Add gesture permission gate UI (if iOS user denies motion permission, show friendly message with "Enable Gestures" button)
 
-**Checkpoint**: At this point, User Story 3 should work - tilt device to scrub video, shake device to skip to next/previous video
+### Additional Edge Case Tests for User Story 3 (MANDATORY - TDD Workflow) ⚠️
+
+**Write these tests FIRST, ensure they FAIL, then implement to make them pass**
+
+- [ ] T039.1 [P] [US3] Test: Video deleted mid-playback → skip to next video gracefully
+- [ ] T039.2 [P] [US3] Test: Device locks during playback → resume on unlock
+- [ ] T039.3 [P] [US3] Test: 5 rapid shakes in 2s → debounce prevents skip spam
+- [ ] T039.4 [P] [US3] Test: Device >90° tilt → cap scrub at max speed
+- [ ] T039.5 [P] [US3] Test: Device orientation changes during tilt gesture → pause gesture recognition
+
+### Battery Performance Validation (MOVED FROM PHASE 9)
+
+**⚠️ CRITICAL**: Battery testing must occur during Phase 5 to validate gesture implementation efficiency
+
+- [ ] T039.6 [P] [US3] Test battery impact via Android Battery Historian (target: <1% drain per hour, measure during 1-hour session)
+- [ ] T039.7 [P] [US3] Validate throttling effectiveness (DeviceOrientationEvent at 16ms, verify via Chrome DevTools Performance tab)
+
+**Checkpoint**: At this point, User Story 3 should work - tilt device to scrub video, shake device to skip to next/previous video, with validated battery efficiency
 
 ---
 
@@ -229,13 +246,27 @@ description: "Actionable task list for Kids Mode Gesture Controls implementation
 - [ ] T068 [P] Measure and validate gesture recognition accuracy (target: 90% accuracy, <5% false positives per SC-002, SC-003)
 - [ ] T069 [P] Measure and validate video transition speed (target: <2s per SC-004)
 - [ ] T070 [P] Measure and validate animation performance (target: 60fps pulsating NFC scan area per SC-005)
-- [ ] T071 [P] Test battery impact via Android Battery Historian (target: <1% drain per hour)
+- [ ] T070.1 [P] Performance budget validation: Lighthouse score ≥90 on /kids route
+- [ ] T070.2 [P] First Contentful Paint <1.5s on /kids route
+- [ ] T070.3 [P] Time to Interactive <3s on /kids route
+- [ ] T070.4 [P] Gesture latency <50ms (DeviceOrientationEvent → scrub action)
+- [ ] T071 ~~[P] Test battery impact via Android Battery Historian (target: <1% drain per hour)~~ **MOVED TO PHASE 5 (T039.6)**
 - [ ] T072 [P] Verify 80% code coverage requirement met (Constitution mandate - run npm run test:coverage)
 - [ ] T073 [P] Update ErrorBoundary.tsx to handle Kids Mode errors separately (if error occurs in /kids route, show KidsErrorBoundary)
 - [ ] T074 Run E2E test suite on device matrix (Android Chrome, iOS Safari, Desktop Chrome)
 - [ ] T075 Update quickstart.md with Kids Mode setup instructions
 - [ ] T076 Code cleanup and refactoring (remove console.logs, add JSDoc comments to custom hooks)
 - [ ] T077 Final smoke test on production-like environment (Docker Compose)
+
+### Accessibility Tests (MANDATORY - TDD Workflow) ⚠️
+
+**Write these tests FIRST to ensure inclusive design for all children**
+
+- [ ] T077.1 [P] Test: Screen reader announces NFC scan instructions (ARIA labels on KidsModeNFCScan)
+- [ ] T077.2 [P] Test: High contrast mode renders gesture UI clearly (test in Windows High Contrast, macOS Increase Contrast)
+- [ ] T077.3 [P] Test: Keyboard-only navigation works (Tab through profile selection, Enter to select, Esc to exit)
+- [ ] T077.4 [P] Test: Focus indicators visible on all interactive elements (profile cards, buttons)
+- [ ] T077.5 [P] Test: Text meets WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
 
 ---
 
@@ -382,22 +413,23 @@ With 3 developers:
 
 ## Summary
 
-- **Total tasks**: 77
+- **Total tasks**: 91 (updated with recommendations)
 - **Task breakdown by phase**:
   - Setup: 5 tasks
   - Foundational: 6 tasks (3 tests + 3 implementations)
   - User Story 1: 6 tasks (2 tests + 4 implementations)
   - User Story 2: 11 tasks (3 tests + 8 implementations)
-  - User Story 3: 11 tasks (3 tests + 8 implementations)
+  - User Story 3: 18 tasks (10 tests + 8 implementations) **+7 edge case tests, +2 battery validation**
   - User Story 4: 6 tasks (2 tests + 4 implementations)
   - User Story 5: 10 tasks (3 tests + 7 implementations)
   - User Story 6: 9 tasks (2 tests + 7 implementations)
-  - Polish: 13 tasks
-- **Parallel opportunities**: 35 tasks marked [P] (45% parallelizable)
-- **MVP task count**: 39 tasks (Phases 1-5 + 7)
-- **Test tasks**: 24 tasks (31% of total - meets TDD mandate)
+  - Polish: 20 tasks **+4 performance budgets, +5 accessibility tests**
+- **Parallel opportunities**: 48 tasks marked [P] (53% parallelizable) **improved from 45%**
+- **MVP task count**: 46 tasks (Phases 1-5 + 7) **+7 critical tests**
+- **Test tasks**: 36 tasks (40% of total - exceeds TDD mandate) **improved from 31%**
 - **User stories**: 6 (4 P1 priority, 2 P2 priority)
 - **Independent test criteria**: Each story has clear validation path
 - **Constitution compliance**: ✅ All 6 principles met
+- **Code review recommendations**: ✅ All immediate + short-term recommendations implemented
 
 **Ready for implementation!** Follow TDD workflow: Tests first → Ensure tests FAIL → Implement → Ensure tests PASS → Commit.
