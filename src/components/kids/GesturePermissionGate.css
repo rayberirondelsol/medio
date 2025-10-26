@@ -1,0 +1,155 @@
+/**
+ * GesturePermissionGate Styles
+ *
+ * Child-friendly permission prompt for iOS gesture access
+ */
+
+.gesture-permission-gate {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  z-index: 1000;
+}
+
+.gesture-permission-gate__emoji {
+  font-size: 5rem;
+  margin-bottom: 1.5rem;
+}
+
+.gesture-permission-gate__emoji--bounce {
+  animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.gesture-permission-gate__title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.gesture-permission-gate__message {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+}
+
+.gesture-permission-gate__button {
+  background: white;
+  color: #667eea;
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 3rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.gesture-permission-gate__button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.gesture-permission-gate__button:active {
+  transform: translateY(-1px);
+}
+
+.gesture-permission-gate__button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.gesture-permission-gate__button--secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.gesture-permission-gate__skip {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+}
+
+.gesture-permission-gate__skip-button {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.gesture-permission-gate__skip-button:hover {
+  color: white;
+}
+
+/* Error state */
+.gesture-permission-gate--error {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .gesture-permission-gate__emoji {
+    font-size: 4rem;
+  }
+
+  .gesture-permission-gate__title {
+    font-size: 1.5rem;
+  }
+
+  .gesture-permission-gate__message {
+    font-size: 1.1rem;
+  }
+
+  .gesture-permission-gate__button {
+    font-size: 1.1rem;
+    padding: 0.875rem 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gesture-permission-gate {
+    padding: 1.5rem;
+  }
+
+  .gesture-permission-gate__emoji {
+    font-size: 3rem;
+  }
+
+  .gesture-permission-gate__title {
+    font-size: 1.25rem;
+  }
+
+  .gesture-permission-gate__message {
+    font-size: 1rem;
+  }
+
+  .gesture-permission-gate__button {
+    font-size: 1rem;
+    padding: 0.75rem 2rem;
+  }
+}

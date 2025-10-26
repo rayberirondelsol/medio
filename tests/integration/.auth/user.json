@@ -2,7 +2,7 @@
   "cookies": [
     {
       "name": "_csrf",
-      "value": "vC-04-ZFskUW6HpvZraCL78m",
+      "value": "NreEtJonGGr3MA3XUdkd9Pn6",
       "domain": "localhost",
       "path": "/",
       "expires": -1,
@@ -12,20 +12,20 @@
     },
     {
       "name": "authToken",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZjZmFmODhkLWIxOTQtNDExMi05ODMxLTlkNjAzMDU5ZGQ1MiIsImVtYWlsIjoiaW50ZWdyYXRpb24tdGVzdC0xNzYxMjE3MzQ2MDQ5QGV4YW1wbGUuY29tIiwianRpIjoiMjAwMWM4YTU0ODk2N2Y4YmM1ZWEyMjc5MTNkYTljYzMiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzYxMjE3MzQ2LCJleHAiOjE3NjEyMTgyNDYsImF1ZCI6Im1lZGlvLXVzZXJzIiwiaXNzIjoibWVkaW8tcGxhdGZvcm0ifQ.HBLBx7kei7MTG8YOVE7LiAks0Skw3K1JSylJ6IAZ1yI",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJmNDk1Mjc0LWI4MzAtNDY5NC04NjA3LTgwMTNiN2FmYmQ2ZSIsImVtYWlsIjoiaW50ZWdyYXRpb24tdGVzdC0xNzYxMzQyNTkxNjEzQGV4YW1wbGUuY29tIiwianRpIjoiZGY2ZGU2Mzk2MmNkN2JlODdjMWI3OThjODJmNTVlMGQiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzYxMzQyNTkyLCJleHAiOjE3NjEzNDM0OTIsImF1ZCI6Im1lZGlvLXVzZXJzIiwiaXNzIjoibWVkaW8tcGxhdGZvcm0ifQ.YN4PbTIvYrJBCJhKfWkXxAzpZE3bHsLB70Nmtap2Tno",
       "domain": "localhost",
       "path": "/",
-      "expires": 1761218246,
+      "expires": 1761343492,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "refreshToken",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZjZmFmODhkLWIxOTQtNDExMi05ODMxLTlkNjAzMDU5ZGQ1MiIsImp0aSI6ImQ4NWE3ODdmYjI2YzJmZTVkODU0YjkzZWQyZDVjZTliIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEyMTczNDYsImV4cCI6MTc2MTgyMjE0NiwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.HaytI44sUEZrYNGPupZW6MZ2ENgq_A3A3jqMwhpan2Y",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJmNDk1Mjc0LWI4MzAtNDY5NC04NjA3LTgwMTNiN2FmYmQ2ZSIsImp0aSI6ImQ3ZThjMTgyNGU0ODMyYWI2YzBiMTQ5YTZjZmRlZDBkIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NjEzNDI1OTIsImV4cCI6MTc2MTk0NzM5MiwiYXVkIjoibWVkaW8tdXNlcnMiLCJpc3MiOiJtZWRpby1wbGF0Zm9ybSJ9.zeJdIgaHdltTfcd-2omoFcJzRlBbRXDLsyd-u0YRHSY",
       "domain": "localhost",
       "path": "/",
-      "expires": 1761822146,
+      "expires": 1761947392,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Lax"

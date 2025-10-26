@@ -1,0 +1,466 @@
+/**
+ * Kids Mode Styles
+ *
+ * Child-friendly, colorful, large UI components for Kids Mode.
+ * Includes pulsating NFC scan area animation optimized for 60fps.
+ */
+
+/* ============================================================================
+   Container Layout
+   ============================================================================ */
+
+.kids-nfc-scan-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive, sans-serif;
+}
+
+/* ============================================================================
+   Instruction Text
+   ============================================================================ */
+
+.nfc-instruction {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+  padding: 0 20px;
+  max-width: 90%;
+}
+
+.nfc-instruction-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  margin: 0 0 10px 0;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.nfc-instruction-text {
+  font-size: 1.25rem;
+  color: #f0f0f0;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+  margin: 0;
+  line-height: 1.5;
+  animation: fadeInDown 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================================
+   NFC Scan Area (Pulsating Animation)
+   ============================================================================ */
+
+.nfc-scan-area {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+/* Pulsating animation for idle/scanning state */
+.nfc-scan-area--pulsating {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+    box-shadow: 0 8px 32px rgba(251, 194, 235, 0.4);
+  }
+  25% {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    box-shadow: 0 8px 48px rgba(161, 196, 253, 0.6);
+  }
+  50% {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%);
+    box-shadow: 0 12px 64px rgba(253, 203, 241, 0.8);
+  }
+  75% {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    box-shadow: 0 8px 48px rgba(255, 236, 210, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+    box-shadow: 0 8px 32px rgba(251, 194, 235, 0.4);
+  }
+}
+
+/* Success state - green glow */
+.nfc-scan-area--success {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  box-shadow: 0 0 40px rgba(168, 237, 234, 0.9);
+  animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Error state - red glow */
+.nfc-scan-area--error {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  box-shadow: 0 0 40px rgba(255, 154, 158, 0.9);
+  animation: errorShake 0.5s ease-out;
+}
+
+@keyframes errorShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+/* ============================================================================
+   Scan Icon
+   ============================================================================ */
+
+.nfc-scan-icon {
+  width: 80px;
+  height: 80px;
+  color: #ffffff;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+.nfc-scan-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.icon-success {
+  color: #10b981;
+}
+
+.icon-error {
+  color: #ef4444;
+}
+
+.icon-nfc {
+  color: #ffffff;
+  animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* ============================================================================
+   Simulation Mode
+   ============================================================================ */
+
+.nfc-simulation-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+  animation: fadeInScale 0.6s ease-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.simulation-label {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #667eea;
+  margin: 0 0 10px 0;
+}
+
+.simulation-description {
+  font-size: 1rem;
+  color: #555;
+  margin: 0 0 30px 0;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.simulation-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.simulation-input {
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 1.125rem;
+  border: 3px solid #667eea;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.simulation-input:focus {
+  border-color: #764ba2;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+}
+
+.simulation-button {
+  padding: 15px 40px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #ffffff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  font-family: inherit;
+}
+
+.simulation-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.6);
+}
+
+.simulation-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.4);
+}
+
+.simulation-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================================
+   Status and Error Messages
+   ============================================================================ */
+
+.nfc-status {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 30px;
+  background: rgba(16, 185, 129, 0.95);
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: bold;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: slideUp 0.5s ease-out;
+  z-index: 20;
+}
+
+.nfc-error {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 30px;
+  background: rgba(239, 68, 68, 0.95);
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: bold;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: slideUp 0.5s ease-out;
+  z-index: 20;
+  max-width: 80%;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* ============================================================================
+   Responsive Design
+   ============================================================================ */
+
+/* Tablets in portrait mode */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  .nfc-scan-area {
+    width: 220px;
+    height: 220px;
+  }
+
+  .nfc-scan-icon {
+    width: 90px;
+    height: 90px;
+  }
+
+  .nfc-instruction-title {
+    font-size: 3rem;
+  }
+
+  .nfc-instruction-text {
+    font-size: 1.5rem;
+  }
+}
+
+/* Large tablets and small desktops */
+@media (min-width: 1024px) {
+  .nfc-scan-area {
+    width: 240px;
+    height: 240px;
+  }
+
+  .nfc-scan-icon {
+    width: 100px;
+    height: 100px;
+  }
+
+  .nfc-instruction-title {
+    font-size: 3.5rem;
+  }
+
+  .nfc-instruction-text {
+    font-size: 1.75rem;
+  }
+
+  .simulation-input-group {
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .simulation-input {
+    flex: 1;
+  }
+
+  .simulation-button {
+    flex-shrink: 0;
+  }
+}
+
+/* Small smartphones */
+@media (max-width: 360px) {
+  .nfc-scan-area {
+    width: 160px;
+    height: 160px;
+  }
+
+  .nfc-scan-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .nfc-instruction-title {
+    font-size: 2rem;
+  }
+
+  .nfc-instruction-text {
+    font-size: 1rem;
+  }
+}
+
+/* ============================================================================
+   Accessibility Enhancements
+   ============================================================================ */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .nfc-scan-area {
+    border: 4px solid #000000;
+  }
+
+  .nfc-instruction-title,
+  .nfc-instruction-text {
+    text-shadow: 2px 2px 0 #000000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .nfc-scan-area--pulsating {
+    animation: none;
+  }
+
+  .icon-nfc {
+    animation: none;
+  }
+
+  .nfc-scan-area--success,
+  .nfc-scan-area--error,
+  .nfc-status,
+  .nfc-error,
+  .simulation-mode,
+  .nfc-instruction-title,
+  .nfc-instruction-text {
+    animation: none;
+  }
+}
+
+/* Focus indicators for keyboard navigation */
+.simulation-input:focus-visible,
+.simulation-button:focus-visible {
+  outline: 4px solid #fbbf24;
+  outline-offset: 2px;
+}
