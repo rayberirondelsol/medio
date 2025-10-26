@@ -39,7 +39,6 @@ type ScanState = 'idle' | 'scanning' | 'success' | 'error';
 
 const KidsModeNFCScan: React.FC<KidsModeNFCScanProps> = ({ onScan }) => {
   // Device detection
-  const [deviceType, setDeviceType] = useState<DeviceType>('smartphone');
   const [sensorLocation, setSensorLocation] = useState<NFCSensorLocation | null>(null);
   const [hasNFCSupport, setHasNFCSupport] = useState(false);
 
@@ -64,7 +63,6 @@ const KidsModeNFCScan: React.FC<KidsModeNFCScanProps> = ({ onScan }) => {
     const type = detectDeviceType();
     const location = getNFCSensorLocation(type);
 
-    setDeviceType(type);
     setSensorLocation(location);
 
     // Check for Web NFC API support
