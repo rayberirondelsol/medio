@@ -15,10 +15,10 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import KidsModeNFCScan from '../KidsModeNFCScan';
-import * as deviceTypeDetector from '../../../utils/deviceTypeDetector';
+import * as deviceTypeDetector from '../../utils/deviceTypeDetector';
 
 // Mock device type detector
-jest.mock('../../../utils/deviceTypeDetector');
+jest.mock('../../utils/deviceTypeDetector');
 
 describe('KidsModeNFCScan Component', () => {
   beforeEach(() => {
