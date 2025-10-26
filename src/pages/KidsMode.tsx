@@ -6,7 +6,6 @@ import VideoPlayer from '../components/VideoPlayer';
 import KidsModeNFCScan from '../components/kids/KidsModeNFCScan';
 import { KidsVideoPlayer } from '../components/kids/KidsVideoPlayer';
 import { KidsErrorBoundary } from '../components/kids/KidsErrorBoundary';
-import { resolveApiBaseUrl } from '../utils/runtimeConfig';
 
 interface Video {
   id: string;
@@ -31,12 +30,10 @@ interface Session {
 }
 
 const XIcon = FiX as React.ElementType;
-const MISSING_API_MESSAGE = 
-  'Kids Mode is temporarily unavailable because the Medio API endpoint is not configured. ' +
-  'Please set the REACT_APP_API_URL environment variable.';
+
 const KidsMode: React.FC = () => {
-  const apiUrl = resolveApiBaseUrl();
-  const isApiConfigured = Boolean(apiUrl);
+  // Using BFF proxy mode with relative URLs (/api)
+  // The proxy forwards requests to the backend API
 
   const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
   const [chipVideos, setChipVideos] = useState<Video[]>([]);
@@ -69,10 +66,6 @@ const KidsMode: React.FC = () => {
   }, [currentSession]);
   
   useEffect(() => {
-    if (!apiUrl) {
-      return;
-    }
-
     return () => {
       // Use ref to access session on unmount to avoid stale closure
       if (sessionRef.current && navigator.sendBeacon) {
@@ -80,24 +73,21 @@ const KidsMode: React.FC = () => {
           session_id: sessionRef.current.session_id,
           stopped_reason: 'manual'
         });
-        navigator.sendBeacon(`${apiUrl}/sessions/end/public`, data);
+        // Using relative URL - BFF proxy forwards to backend
+        navigator.sendBeacon('/api/sessions/end/public', data);
       }
     };
-  }, [apiUrl]);
+  }, []);
 
   const handleNFCScan = async (chipUID: string) => {
-    if (!apiUrl) {
-      setError(MISSING_API_MESSAGE);
-      return;
-    }
-
     const controller = RequestManager.createController('nfcScan');
 
     try {
       setError('');
 
       // 1. Scan NFC chip to get chip ID
-      const scanResponse = await axiosInstance.post(`${apiUrl}/nfc/scan/public`, {
+      // Using relative URL - BFF proxy forwards to backend
+      const scanResponse = await axiosInstance.post('/api/nfc/scan/public', {
         chip_uid: chipUID,
         profile_id: null // Could be selected from a profile selector
       }, { signal: controller.signal });
@@ -114,7 +104,7 @@ const KidsMode: React.FC = () => {
       // 2. Fetch videos assigned to this chip
       const videosController = RequestManager.createController('fetchVideos');
       const videosResponse = await axiosInstance.get(
-        `${apiUrl}/nfc/chips/${chip.id}/videos`,
+        `/api/nfc/chips/${chip.id}/videos`,
         { signal: videosController.signal }
       );
 
@@ -151,12 +141,12 @@ const KidsMode: React.FC = () => {
   };
 
   const endSession = async (reason: string) => {
-    if (!currentSession || !apiUrl) return;
-    
+    if (!currentSession) return;
+
     const controller = RequestManager.createController('endSession');
 
     try {
-      await axiosInstance.post(`${apiUrl}/sessions/end/public`, {
+      await axiosInstance.post('/api/sessions/end/public', {
         session_id: currentSession.session_id,
         stopped_reason: reason
       }, { signal: controller.signal });
@@ -217,24 +207,14 @@ const KidsMode: React.FC = () => {
               <span className="rainbow-text">Medio Kids</span>
             </h1>
             <p className="scanner-instruction">
-              {isApiConfigured
-                ? 'Scan your magic chip to watch a video!'
-                : 'Kids Mode requires the Medio API to be configured.'}
+              Scan your magic chip to watch a video!
             </p>
           </div>
 
-          {isApiConfigured ? (
-            <>
-              <KidsModeNFCScan onScan={handleNFCScan} />
-              {error && (
-                <div className="error-bubble" role="alert">
-                  {error}
-                </div>
-              )}
-            </>
-          ) : (
+          <KidsModeNFCScan onScan={handleNFCScan} />
+          {error && (
             <div className="error-bubble" role="alert">
-              {MISSING_API_MESSAGE}
+              {error}
             </div>
           )}
 
