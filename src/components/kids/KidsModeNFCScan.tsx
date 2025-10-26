@@ -22,7 +22,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   detectDeviceType,
   getNFCSensorLocation,
-  type DeviceType,
   type NFCSensorLocation,
 } from '../../utils/deviceTypeDetector';
 import '../../styles/KidsMode.css';
