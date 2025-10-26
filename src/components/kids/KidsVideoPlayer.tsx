@@ -14,6 +14,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useVideoPlayer } from '../../hooks/useVideoPlayer';
 import { useDeviceOrientation } from '../../hooks/useDeviceOrientation';
 import { useShakeDetection } from '../../hooks/useShakeDetection';
+import { useSwipeGesture } from '../../hooks/useSwipeGesture';
 import { GesturePermissionGate } from './GesturePermissionGate';
 import './KidsVideoPlayer.css';
 
@@ -39,6 +40,7 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
   const [hasAttemptedFullscreen, setHasAttemptedFullscreen] = useState(false);
   const [showEndMessage, setShowEndMessage] = useState(false);
   const [endMessage, setEndMessage] = useState('');
+  const [showSwipeHint, setShowSwipeHint] = useState(true);
 
   const { state, error, loadVideo, play, on, seek } = useVideoPlayer('kids-video-container');
 
@@ -54,6 +56,11 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
     shakeDetected,
     shakeDirection,
   } = useShakeDetection();
+
+  const {
+    swipeDetected,
+    swipeDirection,
+  } = useSwipeGesture();
 
   // Track last seek time for tilt-to-scrub
   const lastSeekTimeRef = useRef<number>(0);
@@ -106,6 +113,17 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
       play();
     }
   }, [state, play]);
+
+  /**
+   * Hide swipe hint after 5 seconds
+   */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSwipeHint(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   /**
    * Handle video ended event → advance to next video or complete playlist
@@ -203,6 +221,18 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
       }
     }
   }, [shakeDetected, shakeDirection, state, currentVideoIndex, videos, loadVideo, seek, onPlaylistComplete]);
+
+  /**
+   * Swipe-to-exit: Exit fullscreen and return to scan screen on swipe down
+   */
+  useEffect(() => {
+    if (!swipeDetected || swipeDirection !== 'down') {
+      return;
+    }
+
+    // Stop video playback and return to scan screen
+    onPlaylistComplete();
+  }, [swipeDetected, swipeDirection, onPlaylistComplete]);
 
   /**
    * Retry loading current video on error
@@ -335,6 +365,16 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
         <div className="kids-video-player__title-overlay">
           <h2 className="kids-video-player__video-title">{currentVideo.title}</h2>
         </div>
+      )}
+
+      {/* Swipe hint (subtle down arrow at top) */}
+      {showSwipeHint && (
+        <div
+          className={`kids-video-player__swipe-hint ${
+            !showSwipeHint ? 'kids-video-player__swipe-hint--fade-out' : ''
+          }`}
+          aria-hidden="true"
+        />
       )}
 
       {/* Video container (player embeds here) */}

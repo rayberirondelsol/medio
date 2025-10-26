@@ -280,6 +280,55 @@
   }
 }
 
+/* Swipe hint indicator (subtle arrow at top) */
+.kids-video-player__swipe-hint {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  animation: swipeHintPulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.kids-video-player__swipe-hint::after {
+  content: '↓';
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: bold;
+}
+
+@keyframes swipeHintPulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(-50%) translateY(5px);
+  }
+}
+
+/* Hide swipe hint after 5 seconds */
+.kids-video-player__swipe-hint--fade-out {
+  animation: swipeHintFadeOut 1s ease-out forwards;
+}
+
+@keyframes swipeHintFadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 /* Fullscreen API overrides */
 .kids-video-player:fullscreen {
   width: 100vw;
