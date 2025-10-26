@@ -32,8 +32,9 @@ interface Session {
 const XIcon = FiX as React.ElementType;
 
 const KidsMode: React.FC = () => {
-  // Using BFF proxy mode with relative URLs (/api)
-  // The proxy forwards requests to the backend API
+  // Using BFF proxy mode: axiosInstance has baseURL='/api'
+  // So we use relative URLs without '/api' prefix (e.g., '/nfc/scan/public')
+  // sendBeacon() calls still need full '/api' path as they don't use baseURL
 
   const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
   const [chipVideos, setChipVideos] = useState<Video[]>([]);
@@ -73,7 +74,7 @@ const KidsMode: React.FC = () => {
           session_id: sessionRef.current.session_id,
           stopped_reason: 'manual'
         });
-        // Using relative URL - BFF proxy forwards to backend
+        // sendBeacon uses full path, not baseURL
         navigator.sendBeacon('/api/sessions/end/public', data);
       }
     };
@@ -86,8 +87,8 @@ const KidsMode: React.FC = () => {
       setError('');
 
       // 1. Scan NFC chip to get chip ID
-      // Using relative URL - BFF proxy forwards to backend
-      const scanResponse = await axiosInstance.post('/api/nfc/scan/public', {
+      // Using axiosInstance with baseURL already set to '/api'
+      const scanResponse = await axiosInstance.post('/nfc/scan/public', {
         chip_uid: chipUID,
         profile_id: null // Could be selected from a profile selector
       }, { signal: controller.signal });
@@ -104,7 +105,7 @@ const KidsMode: React.FC = () => {
       // 2. Fetch videos assigned to this chip
       const videosController = RequestManager.createController('fetchVideos');
       const videosResponse = await axiosInstance.get(
-        `/api/nfc/chips/${chip.id}/videos`,
+        `/nfc/chips/${chip.id}/videos`,
         { signal: videosController.signal }
       );
 
@@ -146,7 +147,7 @@ const KidsMode: React.FC = () => {
     const controller = RequestManager.createController('endSession');
 
     try {
-      await axiosInstance.post('/api/sessions/end/public', {
+      await axiosInstance.post('/sessions/end/public', {
         session_id: currentSession.session_id,
         stopped_reason: reason
       }, { signal: controller.signal });
