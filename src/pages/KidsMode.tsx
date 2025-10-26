@@ -89,8 +89,9 @@ const KidsMode: React.FC = () => {
       // 1. Scan NFC chip to get chip ID
       // Using axiosInstance with baseURL already set to '/api'
       const scanResponse = await axiosInstance.post('/nfc/scan/public', {
-        chip_uid: chipUID,
-        profile_id: null // Could be selected from a profile selector
+        chip_uid: chipUID
+        // profile_id omitted - backend validation rejects null
+        // TODO: Add profile selector UI and pass selected profile_id
       }, { signal: controller.signal });
 
       const chip = scanResponse.data.chip;
