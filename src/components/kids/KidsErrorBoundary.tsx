@@ -6,6 +6,7 @@
  */
 
 import { Component, ErrorInfo, ReactNode } from 'react';
+import * as Sentry from '@sentry/react';
 import './KidsErrorBoundary.css';
 
 interface Props {
@@ -37,9 +38,20 @@ export class KidsErrorBoundary extends Component<Props, State> {
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('KidsErrorBoundary caught error:', error, errorInfo);
 
-    // Log to external error tracking service (e.g., Sentry) in production
+    // Log to Sentry in production with Kids Mode context
     if (process.env.NODE_ENV === 'production') {
-      // Example: Sentry.captureException(error, { contexts: { react: errorInfo } });
+      Sentry.captureException(error, {
+        contexts: {
+          react: {
+            componentStack: errorInfo.componentStack,
+          },
+        },
+        tags: {
+          mode: 'kids_mode',
+          feature: 'kids_error_boundary',
+        },
+        level: 'error',
+      });
     }
   }
 
