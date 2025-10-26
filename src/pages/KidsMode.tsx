@@ -14,8 +14,8 @@ interface Video {
   thumbnail_url?: string;
   platform_video_id: string;
   platform_id: string;
-  platform_name?: string;
-  sequence_order?: number;
+  platform_name: string;
+  sequence_order: number;
   max_watch_time_minutes?: number;
   remaining_minutes?: number;
 }
@@ -40,11 +40,10 @@ const KidsMode: React.FC = () => {
 
   const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
   const [chipVideos, setChipVideos] = useState<Video[]>([]);
-  const [currentChip, setCurrentChip] = useState<NFCChip | null>(null);
+  const [, setCurrentChip] = useState<NFCChip | null>(null);
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [showScanner, setShowScanner] = useState(true);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
-  const [watchTime, setWatchTime] = useState(0);
   const [error, setError] = useState('');
   const heartbeatInterval = useRef<NodeJS.Timeout | null>(null);
   const sessionRef = useRef<Session | null>(null);
@@ -151,85 +150,6 @@ const KidsMode: React.FC = () => {
     }
   };
 
-  const startSession = async (videoId: string) => {
-    if (!apiUrl) {
-      return;
-    }
-
-    const controller = RequestManager.createController('startSession');
-    
-    try {
-      const response = await axiosInstance.post(`${apiUrl}/sessions/start/public`, {
-        video_id: videoId,
-        profile_id: null // Could be from selected profile
-      }, { signal: controller.signal });
-
-      setCurrentSession(response.data);
-      sessionRef.current = response.data;
-      setWatchTime(0);
-
-      // Start heartbeat to track session with exponential backoff
-      if (heartbeatInterval.current) {
-        clearInterval(heartbeatInterval.current);
-      }
-      
-      let heartbeatDelay = 30000; // Start with 30 seconds
-      const maxDelay = 120000; // Max 2 minutes
-      
-      const scheduleHeartbeat = () => {
-        if (!isMountedRef.current || !sessionRef.current) return;
-        
-        // Clear any existing timeout before scheduling new one
-        if (heartbeatInterval.current) {
-          clearTimeout(heartbeatInterval.current);
-          heartbeatInterval.current = null;
-        }
-        
-        heartbeatInterval.current = setTimeout(async () => {
-          if (!isMountedRef.current || !sessionRef.current) return;
-          
-          try {
-            await checkSessionStatus(sessionRef.current.session_id);
-            heartbeatDelay = 30000; // Reset on success
-          } catch (error) {
-            // Exponential backoff on error
-            heartbeatDelay = Math.min(heartbeatDelay * 1.5, maxDelay);
-          }
-          
-          if (isMountedRef.current && sessionRef.current) {
-            scheduleHeartbeat();
-          }
-        }, heartbeatDelay);
-      };
-      
-      scheduleHeartbeat();
-    } catch (error) {
-      console.error('Failed to start session:', error);
-    }
-  };
-
-  const checkSessionStatus = async (sessionId: string) => {
-    if (!apiUrl) {
-      return;
-    }
-
-    const controller = RequestManager.createController('heartbeat');
-    
-    try {
-      const response = await axiosInstance.post(`${apiUrl}/sessions/heartbeat/public`, {
-        session_id: sessionId
-      }, { signal: controller.signal });
-
-      if (response.data.should_stop) {
-        handleTimeLimit(response.data.stop_reason);
-      }
-
-      setWatchTime(response.data.watched_minutes);
-    } catch (error) {
-      console.error('Heartbeat failed:', error);
-    }
-  };
-
   const endSession = async (reason: string) => {
     if (!currentSession || !apiUrl) return;
     
@@ -251,15 +171,6 @@ const KidsMode: React.FC = () => {
 
     setCurrentSession(null);
     sessionRef.current = null;
-  };
-
-  const handleTimeLimit = (reason: string) => {
-    endSession(reason);
-    setCurrentVideo(null);
-    setShowScanner(true);
-    setError(reason === 'daily_limit' 
-      ? 'Daily watch time reached! See you tomorrow!' 
-      : 'Video time is up! Scan another chip to watch more.');
   };
 
   const handleVideoEnd = () => {
@@ -347,7 +258,6 @@ const KidsMode: React.FC = () => {
           {currentVideo.remaining_minutes && (
             <div className="time-remaining">
               Time remaining today: {currentVideo.remaining_minutes} minutes
-              {watchTime > 0 && <span> (Watched: {watchTime} minutes)</span>}
             </div>
           )}
 

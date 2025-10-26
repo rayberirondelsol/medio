@@ -42,10 +42,10 @@ export function useVideoPlayer(containerId: string): UseVideoPlayerReturn {
   const playerRef = useRef<VideoPlayer | null>(null);
   const eventHandlersRef = useRef<Map<VideoPlayerEvent, Set<Function>>>(
     new Map([
-      ['playing', new Set()],
-      ['paused', new Set()],
-      ['ended', new Set()],
-      ['error', new Set()],
+      ['playing' as VideoPlayerEvent, new Set<Function>()],
+      ['paused' as VideoPlayerEvent, new Set<Function>()],
+      ['ended' as VideoPlayerEvent, new Set<Function>()],
+      ['error' as VideoPlayerEvent, new Set<Function>()],
     ])
   );
 

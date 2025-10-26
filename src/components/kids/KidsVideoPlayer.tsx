@@ -357,7 +357,6 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
         aria-atomic="true"
       >
         {state === 'playing' && `Now playing: ${currentVideo.title}`}
-        {state === 'loading' && 'Loading next video'}
       </div>
 
       {/* Video title overlay (shown briefly at start) */}
