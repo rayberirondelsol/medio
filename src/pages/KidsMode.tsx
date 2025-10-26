@@ -86,7 +86,7 @@ const KidsMode: React.FC = () => {
     try {
       setError('');
 
-      // 1. Scan NFC chip to get chip ID
+      // Scan NFC chip - backend returns first video directly (not chip wrapper)
       // Using axiosInstance with baseURL already set to '/api'
       const scanResponse = await axiosInstance.post('/nfc/scan/public', {
         chip_uid: chipUID
@@ -94,38 +94,16 @@ const KidsMode: React.FC = () => {
         // TODO: Add profile selector UI and pass selected profile_id
       }, { signal: controller.signal });
 
-      const chip = scanResponse.data.chip;
+      const video = scanResponse.data;  // Backend returns video object directly
 
-      if (!chip || !chip.id) {
-        setError('NFC chip not registered. Ask a grown-up to set it up!');
+      if (!video || !video.id) {
+        setError('No video assigned to this chip. Ask a grown-up to add videos!');
         return;
       }
 
-      setCurrentChip(chip);
-
-      // 2. Fetch videos assigned to this chip
-      const videosController = RequestManager.createController('fetchVideos');
-      const videosResponse = await axiosInstance.get(
-        `/nfc/chips/${chip.id}/videos`,
-        { signal: videosController.signal }
-      );
-
-      const videos = videosResponse.data.videos || [];
-
-      if (videos.length === 0) {
-        // No videos error is handled in KidsVideoPlayer component
-        setChipVideos([]);
-        setShowScanner(false);
-        setShowVideoPlayer(true);
-        return;
-      }
-
-      // Sort by sequence_order
-      const sortedVideos = videos.sort(
-        (a: Video, b: Video) => (a.sequence_order || 0) - (b.sequence_order || 0)
-      );
-
-      setChipVideos(sortedVideos);
+      // Use single video from scan response
+      // Note: For multi-video sequential playback, backend needs to return ALL videos
+      setChipVideos([video]);  // Wrap in array for KidsVideoPlayer
       setShowScanner(false);
       setShowVideoPlayer(true);
 
@@ -133,6 +111,8 @@ const KidsMode: React.FC = () => {
       if (axios.isAxiosError(error)) {
         if (error.code === 'ERR_CANCELED') {
           setError('Scan was cancelled');
+        } else if (error.response?.status === 404) {
+          setError('No video assigned to this chip. Ask a grown-up to add videos!');
         } else {
           setError(error.response?.data?.message || 'Failed to scan NFC chip');
         }
