@@ -130,6 +130,51 @@ router.delete('/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// Get profile watch time (public endpoint for Kids Mode)
+router.get('/:id/watch-time', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Get profile with daily limit
+    const profileResult = await pool.query(`
+      SELECT id, daily_limit_minutes
+      FROM profiles
+      WHERE id = $1
+    `, [id]);
+
+    if (profileResult.rows.length === 0) {
+      return res.status(404).json({
+        error: 'Profile not found',
+        message: 'Oops! We can\'t find your profile. Ask a grown-up for help!'
+      });
+    }
+
+    const profile = profileResult.rows[0];
+
+    // Get today's watch time
+    const watchTimeResult = await pool.query(`
+      SELECT COALESCE(total_minutes, 0) as watched_minutes
+      FROM daily_watch_time
+      WHERE profile_id = $1 AND date = CURRENT_DATE
+    `, [id]);
+
+    const watchedMinutes = watchTimeResult.rows[0]?.watched_minutes || 0;
+    const remainingMinutes = Math.max(0, profile.daily_limit_minutes - watchedMinutes);
+
+    res.json({
+      watched_minutes: watchedMinutes,
+      daily_limit: profile.daily_limit_minutes,
+      remaining: remainingMinutes
+    });
+  } catch (error) {
+    console.error('Error fetching watch time:', error);
+    res.status(500).json({
+      error: 'Failed to fetch watch time',
+      message: 'Oops! Something went wrong. Please try again!'
+    });
+  }
+});
+
 // Get profile watch statistics
 router.get('/:id/stats', authenticateToken, async (req, res) => {
   const { id } = req.params;

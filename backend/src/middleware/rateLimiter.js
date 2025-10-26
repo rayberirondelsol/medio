@@ -76,8 +76,37 @@ const nfcChipListingLimiter = rateLimit({
   }
 });
 
+/**
+ * Rate limiter for public Kids Mode session endpoints
+ * Prevents abuse of unauthenticated endpoints
+ * 10 requests per minute per IP address
+ */
+const publicSessionLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10, // 10 requests per window
+  message: {
+    error: 'Too many requests',
+    retryAfter: null
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    // Rate limit by IP address for public endpoints
+    return req.ip;
+  },
+  handler: (req, res) => {
+    const retryAfter = new Date(Date.now() + 1 * 60 * 1000).toISOString();
+    res.status(429).json({
+      error: 'Too many requests',
+      message: 'Slow down! Please wait a moment before trying again.',
+      retryAfter: retryAfter
+    });
+  }
+});
+
 module.exports = {
   nfcChipRegistrationLimiter,
   nfcChipDeletionLimiter,
-  nfcChipListingLimiter
+  nfcChipListingLimiter,
+  publicSessionLimiter
 };

@@ -3,17 +3,26 @@ import { FiX } from 'react-icons/fi';
 import axios from 'axios';
 import axiosInstance, { RequestManager } from '../utils/axiosConfig';
 import VideoPlayer from '../components/VideoPlayer';
-import NFCScanner from '../components/NFCScanner';
+import KidsModeNFCScan from '../components/kids/KidsModeNFCScan';
+import { KidsVideoPlayer } from '../components/kids/KidsVideoPlayer';
+import { KidsErrorBoundary } from '../components/kids/KidsErrorBoundary';
 import { resolveApiBaseUrl } from '../utils/runtimeConfig';
 
 interface Video {
   id: string;
   title: string;
-  thumbnail_url: string;
+  thumbnail_url?: string;
   platform_video_id: string;
-  platform_name: string;
+  platform_id: string;
+  platform_name?: string;
+  sequence_order?: number;
   max_watch_time_minutes?: number;
   remaining_minutes?: number;
+}
+
+interface NFCChip {
+  id: string;
+  chip_uid: string;
 }
 
 interface Session {
@@ -30,8 +39,11 @@ const KidsMode: React.FC = () => {
   const isApiConfigured = Boolean(apiUrl);
 
   const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
+  const [chipVideos, setChipVideos] = useState<Video[]>([]);
+  const [currentChip, setCurrentChip] = useState<NFCChip | null>(null);
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [showScanner, setShowScanner] = useState(true);
+  const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [watchTime, setWatchTime] = useState(0);
   const [error, setError] = useState('');
   const heartbeatInterval = useRef<NodeJS.Timeout | null>(null);
@@ -81,26 +93,51 @@ const KidsMode: React.FC = () => {
     }
 
     const controller = RequestManager.createController('nfcScan');
-    
+
     try {
       setError('');
-      const response = await axiosInstance.post(`${apiUrl}/nfc/scan/public`, {
+
+      // 1. Scan NFC chip to get chip ID
+      const scanResponse = await axiosInstance.post(`${apiUrl}/nfc/scan/public`, {
         chip_uid: chipUID,
         profile_id: null // Could be selected from a profile selector
       }, { signal: controller.signal });
 
-      const video = response.data;
-      
-      if (video.limit_reached) {
-        setError('Daily watch limit reached! Come back tomorrow.');
+      const chip = scanResponse.data.chip;
+
+      if (!chip || !chip.id) {
+        setError('NFC chip not registered. Ask a grown-up to set it up!');
         return;
       }
 
-      setCurrentVideo(video);
+      setCurrentChip(chip);
+
+      // 2. Fetch videos assigned to this chip
+      const videosController = RequestManager.createController('fetchVideos');
+      const videosResponse = await axiosInstance.get(
+        `${apiUrl}/nfc/chips/${chip.id}/videos`,
+        { signal: videosController.signal }
+      );
+
+      const videos = videosResponse.data.videos || [];
+
+      if (videos.length === 0) {
+        // No videos error is handled in KidsVideoPlayer component
+        setChipVideos([]);
+        setShowScanner(false);
+        setShowVideoPlayer(true);
+        return;
+      }
+
+      // Sort by sequence_order
+      const sortedVideos = videos.sort(
+        (a: Video, b: Video) => (a.sequence_order || 0) - (b.sequence_order || 0)
+      );
+
+      setChipVideos(sortedVideos);
       setShowScanner(false);
-      
-      // Start a watch session
-      startSession(video.id);
+      setShowVideoPlayer(true);
+
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.code === 'ERR_CANCELED') {
@@ -231,17 +268,38 @@ const KidsMode: React.FC = () => {
     setShowScanner(true);
   };
 
+  const handlePlaylistComplete = () => {
+    // Playlist finished → return to scan screen
+    if (currentSession) {
+      endSession('manual');
+    }
+    setCurrentVideo(null);
+    setChipVideos([]);
+    setCurrentChip(null);
+    setShowVideoPlayer(false);
+    setShowScanner(true);
+  };
+
   const handleExit = () => {
     if (currentSession) {
       endSession('manual');
     }
     setCurrentVideo(null);
+    setChipVideos([]);
+    setCurrentChip(null);
+    setShowVideoPlayer(false);
     setShowScanner(true);
   };
 
+  const handleErrorBoundaryReset = () => {
+    // Reset all state and return to scanner
+    handleExit();
+  };
+
   return (
-    <div className="kids-mode">
-      {showScanner ? (
+    <KidsErrorBoundary onReset={handleErrorBoundaryReset}>
+      <div className="kids-mode">
+        {showScanner ? (
         <div className="scanner-view">
           <div className="scanner-header">
             <h1 className="kids-title">
@@ -256,7 +314,7 @@ const KidsMode: React.FC = () => {
 
           {isApiConfigured ? (
             <>
-              <NFCScanner onScan={handleNFCScan} />
+              <KidsModeNFCScan onScan={handleNFCScan} />
               {error && (
                 <div className="error-bubble" role="alert">
                   {error}
@@ -275,6 +333,11 @@ const KidsMode: React.FC = () => {
             </a>
           </div>
         </div>
+      ) : showVideoPlayer ? (
+        <KidsVideoPlayer
+          videos={chipVideos}
+          onPlaylistComplete={handlePlaylistComplete}
+        />
       ) : currentVideo ? (
         <div className="player-view">
           <button className="exit-button" onClick={handleExit}>
@@ -294,8 +357,9 @@ const KidsMode: React.FC = () => {
             maxWatchTime={currentVideo.max_watch_time_minutes}
           />
         </div>
-      ) : null}
-    </div>
+        ) : null}
+      </div>
+    </KidsErrorBoundary>
   );
 };
 
