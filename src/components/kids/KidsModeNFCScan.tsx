@@ -18,7 +18,7 @@
  * ```
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   detectDeviceType,
   getNFCSensorLocation,
@@ -74,6 +74,32 @@ const KidsModeNFCScan: React.FC<KidsModeNFCScanProps> = ({ onScan }) => {
   }, []);
 
   /**
+   * Handle NFC chip reading event
+   */
+  const handleNFCReading = useCallback((event: any) => {
+    if (!isMountedRef.current) return;
+
+    const chipUid = event.serialNumber;
+
+    setScanState('success');
+    setStatusMessage('Chip scanned successfully!');
+
+    // Call onScan callback
+    onScan(chipUid);
+  }, [onScan]);
+
+  /**
+   * Handle NFC error event
+   */
+  const handleNFCError = useCallback((event: any) => {
+    if (!isMountedRef.current) return;
+
+    console.error('NFC error:', event);
+    setScanState('error');
+    setErrorMessage('Unable to scan chip. Please try again.');
+  }, []);
+
+  /**
    * Initialize NFC scanning when supported
    */
   useEffect(() => {
@@ -114,33 +140,7 @@ const KidsModeNFCScan: React.FC<KidsModeNFCScanProps> = ({ onScan }) => {
         ndefReaderRef.current.removeEventListener('error', handleNFCError);
       }
     };
-  }, [hasNFCSupport]);
-
-  /**
-   * Handle NFC chip reading event
-   */
-  const handleNFCReading = (event: any) => {
-    if (!isMountedRef.current) return;
-
-    const chipUid = event.serialNumber;
-
-    setScanState('success');
-    setStatusMessage('Chip scanned successfully!');
-
-    // Call onScan callback
-    onScan(chipUid);
-  };
-
-  /**
-   * Handle NFC error event
-   */
-  const handleNFCError = (event: any) => {
-    if (!isMountedRef.current) return;
-
-    console.error('NFC error:', event);
-    setScanState('error');
-    setErrorMessage('Unable to scan chip. Please try again.');
-  };
+  }, [hasNFCSupport, handleNFCReading, handleNFCError]);
 
   /**
    * Handle simulation mode scan button click
