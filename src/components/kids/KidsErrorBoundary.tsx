@@ -5,7 +5,7 @@
  * Catches React errors and displays friendly fallback UI.
  */
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 import './KidsErrorBoundary.css';
 
 interface Props {
