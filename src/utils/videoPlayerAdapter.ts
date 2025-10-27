@@ -116,17 +116,30 @@ class YouTubePlayerAdapter implements IVideoPlayer {
   }
 
   private createPlayer(container: HTMLElement, videoId: string): void {
+    const originalId = container.id;
+    console.log('[YouTubePlayerAdapter] createPlayer called', {
+      originalId,
+      videoId,
+      timestamp: new Date().toISOString()
+    });
+
     // Create unique container ID
     const playerId = `youtube-player-${Date.now()}`;
     container.id = playerId;
+    console.log('[YouTubePlayerAdapter] Changed container ID', {
+      from: originalId,
+      to: playerId
+    });
 
     // Check if YouTube API is available (may not be in test environment)
     if (!window.YT || !window.YT.Player) {
+      console.log('[YouTubePlayerAdapter] YouTube API not available');
       this.ready = true;
       this.events.emit('ready');
       return;
     }
 
+    console.log('[YouTubePlayerAdapter] Creating YouTube player...');
     this.player = new window.YT.Player(playerId, {
       videoId,
       playerVars: {
@@ -142,11 +155,13 @@ class YouTubePlayerAdapter implements IVideoPlayer {
       },
       events: {
         onReady: () => {
+          console.log('[YouTubePlayerAdapter] onReady fired');
           this.ready = true;
           this.events.emit('ready');
         },
         onStateChange: (event: any) => {
           const state = event.data;
+          console.log('[YouTubePlayerAdapter] onStateChange', { state });
           if (state === window.YT.PlayerState.PLAYING) {
             this.events.emit('playing');
           } else if (state === window.YT.PlayerState.PAUSED) {
@@ -155,11 +170,13 @@ class YouTubePlayerAdapter implements IVideoPlayer {
             this.events.emit('ended');
           }
         },
-        onError: () => {
+        onError: (event: any) => {
+          console.error('[YouTubePlayerAdapter] onError fired', event);
           this.events.emit('error');
         },
       },
     });
+    console.log('[YouTubePlayerAdapter] YouTube player created successfully');
   }
 
   play(): void {
@@ -587,19 +604,37 @@ class VideoPlayerWrapper implements VideoPlayer {
 export async function createPlayer(options: CreatePlayerOptions): Promise<VideoPlayer> {
   const { platform, videoId, containerId } = options;
 
+  console.log('[createPlayer] Called with options:', {
+    platform,
+    videoId,
+    containerId,
+    timestamp: new Date().toISOString()
+  });
+
   // Get container element
   const container = document.getElementById(containerId);
+  console.log('[createPlayer] Container lookup result:', {
+    exists: !!container,
+    id: container?.id,
+    tagName: container?.tagName
+  });
+
   if (!container) {
-    throw new Error(`Container element not found: ${containerId}`);
+    const error = `Container element not found: ${containerId}`;
+    console.error('[createPlayer] ERROR:', error);
+    throw new Error(error);
   }
 
   if (!videoId || videoId.trim() === '') {
-    throw new Error('Video ID is required');
+    const error = 'Video ID is required';
+    console.error('[createPlayer] ERROR:', error);
+    throw new Error(error);
   }
 
   // Create appropriate player adapter
   let adapter: IVideoPlayer;
 
+  console.log('[createPlayer] Creating adapter for platform:', platform.toLowerCase());
   switch (platform.toLowerCase()) {
     case 'youtube':
       adapter = new YouTubePlayerAdapter(container, videoId);
@@ -611,10 +646,15 @@ export async function createPlayer(options: CreatePlayerOptions): Promise<VideoP
       adapter = new DailymotionPlayerAdapter(container, videoId);
       break;
     default:
-      throw new Error(`Unsupported video platform: ${platform}`);
+      const error = `Unsupported video platform: ${platform}`;
+      console.error('[createPlayer] ERROR:', error);
+      throw new Error(error);
   }
 
-  return new VideoPlayerWrapper(adapter);
+  console.log('[createPlayer] Adapter created, wrapping...');
+  const wrapper = new VideoPlayerWrapper(adapter);
+  console.log('[createPlayer] Returning wrapped player');
+  return wrapper;
 }
 
 // Legacy factory function

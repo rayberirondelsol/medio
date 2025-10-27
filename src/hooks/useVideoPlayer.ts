@@ -54,17 +54,34 @@ export function useVideoPlayer(containerId: string): UseVideoPlayerReturn {
    */
   const loadVideo = useCallback(
     async (platform: string, videoId: string) => {
+      console.log('[useVideoPlayer] loadVideo called', {
+        platform,
+        videoId,
+        containerId,
+        timestamp: new Date().toISOString()
+      });
+
       try {
         setState('loading');
         setError(null);
 
+        // Verify container exists BEFORE creating player
+        const containerBefore = document.getElementById(containerId);
+        console.log('[useVideoPlayer] Container before createPlayer:', {
+          exists: !!containerBefore,
+          id: containerBefore?.id,
+          innerHTML: containerBefore?.innerHTML.substring(0, 100)
+        });
+
         // Destroy existing player if present
         if (playerRef.current) {
+          console.log('[useVideoPlayer] Destroying existing player');
           playerRef.current.destroy();
           playerRef.current = null;
         }
 
         // Create new player with platform-specific adapter
+        console.log('[useVideoPlayer] Calling createPlayer...');
         const player = await createPlayer({
           platform,
           videoId,
@@ -75,6 +92,15 @@ export function useVideoPlayer(containerId: string): UseVideoPlayerReturn {
             keyboard: false, // Kids Mode: no keyboard controls
             fullscreen: false, // We handle fullscreen at component level
           },
+        });
+        console.log('[useVideoPlayer] createPlayer returned successfully');
+
+        // Verify container state AFTER creating player
+        const containerAfter = document.getElementById(containerId);
+        console.log('[useVideoPlayer] Container after createPlayer:', {
+          exists: !!containerAfter,
+          id: containerAfter?.id,
+          innerHTML: containerAfter?.innerHTML.substring(0, 100)
         });
 
         playerRef.current = player;
@@ -101,13 +127,18 @@ export function useVideoPlayer(containerId: string): UseVideoPlayerReturn {
           eventHandlersRef.current.get('error')?.forEach((handler) => handler(err));
         });
 
+        console.log('[useVideoPlayer] Setting state to ready');
         setState('ready');
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Failed to load video';
+        console.error('[useVideoPlayer] ERROR in loadVideo:', {
+          error: err,
+          message: errorMessage,
+          stack: err instanceof Error ? err.stack : undefined
+        });
         setState('error');
         setError(errorMessage);
-        console.error('Video loading error:', err);
       }
     },
     [containerId]
