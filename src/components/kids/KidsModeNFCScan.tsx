@@ -49,6 +49,10 @@ const KidsModeNFCScan: React.FC<KidsModeNFCScanProps> = ({ onScan }) => {
   // Simulation mode (for devices without NFC)
   const [simulationChipId, setSimulationChipId] = useState('');
 
+  // Easter egg: 10 taps on scan area triggers test chip scan
+  const [tapCount, setTapCount] = useState(0);
+  const tapTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   // Refs
   const ndefReaderRef = useRef<any>(null);
   const isMountedRef = useRef(true);
@@ -70,6 +74,11 @@ const KidsModeNFCScan: React.FC<KidsModeNFCScanProps> = ({ onScan }) => {
 
     return () => {
       isMountedRef.current = false;
+      // Cleanup tap timer
+      if (tapTimerRef.current) {
+        clearTimeout(tapTimerRef.current);
+        tapTimerRef.current = null;
+      }
     };
   }, []);
 
@@ -158,6 +167,44 @@ const KidsModeNFCScan: React.FC<KidsModeNFCScanProps> = ({ onScan }) => {
   };
 
   /**
+   * Easter egg: Handle tap on scan area
+   * 10 taps within 5 seconds triggers test chip scan
+   */
+  const handleScanAreaTap = () => {
+    // Only enable in non-NFC mode (simulation mode)
+    if (hasNFCSupport) {
+      return;
+    }
+
+    const newTapCount = tapCount + 1;
+    setTapCount(newTapCount);
+
+    // Clear existing timer
+    if (tapTimerRef.current) {
+      clearTimeout(tapTimerRef.current);
+    }
+
+    // Reset tap count after 5 seconds of inactivity
+    tapTimerRef.current = setTimeout(() => {
+      setTapCount(0);
+    }, 5000);
+
+    // Trigger test scan on 10th tap
+    if (newTapCount >= 10) {
+      setTapCount(0);
+      if (tapTimerRef.current) {
+        clearTimeout(tapTimerRef.current);
+        tapTimerRef.current = null;
+      }
+
+      // Trigger scan with test chip ID
+      setScanState('success');
+      setStatusMessage('Test chip activated! 🎉');
+      onScan('04:5A:B2:C3:D4:E5:F6');
+    }
+  };
+
+  /**
    * Render scan area with device-specific positioning
    */
   const renderScanArea = () => {
@@ -187,9 +234,13 @@ const KidsModeNFCScan: React.FC<KidsModeNFCScanProps> = ({ onScan }) => {
       <div
         data-testid="nfc-scan-area"
         className={scanAreaClasses}
-        style={positionStyle}
+        style={{
+          ...positionStyle,
+          cursor: hasNFCSupport ? 'default' : 'pointer',
+        }}
         role="region"
         aria-label="NFC scanning area"
+        onClick={handleScanAreaTap}
       >
         <div className="nfc-scan-icon" data-testid="nfc-scan-icon">
           {scanState === 'success' ? (
