@@ -355,8 +355,11 @@ const KidsModeNFCScan: React.FC<KidsModeNFCScanProps> = ({ onScan }) => {
         </p>
       </div>
 
-      {/* Scan Area or Simulation Input */}
-      {hasNFCSupport ? renderScanArea() : renderSimulationMode()}
+      {/* Scan Area - Always render for Easter egg tap detection */}
+      {renderScanArea()}
+
+      {/* Simulation Input - Only show on non-NFC devices */}
+      {!hasNFCSupport && renderSimulationMode()}
 
       {/* Status Messages (for screen readers) */}
       {statusMessage && (
