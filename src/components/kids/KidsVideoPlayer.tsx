@@ -21,7 +21,7 @@ import './KidsVideoPlayer.css';
 interface Video {
   id: string;
   title: string;
-  platform_id: string;
+  platform_name: string;  // Platform name string (e.g., "YouTube", "Vimeo")
   platform_video_id: string;
   sequence_order: number;
 }
@@ -102,7 +102,7 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
     if (videos.length === 0) return;
 
     const firstVideo = videos[0];
-    loadVideo(firstVideo.platform_id, firstVideo.platform_video_id);
+    loadVideo(firstVideo.platform_name, firstVideo.platform_video_id);
   }, [videos, loadVideo]);
 
   /**
@@ -141,7 +141,7 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
         setCurrentVideoIndex(nextIndex);
 
         const nextVideo = videos[nextIndex];
-        loadVideo(nextVideo.platform_id, nextVideo.platform_video_id);
+        loadVideo(nextVideo.platform_name, nextVideo.platform_video_id);
       }
     };
 
@@ -205,7 +205,7 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
         const nextIndex = currentVideoIndex + 1;
         setCurrentVideoIndex(nextIndex);
         const nextVideo = videos[nextIndex];
-        loadVideo(nextVideo.platform_id, nextVideo.platform_video_id);
+        loadVideo(nextVideo.platform_name, nextVideo.platform_video_id);
       }
     } else if (shakeDirection === 'left') {
       if (isFirstVideo) {
@@ -217,7 +217,7 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
         const prevIndex = currentVideoIndex - 1;
         setCurrentVideoIndex(prevIndex);
         const prevVideo = videos[prevIndex];
-        loadVideo(prevVideo.platform_id, prevVideo.platform_video_id);
+        loadVideo(prevVideo.platform_name, prevVideo.platform_video_id);
       }
     }
   }, [shakeDetected, shakeDirection, state, currentVideoIndex, videos, loadVideo, seek, onPlaylistComplete]);
@@ -241,7 +241,7 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
     if (videos.length === 0) return;
 
     const currentVideo = videos[currentVideoIndex];
-    loadVideo(currentVideo.platform_id, currentVideo.platform_video_id);
+    loadVideo(currentVideo.platform_name, currentVideo.platform_video_id);
   };
 
   /**

@@ -1,24 +1,29 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Standalone Playwright Configuration - No Auth Setup Required
- * For testing public pages like Kids Mode
+ * Standalone Playwright Configuration - No Auth Required
+ * Use for testing public pages like Kids Mode
  */
 export default defineConfig({
-  testDir: './tests',
-  timeout: 60 * 1000, // 60 seconds per test
+  testDir: './',
+  testMatch: '**/kids-mode-manual-test.spec.ts',
+
+  timeout: 120 * 1000, // 2 minutes
   expect: {
     timeout: 10000,
   },
+
   fullyParallel: false,
-  forbidOnly: !!process.env.CI,
   retries: 0,
   workers: 1,
+
   reporter: [
     ['list'],
-    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['html', { outputFolder: 'test-results/html', open: 'never' }],
   ],
+
   use: {
+    headless: false, // Show browser
     trace: 'on',
     screenshot: 'on',
     video: 'on',
@@ -26,14 +31,11 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'chromium-desktop',
+      name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1920, height: 1080 },
       },
-      // No dependencies on setup - standalone tests
     },
   ],
-
-  // No web server needed - testing production deployment
 });

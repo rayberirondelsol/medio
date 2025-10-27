@@ -12,8 +12,7 @@ interface Video {
   title: string;
   thumbnail_url?: string;
   platform_video_id: string;
-  platform_id: string;
-  platform_name: string;
+  platform_name: string;  // Platform name string (e.g., "YouTube", "Vimeo")
   sequence_order: number;
   max_watch_time_minutes?: number;
   remaining_minutes?: number;

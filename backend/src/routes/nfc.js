@@ -178,7 +178,22 @@ router.post('/scan/public',
     try {
       // Get active video mapping for this chip
       const result = await pool.query(`
-        SELECT v.*, vnm.max_watch_time_minutes, p.name as platform_name
+        SELECT
+          v.id,
+          v.user_id,
+          v.title,
+          v.description,
+          v.thumbnail_url,
+          v.platform_video_id,
+          v.duration_seconds,
+          v.age_rating,
+          v.created_at,
+          v.updated_at,
+          v.video_url,
+          v.channel_name,
+          vnm.max_watch_time_minutes,
+          vnm.sequence_order,
+          p.name as platform_name
         FROM nfc_chips nc
         JOIN video_nfc_mappings vnm ON nc.id = vnm.nfc_chip_id
         JOIN videos v ON vnm.video_id = v.id
