@@ -123,13 +123,10 @@ class YouTubePlayerAdapter implements IVideoPlayer {
       timestamp: new Date().toISOString()
     });
 
-    // Create unique container ID
-    const playerId = `youtube-player-${Date.now()}`;
-    container.id = playerId;
-    console.log('[YouTubePlayerAdapter] Changed container ID', {
-      from: originalId,
-      to: playerId
-    });
+    // ✅ FIX: Use existing container ID instead of generating new one
+    // This preserves React's DOM reference and allows iframe to render
+    const playerId = originalId || `youtube-player-${Date.now()}`;
+    console.log('[YouTubePlayerAdapter] Using container ID:', playerId);
 
     // Check if YouTube API is available (may not be in test environment)
     if (!window.YT || !window.YT.Player) {
