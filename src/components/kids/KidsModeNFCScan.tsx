@@ -170,7 +170,7 @@ const KidsModeNFCScan: React.FC<KidsModeNFCScanProps> = ({ onScan }) => {
    * Easter egg: Handle tap on scan area
    * 10 taps within 5 seconds triggers test chip scan
    */
-  const handleScanAreaTap = () => {
+  const handleScanAreaTap = useCallback(() => {
     // Only enable in non-NFC mode (simulation mode)
     if (hasNFCSupport) {
       return;
@@ -202,7 +202,7 @@ const KidsModeNFCScan: React.FC<KidsModeNFCScanProps> = ({ onScan }) => {
       setStatusMessage('Test chip activated! 🎉');
       onScan('04:5A:B2:C3:D4:E5:F6');
     }
-  };
+  }, [tapCount, hasNFCSupport, onScan]);
 
   /**
    * Render scan area with device-specific positioning
