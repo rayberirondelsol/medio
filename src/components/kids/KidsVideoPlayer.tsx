@@ -15,7 +15,9 @@ import { useVideoPlayer } from '../../hooks/useVideoPlayer';
 import { useDeviceOrientation } from '../../hooks/useDeviceOrientation';
 import { useShakeDetection } from '../../hooks/useShakeDetection';
 import { useSwipeGesture } from '../../hooks/useSwipeGesture';
+import { useWatchSession } from '../../hooks/useWatchSession';
 import { GesturePermissionGate } from './GesturePermissionGate';
+import LimitReachedMessage from './LimitReachedMessage';
 import './KidsVideoPlayer.css';
 
 interface Video {
@@ -28,11 +30,15 @@ interface Video {
 
 interface KidsVideoPlayerProps {
   videos: Video[];
+  profileId: string | null;  // Profile ID for watch time tracking (null if not selected yet)
+  nfcChipId: string | null;  // NFC chip ID for watch time tracking
   onPlaylistComplete: () => void;
 }
 
 export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
   videos,
+  profileId,
+  nfcChipId,
   onPlaylistComplete,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,7 +50,22 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
 
   const { state, error, loadVideo, play, on, seek } = useVideoPlayer('kids-video-container');
 
-  // Gesture hooks
+  // Watch session hook (for daily watch time tracking)
+  const currentVideo = videos[currentVideoIndex];
+  const {
+    sessionId: _sessionId,  // Intentionally unused - session managed by hook
+    remainingMinutes,
+    limitReached,
+    error: _sessionError,  // Intentionally unused - errors shown by KidsErrorBoundary
+    updatePosition: _updatePosition,  // TODO: Update position during playback
+    endSession,
+  } = useWatchSession({
+    profileId,
+    nfcChipId,
+    videoId: currentVideo?.id || null,
+  });
+
+  // Gesture hooks (must be called before any conditional returns)
   const {
     tiltIntensity,
     tiltDirection,
@@ -251,6 +272,25 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
     onPlaylistComplete();
   };
 
+  /**
+   * Show limit reached message if daily watch time limit is reached
+   */
+  if (limitReached && remainingMinutes === 0) {
+    const dailyLimitMinutes = 60; // TODO: Get from profile settings
+    const totalMinutesWatched = dailyLimitMinutes; // Already at limit
+
+    return (
+      <LimitReachedMessage
+        totalMinutesWatched={totalMinutesWatched}
+        dailyLimitMinutes={dailyLimitMinutes}
+        onReturnToScan={() => {
+          endSession('daily_limit');
+          onPlaylistComplete();
+        }}
+      />
+    );
+  }
+
   // Error state: no videos assigned
   if (videos.length === 0) {
     return (
@@ -279,8 +319,6 @@ export const KidsVideoPlayer: React.FC<KidsVideoPlayerProps> = ({
       </div>
     );
   }
-
-  const currentVideo = videos[currentVideoIndex];
 
   // Error state: video loading or playback error
   if (state === 'error' && error) {

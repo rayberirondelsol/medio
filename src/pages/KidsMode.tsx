@@ -18,11 +18,6 @@ interface Video {
   remaining_minutes?: number;
 }
 
-interface NFCChip {
-  id: string;
-  chip_uid: string;
-}
-
 interface Session {
   session_id: string;
   max_watch_time_minutes: number | null;
@@ -37,11 +32,12 @@ const KidsMode: React.FC = () => {
 
   const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
   const [chipVideos, setChipVideos] = useState<Video[]>([]);
-  const [, setCurrentChip] = useState<NFCChip | null>(null);
+  const [currentChipId, setCurrentChipId] = useState<string | null>(null);
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [showScanner, setShowScanner] = useState(true);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [error, setError] = useState('');
+  const [profileId] = useState<string | null>(null); // TODO: Implement profile selection UI
   const heartbeatInterval = useRef<NodeJS.Timeout | null>(null);
   const sessionRef = useRef<Session | null>(null);
   const isMountedRef = useRef(true);
@@ -85,7 +81,7 @@ const KidsMode: React.FC = () => {
     try {
       setError('');
 
-      // Scan NFC chip - backend returns first video directly (not chip wrapper)
+      // Scan NFC chip and fetch ALL assigned videos
       // Using axiosInstance with baseURL already set to '/api'
       const scanResponse = await axiosInstance.post('/nfc/scan/public', {
         chip_uid: chipUID
@@ -93,16 +89,22 @@ const KidsMode: React.FC = () => {
         // TODO: Add profile selector UI and pass selected profile_id
       }, { signal: controller.signal });
 
-      const video = scanResponse.data;  // Backend returns video object directly
+      // Backend should return { chip: {...}, videos: [...] }
+      const { chip, videos } = scanResponse.data;
 
-      if (!video || !video.id) {
-        setError('No video assigned to this chip. Ask a grown-up to add videos!');
+      if (!chip || !chip.id) {
+        setError('Invalid chip response from server');
         return;
       }
 
-      // Use single video from scan response
-      // Note: For multi-video sequential playback, backend needs to return ALL videos
-      setChipVideos([video]);  // Wrap in array for KidsVideoPlayer
+      if (!videos || videos.length === 0) {
+        setError('No videos assigned to this chip. Ask a grown-up to add videos!');
+        return;
+      }
+
+      // Store chip ID and videos for KidsVideoPlayer
+      setCurrentChipId(chip.id);
+      setChipVideos(videos);
       setShowScanner(false);
       setShowVideoPlayer(true);
 
@@ -111,7 +113,7 @@ const KidsMode: React.FC = () => {
         if (error.code === 'ERR_CANCELED') {
           setError('Scan was cancelled');
         } else if (error.response?.status === 404) {
-          setError('No video assigned to this chip. Ask a grown-up to add videos!');
+          setError('No videos assigned to this chip. Ask a grown-up to add videos!');
         } else {
           setError(error.response?.data?.message || 'Failed to scan NFC chip');
         }
@@ -157,7 +159,7 @@ const KidsMode: React.FC = () => {
     }
     setCurrentVideo(null);
     setChipVideos([]);
-    setCurrentChip(null);
+    setCurrentChipId(null);
     setShowVideoPlayer(false);
     setShowScanner(true);
   };
@@ -168,7 +170,7 @@ const KidsMode: React.FC = () => {
     }
     setCurrentVideo(null);
     setChipVideos([]);
-    setCurrentChip(null);
+    setCurrentChipId(null);
     setShowVideoPlayer(false);
     setShowScanner(true);
   };
@@ -208,6 +210,8 @@ const KidsMode: React.FC = () => {
       ) : showVideoPlayer ? (
         <KidsVideoPlayer
           videos={chipVideos}
+          profileId={profileId}
+          nfcChipId={currentChipId}
           onPlaylistComplete={handlePlaylistComplete}
         />
       ) : currentVideo ? (

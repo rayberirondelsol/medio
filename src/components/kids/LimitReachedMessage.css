@@ -1,0 +1,248 @@
+/**
+ * LimitReachedMessage Component Styles
+ *
+ * Child-friendly design with large fonts, bright colors, and playful emojis.
+ * Optimized for readability by children aged 4-8 years.
+ */
+
+.limit-reached-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  text-align: center;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', sans-serif;
+}
+
+/* Main Heading */
+.limit-reached-message__heading {
+  font-size: 4rem;
+  font-weight: bold;
+  margin: 0 0 1.5rem 0;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  animation: bounceIn 0.8s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Friendly Message */
+.limit-reached-message__message {
+  font-size: 2rem;
+  margin: 0 0 2.5rem 0;
+  font-weight: 600;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Watch Time Statistics Container */
+.limit-reached-message__stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 2rem 0;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  min-width: 350px;
+}
+
+.limit-reached-message__stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.limit-reached-message__stat-emoji {
+  font-size: 3rem;
+}
+
+.limit-reached-message__stat-label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.limit-reached-message__stat-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Encouraging Message */
+.limit-reached-message__encouragement {
+  font-size: 1.8rem;
+  margin: 2rem 0;
+  font-weight: 500;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Countdown Timer */
+.limit-reached-message__countdown {
+  margin-top: 3rem;
+  padding: 1.5rem 2.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 15px;
+  backdrop-filter: blur(8px);
+}
+
+.limit-reached-message__countdown-text {
+  font-size: 1.4rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.limit-reached-message__countdown-text strong {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive Design */
+
+/* Tablets (iPad, etc.) */
+@media (max-width: 1024px) {
+  .limit-reached-message__heading {
+    font-size: 3.5rem;
+  }
+
+  .limit-reached-message__message {
+    font-size: 1.8rem;
+  }
+
+  .limit-reached-message__stats {
+    min-width: 300px;
+  }
+
+  .limit-reached-message__stat-emoji {
+    font-size: 2.5rem;
+  }
+
+  .limit-reached-message__stat-value {
+    font-size: 2.2rem;
+  }
+
+  .limit-reached-message__encouragement {
+    font-size: 1.6rem;
+  }
+}
+
+/* Smartphones */
+@media (max-width: 768px) {
+  .limit-reached-message {
+    padding: 1.5rem;
+  }
+
+  .limit-reached-message__heading {
+    font-size: 2.8rem;
+  }
+
+  .limit-reached-message__message {
+    font-size: 1.5rem;
+  }
+
+  .limit-reached-message__stats {
+    min-width: auto;
+    width: 100%;
+    padding: 1.5rem;
+  }
+
+  .limit-reached-message__stat-emoji {
+    font-size: 2rem;
+  }
+
+  .limit-reached-message__stat-label {
+    font-size: 1.2rem;
+  }
+
+  .limit-reached-message__stat-value {
+    font-size: 2rem;
+  }
+
+  .limit-reached-message__encouragement {
+    font-size: 1.4rem;
+  }
+
+  .limit-reached-message__countdown-text {
+    font-size: 1.2rem;
+  }
+
+  .limit-reached-message__countdown-text strong {
+    font-size: 1.8rem;
+  }
+}
+
+/* Small Smartphones */
+@media (max-width: 480px) {
+  .limit-reached-message__heading {
+    font-size: 2.2rem;
+  }
+
+  .limit-reached-message__message {
+    font-size: 1.3rem;
+  }
+
+  .limit-reached-message__stat-emoji {
+    font-size: 1.8rem;
+  }
+
+  .limit-reached-message__stat-label {
+    font-size: 1.1rem;
+  }
+
+  .limit-reached-message__stat-value {
+    font-size: 1.8rem;
+  }
+
+  .limit-reached-message__encouragement {
+    font-size: 1.2rem;
+  }
+}
+
+/* Accessibility: High Contrast Mode */
+@media (prefers-contrast: high) {
+  .limit-reached-message {
+    background: #000000;
+    color: #ffffff;
+  }
+
+  .limit-reached-message__stats {
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid #ffffff;
+  }
+
+  .limit-reached-message__countdown {
+    background: rgba(255, 255, 255, 0.25);
+    border: 2px solid #ffffff;
+  }
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .limit-reached-message__heading {
+    animation: none;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
